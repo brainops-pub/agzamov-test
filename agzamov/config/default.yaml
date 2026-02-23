@@ -1,0 +1,58 @@
+name: "agzamov-mvp-001"
+description: "MVP run: Chess960, Claude Sonnet, BrainOps Memory"
+
+phases: [0, 1, 2]
+
+model:
+  provider: "anthropic"
+  name: "claude-sonnet-4-20250514"
+  temperature: 0.6
+  max_tokens: 300
+
+memory:
+  type: "brainops-mcp"
+  endpoint: "http://127.0.0.1:3200/api/v1"
+  max_context_tokens: 500
+  consolidation_trigger: "every_game"
+
+chess:
+  variant: "chess960"
+  games_phase_1: 200
+  games_phase_2: 200
+  games_phase_3: 100
+  max_moves_per_game: 200
+  time_tracking: true
+
+sanity_check:
+  chess_games: 30
+  chess_pass_threshold: 0.70
+  chess_error_threshold: 0.20
+
+stockfish:
+  path: ""  # auto-detect or set AGZAMOV_STOCKFISH_PATH env var
+  analysis_depth: 20
+  chess960_mode: true
+
+stats:
+  significance_threshold: 0.05
+  bootstrap_samples: 10000
+  elo_k_factor: 32
+  tau_window_size: 20
+  tau_threshold: 0.95
+
+output:
+  results_dir: "./results"
+  save_game_history: true
+  save_memory_dump: true
+  save_stockfish_analysis: true
+  report_format: "markdown"
+
+budget:
+  max_api_cost_usd: 300
+  cost_tracking: true
+  warn_at_pct: 80
+
+synthetic_patterns:
+  enabled: false
+  chess_constraints: []
+  poker_constraints: []
