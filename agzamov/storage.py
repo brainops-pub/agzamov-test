@@ -79,6 +79,40 @@ class RunStorage:
         with open(path, "a") as f:
             f.write(json.dumps(record) + "\n")
 
+    def append_tree_search(
+        self, game_id: str, ply: int, agent_id: str, ts_result,
+    ) -> None:
+        """Append tree search decision to JSONL for post-analysis.
+
+        Logs: candidates (model's evaluation), SF evals (ground truth),
+        model's selection (judgment), and SF's own best move (missed-best metric).
+        """
+        path = self.run_dir / "chess" / "tree_search.jsonl"
+        sf_best = getattr(ts_result, 'sf_best_move', '')
+        candidate_ucis = [c.move_uci for c in ts_result.candidates]
+        record = {
+            "game_id": game_id,
+            "ply": ply,
+            "agent": agent_id,
+            "candidates": [
+                {
+                    "move": c.move_uci,
+                    "reasoning": c.reasoning,
+                    "sf_eval_cp": round(c.sf_eval_cp, 1),
+                    "sf_best_reply": c.sf_best_reply,
+                }
+                for c in ts_result.candidates
+            ],
+            "selected": ts_result.selected_move,
+            "sf_best_move": sf_best,
+            "sf_best_in_candidates": sf_best in candidate_ucis,
+            "gen_wall_ms": round(ts_result.generation_wall_ms),
+            "eval_wall_ms": round(ts_result.evaluation_wall_ms),
+            "sel_wall_ms": round(ts_result.selection_wall_ms),
+        }
+        with open(path, "a") as f:
+            f.write(json.dumps(record) + "\n")
+
     def load_phase_results(self, phase: int) -> list[dict]:
         """Load all game results for a phase from JSONL."""
         jsonl_path = self.run_dir / "chess" / f"phase_{phase}_results.jsonl"

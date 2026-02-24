@@ -85,6 +85,9 @@ class LLMAgent:
         provider: str = "anthropic",
         api_key: str = "",
         base_url: str = "",
+        search_mode: str = "llm",
+        tree_search_config: dict | None = None,
+        stockfish: object | None = None,
     ):
         self.agent_id = agent_id
         self.model = model
@@ -99,9 +102,13 @@ class LLMAgent:
         self.last_reasoning: str = ""  # full response text from last move (for post-mortem)
         self.last_note: str = ""       # extracted NOTE from last move
         self.last_thinking: str = ""   # extended thinking text (Opus)
+        self.last_tree_search = None   # TreeSearchResult from last move (Mode B)
         self.thinking = thinking
         self.thinking_budget = thinking_budget
         self.provider = provider
+        self.search_mode = search_mode
+        self._tree_config = tree_search_config or {}
+        self._stockfish = stockfish
 
         if provider == "anthropic":
             self._anthropic = anthropic.AsyncAnthropic()
@@ -134,6 +141,13 @@ class LLMAgent:
         Returns (uci_move, wall_time_ms, error_type).
         error_type: None (success), "format", "illegal", or "nonsense".
         """
+        self.last_tree_search = None
+        if self.search_mode == "tree" and self._stockfish:
+            return await self._get_move_tree_search(game, opponent_id)
+        return await self._get_move_llm(game, opponent_id)
+
+    async def _get_move_llm(self, game: Chess960Game, opponent_id: str) -> tuple[str, float, str | None]:
+        """Mode A: single-shot LLM move (original pipeline)."""
         start = time.perf_counter()
         self.stats.total_moves += 1
 
@@ -218,6 +232,91 @@ class LLMAgent:
 
         await self.memory.store_observation(opponent_id, game_id, observation)
 
+    async def _get_move_tree_search(self, game: Chess960Game, opponent_id: str) -> tuple[str, float, str | None]:
+        """Mode B: generate candidates → SF evaluate → LLM select."""
+        from .tree_search import (
+            build_generation_prompt, build_selection_prompt,
+            parse_candidates, evaluate_candidates, evaluate_hypothetical_move,
+            TreeSearchResult,
+        )
+
+        start = time.perf_counter()
+        self.stats.total_moves += 1
+        num_cands = self._tree_config.get("num_candidates", 5)
+        eval_depth = self._tree_config.get("eval_depth", 20)
+
+        # --- Call 1: generate candidates ---
+        memory_context = await self.memory.get_opponent_profile(opponent_id)
+        system1, prompt1 = build_generation_prompt(
+            game, num_cands, memory_context, self._scratchpad,
+        )
+        gen_start = time.perf_counter()
+        _, _, raw1 = await self._call_and_parse(system1, prompt1, game)  # move parse ignored
+        gen_ms = (time.perf_counter() - gen_start) * 1000
+
+        parsed = parse_candidates(raw1, game, num_cands)
+        if not parsed:
+            logger.warning(f"[{self.agent_id}] Tree search: no candidates parsed, falling back to Mode A")
+            return await self._get_move_llm(game, opponent_id)
+
+        # --- Evaluate each candidate with Stockfish ---
+        eval_start = time.perf_counter()
+        candidates = evaluate_candidates(self._stockfish, game.get_fen(), parsed, eval_depth)
+
+        # Also get SF's own best move for comparison
+        sf_best_move = ""
+        try:
+            self._stockfish.engine.set_fen_position(game.get_fen())
+            if eval_depth != self._stockfish.depth:
+                self._stockfish.engine.set_depth(eval_depth)
+            sf_best_move = self._stockfish.engine.get_best_move() or ""
+            if eval_depth != self._stockfish.depth:
+                self._stockfish.engine.set_depth(self._stockfish.depth)
+        except Exception:
+            pass
+        eval_ms = (time.perf_counter() - eval_start) * 1000
+
+        # --- Call 2: select best from evaluated candidates ---
+        system2, prompt2 = build_selection_prompt(game, candidates, game.turn_name)
+        sel_start = time.perf_counter()
+        move, _, raw2 = await self._call_and_parse(system2, prompt2, game)
+        sel_ms = (time.perf_counter() - sel_start) * 1000
+
+        # Build result record (always, for logging)
+        ts_result = TreeSearchResult(
+            candidates=candidates,
+            selected_move=move or "",
+            selection_reasoning=raw2,
+            generation_wall_ms=gen_ms,
+            evaluation_wall_ms=eval_ms,
+            selection_wall_ms=sel_ms,
+        )
+        ts_result.sf_best_move = sf_best_move
+        ts_result.generation_raw = raw1
+        self.last_tree_search = ts_result
+
+        if move:
+            self._consecutive_errors = 0
+            self._scratchpad = parse_note(raw2)
+            self.last_reasoning = raw2
+            self.last_note = self._scratchpad
+            elapsed = (time.perf_counter() - start) * 1000
+            return move, elapsed, None
+
+        # Selection failed — pick candidate with best SF eval for current side
+        side = game.turn_name
+        best = max(candidates, key=lambda c: c.sf_eval_cp if side == "white" else -c.sf_eval_cp)
+        if best.move_uci in game.get_legal_moves():
+            self._consecutive_errors = 0
+            ts_result.selected_move = best.move_uci
+            elapsed = (time.perf_counter() - start) * 1000
+            logger.info(f"[{self.agent_id}] Tree search: selection failed, using best-eval candidate {best.move_uci}")
+            return best.move_uci, elapsed, None
+
+        # Ultimate fallback
+        logger.warning(f"[{self.agent_id}] Tree search: all fallbacks failed, using Mode A")
+        return await self._get_move_llm(game, opponent_id)
+
     async def _call_and_parse(
         self, system: str, user_msg: str, game: Chess960Game
     ) -> tuple[str | None, str | None, str]:
@@ -273,9 +372,9 @@ class LLMAgent:
         thinking_text = ""
         for block in response.content:
             if block.type == "thinking":
-                thinking_text = block.thinking
+                thinking_text += block.thinking
             elif block.type == "text":
-                text = block.text
+                text += block.text
         return text, thinking_text, response.usage.input_tokens, response.usage.output_tokens
 
     async def _call_openai(self, system: str, user_msg: str) -> tuple[str, str, int, int]:
@@ -341,6 +440,54 @@ class RandomAgent:
         move = random.choice(legal)
         elapsed = (time.perf_counter() - start) * 1000
         return move, elapsed, None
+
+    async def post_game(
+        self, game: Chess960Game, result: str, opponent_id: str, game_id: str, *, my_color: str = "white"
+    ) -> None:
+        pass
+
+
+class StockfishAgent:
+    """Agent that plays Stockfish's best move. Mode C control ceiling."""
+
+    def __init__(self, agent_id: str, stockfish, depth: int = 20):
+        self.agent_id = agent_id
+        self.stockfish = stockfish
+        self.depth = depth
+        self.stats = AgentStats()
+        self.has_memory = False
+        self.memory = NoMemory()
+        self.forfeit_threshold = 999
+        self._consecutive_errors = 0
+        self.last_reasoning = ""
+        self.last_note = ""
+        self.last_thinking = ""
+        self.last_tree_search = None
+
+    def reset_game(self) -> None:
+        pass
+
+    @property
+    def is_forfeited(self) -> bool:
+        return False
+
+    async def get_move(self, game: Chess960Game, opponent_id: str) -> tuple[str, float, str | None]:
+        start = time.perf_counter()
+        self.stats.total_moves += 1
+        fen = game.get_fen()
+        self.stockfish.engine.set_fen_position(fen)
+        if self.depth != self.stockfish.depth:
+            self.stockfish.engine.set_depth(self.depth)
+        try:
+            move = self.stockfish.engine.get_best_move()
+        finally:
+            if self.depth != self.stockfish.depth:
+                self.stockfish.engine.set_depth(self.stockfish.depth)
+        elapsed = (time.perf_counter() - start) * 1000
+        if move and move in game.get_legal_moves():
+            return move, elapsed, None
+        import random
+        return random.choice(game.get_legal_moves()), elapsed, None
 
     async def post_game(
         self, game: Chess960Game, result: str, opponent_id: str, game_id: str, *, my_color: str = "white"
@@ -495,6 +642,35 @@ def _build_system_prompt(has_memory: bool, constraints: list[str]) -> str:
     return "\n".join(parts)
 
 
+def _board_description(board: chess.Board) -> str:
+    """Human-readable board description: piece list + ASCII diagram.
+
+    LLMs can't reliably parse FEN. This gives them explicit piece
+    placement so they don't have to count characters.
+    """
+    piece_map = board.piece_map()
+    white_pieces = []
+    black_pieces = []
+    for sq, piece in sorted(piece_map.items()):
+        name = chess.piece_name(piece.piece_type).capitalize()
+        square = chess.square_name(sq)
+        entry = f"{name} on {square}"
+        if piece.color == chess.WHITE:
+            white_pieces.append(entry)
+        else:
+            black_pieces.append(entry)
+
+    lines = []
+    lines.append("## Board")
+    lines.append("")
+    # ASCII diagram (python-chess provides this)
+    lines.append(str(board))
+    lines.append("")
+    lines.append(f"White pieces: {', '.join(white_pieces)}")
+    lines.append(f"Black pieces: {', '.join(black_pieces)}")
+    return "\n".join(lines)
+
+
 def _build_move_prompt(
     game: Chess960Game, memory_context: str, constraints: list[str], scratchpad: str = ""
 ) -> str:
@@ -508,6 +684,8 @@ def _build_move_prompt(
 
     parts.append(f"Position (FEN): {game.get_fen()}")
     parts.append(f"Your color: {game.turn_name}")
+    parts.append("")
+    parts.append(_board_description(game.board))
 
     # Move log with timings (last 10 moves)
     move_log = _build_move_log(game)
@@ -589,8 +767,8 @@ def _build_retry_prompt(game: Chess960Game, bad_move: str | None, response_text:
 
 # --- Move parsing ---
 
-_UCI_PATTERN = re.compile(r"\b([a-h][1-8][a-h][1-8][qrbn]?)\b")
-_MOVE_PREFIX = re.compile(r"MOVE:\s*([a-h][1-8][a-h][1-8][qrbn]?)", re.IGNORECASE)
+_UCI_PATTERN = re.compile(r"\b([a-h][1-8][x\-]?[a-h][1-8]=?[qrbn]?)\b", re.IGNORECASE)
+_MOVE_PREFIX = re.compile(r"MOVE:\s*([a-h][1-8][x\-]?[a-h][1-8]=?[qrbn]?)", re.IGNORECASE)
 _NOTE_PREFIX = re.compile(r"NOTE:\s*(.+)", re.IGNORECASE)
 
 
@@ -614,7 +792,7 @@ def parse_move(response: str, game: Chess960Game) -> tuple[str | None, str | Non
     # Priority 1: MOVE: prefix
     match = _MOVE_PREFIX.search(response)
     if match:
-        candidate = match.group(1).lower()
+        candidate = match.group(1).lower().replace("x", "").replace("-", "").replace("=", "")
         found_candidate = True
         if candidate in legal_moves:
             return candidate, None
@@ -623,7 +801,7 @@ def parse_move(response: str, game: Chess960Game) -> tuple[str | None, str | Non
     lines = response.strip().split("\n")
     for line in reversed(lines[-5:]):
         for m in _UCI_PATTERN.finditer(line):
-            candidate = m.group(1).lower()
+            candidate = m.group(1).lower().replace("x", "").replace("-", "").replace("=", "")
             found_candidate = True
             if candidate in legal_moves:
                 return candidate, None

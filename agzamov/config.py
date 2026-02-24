@@ -22,7 +22,21 @@ _PROVIDER_REGISTRY: list[tuple[str, str, str, str]] = [
     ("o3",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
     ("o4",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
     ("qwen",    "openai",    "https://dashscope.aliyuncs.com/compatible-mode/v1/", "QWEN_API_KEY"),
+    ("gemini",  "openai",    "https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY"),
 ]
+
+
+# Model hints per provider prefix — shown in dashboard UI.
+_MODEL_HINTS: dict[str, list[str]] = {
+    "claude":   ["claude-sonnet-4-6", "claude-opus-4-6", "claude-haiku-4-5-20251001"],
+    "gemini":   ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.0-flash"],
+    "gpt":      ["gpt-4o", "gpt-4.1", "gpt-4.1-mini"],
+    "o3":       ["o3", "o3-mini"],
+    "o4":       ["o4-mini"],
+    "deepseek": ["deepseek-chat", "deepseek-reasoner"],
+    "glm":      ["glm-4-plus", "glm-4-flash", "glm-4-air", "glm-z1"],
+    "qwen":     ["qwen-max", "qwen-plus", "qwen-turbo"],
+}
 
 
 def resolve_provider(model_name: str) -> tuple[str, str, str]:
@@ -82,6 +96,8 @@ class StockfishConfig:
     path: str = ""
     analysis_depth: int = 20
     chess960_mode: bool = True
+    threads: int = 0       # 0 = auto (half of CPU cores)
+    hash_mb: int = 256     # hash table size in MB
 
 
 @dataclass
@@ -110,6 +126,15 @@ class BudgetConfig:
 
 
 @dataclass
+class TreeSearchConfig:
+    """Decision tree search configuration (H18 calculation gap)."""
+    mode: str = "llm"           # "llm" (Mode A) | "tree" (Mode B) | "stockfish" (Mode C)
+    num_candidates: int = 5     # candidates to generate in Mode B
+    eval_depth: int = 20        # Stockfish depth for candidate evaluation
+    sf_play_depth: int = 20     # Stockfish depth when playing (Mode C)
+
+
+@dataclass
 class SyntheticPatternConfig:
     """Injected behavioral patterns for opponent agent."""
     enabled: bool = False
@@ -130,6 +155,7 @@ class RunConfig:
     stats: StatsConfig = field(default_factory=StatsConfig)
     output: OutputConfig = field(default_factory=OutputConfig)
     budget: BudgetConfig = field(default_factory=BudgetConfig)
+    tree_search: TreeSearchConfig = field(default_factory=TreeSearchConfig)
     synthetic_patterns: SyntheticPatternConfig = field(default_factory=SyntheticPatternConfig)
 
 
@@ -218,8 +244,15 @@ def validate_config(cfg: RunConfig) -> list[str]:
     if cfg.stockfish.path and not Path(cfg.stockfish.path).exists():
         issues.append(f"WARNING: Stockfish not found at {cfg.stockfish.path}")
 
-    if not cfg.model.api_key:
+    if not cfg.model.api_key and cfg.tree_search.mode != "stockfish":
         _, _, env_var = resolve_provider(cfg.model.name)
         issues.append(f"ERROR: {env_var} not set — add to agzamov/.env")
+
+    if cfg.tree_search.mode not in ("llm", "tree", "stockfish"):
+        issues.append(f"ERROR: Unknown search mode: {cfg.tree_search.mode}")
+    if cfg.tree_search.mode in ("tree", "stockfish"):
+        from .stockfish_analyzer import find_stockfish
+        if not cfg.stockfish.path and not find_stockfish():
+            issues.append("ERROR: Stockfish required for tree/stockfish mode but not found")
 
     return issues

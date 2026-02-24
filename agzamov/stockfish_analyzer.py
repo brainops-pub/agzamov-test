@@ -42,6 +42,7 @@ class GameAnalysis:
 
 def find_stockfish() -> str | None:
     """Try to find Stockfish binary on the system."""
+    import os
     path = shutil.which("stockfish")
     if path:
         return path
@@ -51,9 +52,21 @@ def find_stockfish() -> str | None:
         r"C:\Program Files\Stockfish\stockfish.exe",
         r"C:\Tools\stockfish.exe",
     ]:
-        import os
         if os.path.exists(candidate):
             return candidate
+    # WinGet packages
+    winget_dir = os.path.join(
+        os.environ.get("LOCALAPPDATA", ""),
+        "Microsoft", "WinGet", "Packages",
+    )
+    if os.path.isdir(winget_dir):
+        for entry in os.listdir(winget_dir):
+            if "stockfish" in entry.lower():
+                pkg = os.path.join(winget_dir, entry, "stockfish")
+                if os.path.isdir(pkg):
+                    for f in os.listdir(pkg):
+                        if f.endswith(".exe") and "stockfish" in f.lower():
+                            return os.path.join(pkg, f)
     return None
 
 
@@ -71,7 +84,9 @@ class StockfishAnalyzer:
 
         import os
         if threads <= 0:
-            threads = max(1, os.cpu_count() or 1)
+            # Half of available cores — leaves headroom for the system
+            cpu = os.cpu_count() or 4
+            threads = max(1, cpu // 2)
 
         self.depth = depth
         params = {"Threads": threads, "Hash": hash_mb}
@@ -187,9 +202,11 @@ class StockfishAnalyzer:
         self.engine.set_fen_position(fen)
         if depth and depth != self.depth:
             self.engine.set_depth(depth)
-        cp = self._get_eval_cp()
-        if depth and depth != self.depth:
-            self.engine.set_depth(self.depth)
+        try:
+            cp = self._get_eval_cp()
+        finally:
+            if depth and depth != self.depth:
+                self.engine.set_depth(self.depth)
         # Normalize: library returns from side-to-move perspective, we want White's
         black_to_move = " b " in fen
         return -cp if black_to_move else cp
@@ -212,8 +229,15 @@ class StockfishAnalyzer:
         return f"{bar} {label}"
 
     @staticmethod
-    def classify_move(cp_before: float, cp_after: float, side: str) -> str:
-        """Classify move quality based on eval change."""
+    def classify_move(cp_before: float, cp_after: float, side: str, ply: int = 0) -> str:
+        """Classify move quality based on eval change.
+
+        In Chess960 openings, Stockfish evals are noisy — skip tagging
+        for the first 8 plies (4 full moves) to avoid false positives.
+        """
+        if ply <= 8:
+            return ""
+
         # From moving side's perspective
         if side == "white":
             delta = cp_after - cp_before
@@ -222,11 +246,11 @@ class StockfishAnalyzer:
 
         if delta < -300:
             return "?? BLUNDER"
-        elif delta < -100:
+        elif delta < -150:
             return "?  MISTAKE"
-        elif delta < -50:
+        elif delta < -75:
             return "?! INACCURACY"
-        elif delta > 100:
+        elif delta > 200:
             return "!  GREAT"
         return ""
 
@@ -249,7 +273,7 @@ class StockfishAnalyzer:
             white_name: display name for the white player
             black_name: display name for the black player
         """
-        mover = agent_name or ("White" if side == "white" else "Black")
+        mover = "White" if side == "white" else "Black"
 
         # From moving side's perspective
         if side == "white":
@@ -267,7 +291,7 @@ class StockfishAnalyzer:
 
         # Eval-based position comment
         abs_cp = abs(cp)
-        who = white_name if cp > 0 else black_name
+        who = "White" if cp > 0 else "Black"
         if abs_cp >= 9000:
             return f"Forced mate for {who}!"
         if abs_cp >= 800:
@@ -294,6 +318,14 @@ class StockfishAnalyzer:
 
     def close(self):
         """Clean up Stockfish process."""
+        try:
+            # Kill the subprocess directly to avoid __del__ trying to write to dead stdin
+            if hasattr(self.engine, '_stockfish') and self.engine._stockfish:
+                self.engine._stockfish.kill()
+                self.engine._stockfish.wait()
+                self.engine._stockfish = None
+        except Exception:
+            pass
         try:
             del self.engine
         except Exception:

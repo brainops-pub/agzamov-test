@@ -62,9 +62,14 @@ async def start_dashboard(host: str = "127.0.0.1", port: int = 8960) -> asyncio.
 
     Returns the task so the caller can cancel it on shutdown.
     """
+    from .api import register_api_routes
+
     app = web.Application()
+    app["broadcast_fn"] = broadcast  # shared with API handlers
+
     app.router.add_get("/", _index_handler)
     app.router.add_get("/ws", _ws_handler)
+    register_api_routes(app)  # REST API before static catch-all
     app.router.add_static("/static", _static_dir, name="static")
 
     runner = web.AppRunner(app, access_log=None)

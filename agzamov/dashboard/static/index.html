@@ -13,6 +13,8 @@
         <span id="phase-label">Waiting for game...</span>
         <span id="matchup"></span>
         <span id="game-counter"></span>
+        <span id="search-mode-label"></span>
+        <button id="btn-new-run" class="top-btn">NEW RUN</button>
     </div>
 
     <!-- Main area -->
@@ -42,6 +44,10 @@
                 <div class="panel-title">MOVES</div>
                 <div id="moves-list"></div>
             </div>
+            <div id="thinking-panel">
+                <div class="panel-title">THINKING</div>
+                <div id="thinking-content"></div>
+            </div>
             <div id="commentary-panel">
                 <div class="panel-title">COMMENTARY</div>
                 <div id="commentary"></div>
@@ -56,11 +62,262 @@
     <!-- Bottom bar -->
     <div id="bottom-bar">
         <span id="series-score">Series: --</span>
+        <span id="blunders-count">Blunders: 0</span>
         <span id="errors-count">Errors: 0</span>
         <span id="total-cost">Cost: $0.00</span>
         <span id="status-indicator">DISCONNECTED</span>
     </div>
 
+    <!-- Run Configuration Modal -->
+    <div id="run-modal" class="modal-overlay" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configure Run</h2>
+                <button id="modal-close" class="modal-close-btn">&times;</button>
+            </div>
+
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="tab-match">Match</button>
+                <button class="tab-btn" data-tab="tab-model">Model</button>
+                <button class="tab-btn" data-tab="tab-engine">Engine</button>
+                <button class="tab-btn" data-tab="tab-memory">Memory</button>
+                <button class="tab-btn" data-tab="tab-advanced">Advanced</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Tab: Match -->
+                <div id="tab-match" class="tab-panel active">
+                    <div class="form-group">
+                        <label>Match Type</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="match_type" value="solo" checked> Solo (vs Random)</label>
+                            <label><input type="radio" name="match_type" value="mirror"> Mirror</label>
+                            <label><input type="radio" name="match_type" value="vs"> Vs (two models)</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cfg-n-games">Number of Games</label>
+                        <input type="number" id="cfg-n-games" value="10" min="1" max="500">
+                    </div>
+                    <div class="form-group" id="phases-group">
+                        <label>Phases</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="phase" value="0" checked> 0: Sanity</label>
+                            <label><input type="checkbox" name="phase" value="1"> 1: Baseline</label>
+                            <label><input type="checkbox" name="phase" value="2"> 2: Memory</label>
+                            <label><input type="checkbox" name="phase" value="3"> 3: Arms Race</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cfg-run-name">Run Name (auto if empty)</label>
+                        <input type="text" id="cfg-run-name" value="" placeholder="auto-generated">
+                    </div>
+                </div>
+
+                <!-- Tab: Model -->
+                <div id="tab-model" class="tab-panel">
+                    <fieldset>
+                        <legend>Primary Model</legend>
+                        <div class="form-group">
+                            <label for="cfg-model-name">Model Name</label>
+                            <input type="text" id="cfg-model-name" value="claude-sonnet-4-6"
+                                   list="model-hints" autocomplete="off">
+                            <datalist id="model-hints"></datalist>
+                            <span id="model-key-status" class="key-indicator"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfg-temperature">Temperature</label>
+                                <input type="number" id="cfg-temperature" value="0.6" min="0" max="2" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-max-tokens">Max Tokens</label>
+                                <input type="number" id="cfg-max-tokens" value="300" min="50" max="4096">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="cfg-thinking"> Enable Extended Thinking</label>
+                        </div>
+                        <div class="form-group" id="thinking-budget-group" style="display:none">
+                            <label for="cfg-thinking-budget">Thinking Budget (tokens)</label>
+                            <input type="number" id="cfg-thinking-budget" value="2048" min="256" max="32768">
+                        </div>
+                    </fieldset>
+
+                    <fieldset id="opponent-section" style="display:none">
+                        <legend>Opponent Model</legend>
+                        <div class="form-group">
+                            <label for="cfg-opp-model">Model Name</label>
+                            <input type="text" id="cfg-opp-model" value="" list="model-hints">
+                            <span id="opp-key-status" class="key-indicator"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfg-opp-temperature">Temperature</label>
+                                <input type="number" id="cfg-opp-temperature" value="0.6" min="0" max="2" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-opp-max-tokens">Max Tokens</label>
+                                <input type="number" id="cfg-opp-max-tokens" value="300" min="50" max="4096">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="cfg-opp-thinking"> Enable Thinking</label>
+                        </div>
+                        <div class="form-group" id="opp-thinking-budget-group" style="display:none">
+                            <label for="cfg-opp-thinking-budget">Thinking Budget</label>
+                            <input type="number" id="cfg-opp-thinking-budget" value="2048" min="256" max="32768">
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Tab: Engine -->
+                <div id="tab-engine" class="tab-panel">
+                    <div class="form-group">
+                        <label for="cfg-max-moves">Max Moves Per Game (plies)</label>
+                        <input type="number" id="cfg-max-moves" value="200" min="50" max="1000">
+                    </div>
+                    <fieldset>
+                        <legend>Tree Search</legend>
+                        <div class="form-group">
+                            <label for="cfg-search-mode">Search Mode</label>
+                            <select id="cfg-search-mode">
+                                <option value="llm">LLM only (Mode A)</option>
+                                <option value="tree">Tree Search (Mode B: LLM+SF)</option>
+                                <option value="stockfish">Stockfish only (Mode C)</option>
+                            </select>
+                        </div>
+                        <div class="form-row" id="tree-search-opts" style="display:none">
+                            <div class="form-group">
+                                <label for="cfg-candidates">Candidates</label>
+                                <input type="number" id="cfg-candidates" value="5" min="2" max="20">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-eval-depth">Eval Depth</label>
+                                <input type="number" id="cfg-eval-depth" value="20" min="5" max="30">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Stockfish</legend>
+                        <div class="form-group">
+                            <label for="cfg-sf-path">Path (empty = auto-detect)</label>
+                            <input type="text" id="cfg-sf-path" value="" placeholder="auto-detect">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfg-sf-depth">Analysis Depth</label>
+                                <input type="number" id="cfg-sf-depth" value="20" min="5" max="30">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-sf-threads">CPU Threads (0 = auto)</label>
+                                <input type="number" id="cfg-sf-threads" value="0" min="0" max="128">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-sf-hash">Hash MB</label>
+                                <input type="number" id="cfg-sf-hash" value="256" min="16" max="4096">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Tab: Memory -->
+                <div id="tab-memory" class="tab-panel">
+                    <div class="form-group">
+                        <label for="cfg-memory-type">Memory Type</label>
+                        <select id="cfg-memory-type">
+                            <option value="none">None</option>
+                            <option value="brainops-mcp">BrainOps MCP</option>
+                            <option value="sqlite-fallback">SQLite Fallback</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cfg-memory-endpoint">Endpoint</label>
+                        <input type="text" id="cfg-memory-endpoint" value="http://127.0.0.1:3200/api/v1">
+                    </div>
+                    <div class="form-group">
+                        <label for="cfg-memory-tokens">Max Context Tokens</label>
+                        <input type="number" id="cfg-memory-tokens" value="500" min="0" max="4096">
+                    </div>
+                </div>
+
+                <!-- Tab: Advanced -->
+                <div id="tab-advanced" class="tab-panel">
+                    <fieldset>
+                        <legend>Sanity Check (Phase 0)</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfg-sanity-games">Games</label>
+                                <input type="number" id="cfg-sanity-games" value="30" min="1" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-sanity-pass">Pass %</label>
+                                <input type="number" id="cfg-sanity-pass" value="0.70" min="0" max="1" step="0.05">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-sanity-error">Error %</label>
+                                <input type="number" id="cfg-sanity-error" value="0.20" min="0" max="1" step="0.05">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Budget</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfg-budget-max">Max Cost (USD)</label>
+                                <input type="number" id="cfg-budget-max" value="300" min="1" max="10000">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-budget-warn">Warn at %</label>
+                                <input type="number" id="cfg-budget-warn" value="80" min="10" max="100">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Stats</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cfg-stats-sig">Significance</label>
+                                <input type="number" id="cfg-stats-sig" value="0.05" min="0.01" max="0.20" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-stats-bootstrap">Bootstrap N</label>
+                                <input type="number" id="cfg-stats-bootstrap" value="10000" min="1000" max="100000">
+                            </div>
+                            <div class="form-group">
+                                <label for="cfg-stats-elo-k">Elo K</label>
+                                <input type="number" id="cfg-stats-elo-k" value="32" min="10" max="100">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Output</legend>
+                        <div class="form-group">
+                            <label for="cfg-output-dir">Results Directory</label>
+                            <input type="text" id="cfg-output-dir" value="./results">
+                        </div>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="cfg-save-history" checked> Game History</label>
+                            <label><input type="checkbox" id="cfg-save-memory" checked> Memory Dump</label>
+                            <label><input type="checkbox" id="cfg-save-sf" checked> SF Analysis</label>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div id="modal-warnings" class="modal-warnings" style="display:none"></div>
+
+            <div class="modal-footer">
+                <button id="btn-cancel-modal" class="modal-btn btn-cancel">Cancel</button>
+                <button id="btn-start-run" class="modal-btn btn-start">Start Run</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stop button (shown during active run) -->
+    <button id="btn-stop-run" class="stop-btn" style="display:none">STOP RUN</button>
+
     <script type="module" src="/static/app.js"></script>
+    <script type="module" src="/static/setup.js"></script>
 </body>
 </html>

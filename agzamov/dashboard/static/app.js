@@ -6,12 +6,14 @@
  */
 
 import {Chessboard, FEN, COLOR} from "./cm-chessboard/src/Chessboard.js"
+import { onRunEvent } from "./setup.js"
 
 // --- State ---
 let board = null
 let ws = null
 let seriesScore = { w: 0, d: 0, l: 0 }
 let totalErrors = 0
+let totalBlunders = 0
 let moveRows = []
 let currentMoveNum = 0
 let whiteTotalMs = 0    // accumulated thinking time
@@ -140,21 +142,49 @@ function renderMoves() {
 }
 
 // --- Commentary ---
-function addCommentary(text) {
+function addCommentary(text, ply = null, side = null) {
     if (!text) return
     const el = document.getElementById("commentary")
     const entry = document.createElement("div")
     entry.className = "commentary-entry"
-    entry.textContent = text
+    // Prefix with move number if available
+    if (ply != null) {
+        const moveNum = Math.ceil(ply / 2)
+        const sideTag = side === "white" ? "W" : "B"
+        entry.innerHTML = `<span class="comment-ply">${moveNum}${sideTag}.</span> ${_escHtml(text)}`
+    } else {
+        entry.textContent = text
+    }
     el.appendChild(entry)
-    // Keep last 5
-    while (el.children.length > 5) {
+    // Keep last 10
+    while (el.children.length > 10) {
         el.removeChild(el.firstChild)
     }
-    // Force scroll to bottom
+    // Force scroll to bottom (scrollable container is the parent panel)
     requestAnimationFrame(() => {
-        el.scrollTop = el.scrollHeight
+        el.parentElement.scrollTop = el.parentElement.scrollHeight
     })
+}
+
+function _escHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+}
+
+// --- Mate announcement ---
+function showMateAnnouncement(text) {
+    let el = document.getElementById("mate-announce")
+    if (!el) {
+        el = document.createElement("div")
+        el.id = "mate-announce"
+        document.getElementById("board-area").appendChild(el)
+    }
+    el.textContent = text
+    el.style.display = "flex"
+}
+
+function hideMateAnnouncement() {
+    const el = document.getElementById("mate-announce")
+    if (el) el.style.display = "none"
 }
 
 // --- Event handlers ---
@@ -163,6 +193,14 @@ function onRunInfo(data) {
     document.getElementById("matchup").textContent = data.run_name
     document.getElementById("game-counter").textContent =
         `temp=${data.temperature} | memory=${data.memory_type}`
+
+    // Show search mode badge
+    const modeEl = document.getElementById("search-mode-label")
+    if (modeEl && data.search_mode) {
+        const labels = { tree: "TREE SEARCH", llm: "LLM ONLY", stockfish: "STOCKFISH" }
+        modeEl.textContent = labels[data.search_mode] || data.search_mode.toUpperCase()
+        modeEl.className = "mode-badge mode-" + data.search_mode
+    }
 }
 
 function onGameStart(data) {
@@ -176,6 +214,8 @@ function onGameStart(data) {
     blackTotalMs = 0
     document.getElementById("moves-list").innerHTML = ""
     document.getElementById("commentary").innerHTML = ""
+    document.getElementById("thinking-content").textContent = ""
+    hideMateAnnouncement()
 
     // Update UI
     document.getElementById("matchup").innerHTML =
@@ -211,16 +251,70 @@ function onMove(data) {
     // Add to move list
     addMove(data)
 
+    // Tree search candidate display (Mode B)
+    if (data.tree_search && data.tree_search.candidates) {
+        const ts = data.tree_search
+        let lines = []
+        for (const c of ts.candidates) {
+            const sel = c.move === ts.selected ? " ◄" : ""
+            const evalStr = c.eval_cp > 0 ? `+${c.eval_cp}` : `${c.eval_cp}`
+            lines.push(`${c.move} (${evalStr}cp)${sel}`)
+        }
+        const sfBest = ts.sf_best ? ` | SF best: ${ts.sf_best}` : ""
+        addCommentary(`Tree: ${lines.join(", ")}${sfBest}`, data.ply, data.side)
+    }
+
+    // Mate announcement
+    if (data.eval_cp != null && Math.abs(data.eval_cp) >= 9000) {
+        const mateIn = Math.ceil((10000 - Math.abs(data.eval_cp)) / 10)
+        const side = data.eval_cp > 0 ? "White" : "Black"
+        if (mateIn > 0 && mateIn <= 30) {
+            showMateAnnouncement(`${side} — Mate in ${mateIn}`)
+        }
+    } else {
+        hideMateAnnouncement()
+    }
+
     // Commentary
     if (data.comment) {
-        addCommentary(data.comment)
+        addCommentary(data.comment, data.ply, data.side)
     }
 
     // Move info bar
     document.getElementById("move-time").textContent =
         `Last: ${formatTime(data.wall_ms)}  (${data.agent_name})`
 
-    // Track errors
+    // Thinking/reasoning display — accumulate history
+    const rawThinking = data.thinking || data.reasoning || ""
+    if (rawThinking) {
+        const el = document.getElementById("thinking-content")
+        const label = data.thinking ? "THINKING" : "REASONING"
+        const moveNum = Math.ceil(data.ply / 2)
+        const sideTag = data.side === "white" ? "W" : "B"
+        // Truncate per-entry to ~600 chars
+        const text = rawThinking.length > 600
+            ? "..." + rawThinking.slice(-600)
+            : rawThinking
+
+        const entry = document.createElement("div")
+        entry.className = "thinking-entry"
+        entry.innerHTML = `<div class="thinking-header">[${moveNum}${sideTag}. ${data.move_uci || ""} — ${data.agent_name} — ${label}]</div><div class="thinking-text">${_escHtml(text)}</div>`
+        el.appendChild(entry)
+
+        // Keep last 10 entries
+        while (el.children.length > 10) {
+            el.removeChild(el.firstChild)
+        }
+        el.parentElement.scrollTop = el.parentElement.scrollHeight
+    }
+
+    // Track blunders (by move tag)
+    if (data.move_tag && data.move_tag.includes("BLUNDER")) {
+        totalBlunders++
+        document.getElementById("blunders-count").textContent = `Blunders: ${totalBlunders}`
+    }
+
+    // Track parse errors
     if (data.was_error) {
         totalErrors++
         document.getElementById("errors-count").textContent = `Errors: ${totalErrors}`
@@ -244,7 +338,9 @@ function onPhaseStart(data) {
         `Phase ${data.phase}: ${data.phase_name || ""}`
     seriesScore = { w: 0, d: 0, l: 0 }
     totalErrors = 0
+    totalBlunders = 0
     document.getElementById("series-score").textContent = "W 0 — D 0 — L 0"
+    document.getElementById("blunders-count").textContent = "Blunders: 0"
     document.getElementById("errors-count").textContent = "Errors: 0"
 }
 
@@ -271,9 +367,11 @@ function connect() {
         switch (data.type) {
             case "run_info":
                 onRunInfo(data)
+                onRunEvent(data)
                 break
             case "game_start":
                 onGameStart(data)
+                onRunEvent(data)
                 break
             case "move":
                 onMove(data)
@@ -283,6 +381,11 @@ function connect() {
                 break
             case "phase_start":
                 onPhaseStart(data)
+                break
+            case "run_complete":
+            case "run_cancelled":
+            case "run_error":
+                onRunEvent(data)
                 break
         }
     }

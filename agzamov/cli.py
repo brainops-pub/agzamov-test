@@ -14,7 +14,7 @@ load_dotenv(Path(__file__).parent / ".env")  # Load .env from package directory
 import typer
 from rich.console import Console
 
-from .config import load_config, validate_config
+from .config import load_config, validate_config, resolve_provider
 from .orchestrator import Orchestrator
 from .report import generate_report
 
@@ -56,10 +56,32 @@ def run(
         "--dashboard",
         help="Launch live web dashboard on http://localhost:8960",
     ),
+    search_mode: str = typer.Option(
+        "llm",
+        "--search-mode",
+        "-s",
+        help="Search mode: llm (Mode A), tree (Mode B: LLM+SF), stockfish (Mode C: SF only).",
+    ),
+    candidates: int = typer.Option(
+        5,
+        "--candidates",
+        help="Number of candidate moves in tree search mode (Mode B).",
+    ),
+    eval_depth: int = typer.Option(
+        20,
+        "--eval-depth",
+        help="Stockfish depth for candidate evaluation (Mode B).",
+    ),
 ):
     """Run the Agzamov Test."""
     cfg = load_config(config)
     cfg.name = f"{cfg.name}-{_stamp()}"
+
+    # Tree search config
+    if search_mode != "llm":
+        cfg.tree_search.mode = search_mode
+        cfg.tree_search.num_candidates = candidates
+        cfg.tree_search.eval_depth = eval_depth
 
     # Override phases if specified
     if phase is not None:
@@ -98,9 +120,9 @@ def run(
 
         if server_task:
             server_task.cancel()
-        return result
+        return result, orchestrator
 
-    summary = asyncio.run(_run_with_dashboard())
+    summary, orchestrator = asyncio.run(_run_with_dashboard())
 
     # Generate report
     report_content = generate_report(
@@ -331,6 +353,13 @@ def test(
     thinking: bool = typer.Option(False, "--thinking", help="Enable extended thinking (for Opus)."),
     thinking_budget: int = typer.Option(2048, "--thinking-budget", help="Thinking token budget."),
     dashboard: bool = typer.Option(False, "--dashboard", help="Launch live web dashboard on http://localhost:8960"),
+    mirror: bool = typer.Option(False, "--mirror", help="Mirror match: model vs itself (skip sanity check)."),
+    vs: str = typer.Option(None, "--vs", help="Opponent model for head-to-head match (e.g. --vs gemini-2.5-flash)."),
+    vs_thinking: bool = typer.Option(False, "--vs-thinking", help="Enable thinking for opponent model."),
+    vs_thinking_budget: int = typer.Option(2048, "--vs-thinking-budget", help="Thinking budget for opponent."),
+    search_mode: str = typer.Option("llm", "--search-mode", "-s", help="Search mode: llm, tree, stockfish."),
+    candidates: int = typer.Option(5, "--candidates", help="Candidate moves for tree search."),
+    eval_depth: int = typer.Option(20, "--eval-depth", help="SF depth for candidate eval."),
 ):
     """Quick smoke test (few games, no full stats)."""
     cfg = load_config(config)
@@ -346,7 +375,14 @@ def test(
         cfg.model.thinking = True
         cfg.model.thinking_budget = thinking_budget
 
-    cfg.name = f"smoke-{n}g-{_stamp()}"
+    # Tree search config
+    if search_mode != "llm":
+        cfg.tree_search.mode = search_mode
+        cfg.tree_search.num_candidates = candidates
+        cfg.tree_search.eval_depth = eval_depth
+
+    mode = "vs" if vs else ("mirror" if mirror else ("tree" if search_mode == "tree" else ("sf" if search_mode == "stockfish" else "smoke")))
+    cfg.name = f"{mode}-{n}g-{_stamp()}"
 
     issues = validate_config(cfg)
     for issue in issues:
@@ -354,6 +390,20 @@ def test(
             console.print(f"[red]{issue}[/red]")
             raise typer.Exit(1)
         console.print(f"[yellow]{issue}[/yellow]")
+
+    # Build opponent config if --vs
+    opp_config = None
+    if vs:
+        from .config import ModelConfig, _resolve_model_config
+        opp_config = ModelConfig(name=vs)
+        _resolve_model_config(opp_config)
+        if vs_thinking:
+            opp_config.thinking = True
+            opp_config.thinking_budget = vs_thinking_budget
+        if not opp_config.api_key:
+            _, _, env_var = resolve_provider(vs)
+            console.print(f"[red]ERROR: {env_var} not set for opponent model {vs}[/red]")
+            raise typer.Exit(1)
 
     async def _run_with_dashboard():
         emitter = None
@@ -368,7 +418,12 @@ def test(
             webbrowser.open(url)
 
         orchestrator = Orchestrator(cfg, event_emitter=emitter)
-        result = await orchestrator.run()
+        if vs and opp_config:
+            result = await orchestrator.run_vs(n, opp_config)
+        elif mirror:
+            result = await orchestrator.run_mirror(n)
+        else:
+            result = await orchestrator.run()
 
         if server_task:
             server_task.cancel()
@@ -376,12 +431,44 @@ def test(
 
     summary = asyncio.run(_run_with_dashboard())
 
-    passed = summary.get("phases", {}).get(0, {}).get("passed", False)
-    if passed:
-        console.print(f"\n[green]Smoke test passed ({n} games).[/green]")
+    if vs or mirror:
+        console.print(f"\n[bold]Match complete.[/bold]")
     else:
-        console.print(f"\n[red]Smoke test failed.[/red]")
-        raise typer.Exit(1)
+        passed = summary.get("phases", {}).get(0, {}).get("passed", False)
+        if passed:
+            console.print(f"\n[green]Smoke test passed ({n} games).[/green]")
+        else:
+            console.print(f"\n[red]Smoke test failed.[/red]")
+            raise typer.Exit(1)
+
+
+@app.command(name="dashboard")
+def dashboard_cmd(
+    host: str = typer.Option("127.0.0.1", "--host", help="Bind host."),
+    port: int = typer.Option(8960, "--port", help="Bind port."),
+    no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser."),
+):
+    """Launch the dashboard UI in standalone mode (configure & run from browser)."""
+
+    async def _serve():
+        from .dashboard.server import start_dashboard
+        import webbrowser
+
+        task = await start_dashboard(host, port)
+        url = f"http://{host}:{port}"
+        console.print(f"[green]Dashboard running at {url}[/green]")
+        console.print("[dim]Press Ctrl+C to stop.[/dim]")
+        if not no_open:
+            webbrowser.open(url)
+        try:
+            await asyncio.Event().wait()
+        except asyncio.CancelledError:
+            task.cancel()
+
+    try:
+        asyncio.run(_serve())
+    except KeyboardInterrupt:
+        console.print("\n[dim]Dashboard stopped.[/dim]")
 
 
 if __name__ == "__main__":

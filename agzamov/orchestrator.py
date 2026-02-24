@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
-from .agent import LLMAgent, RandomAgent, CostTracker, cost_tracker
+from .agent import LLMAgent, RandomAgent, StockfishAgent, CostTracker, cost_tracker
 from .chess_engine import Chess960Game, GameResult
 from .config import RunConfig
 from .memory_bridge import create_memory_bridge, NoMemory
@@ -31,6 +31,9 @@ _MODEL_DISPLAY = {
     "claude-haiku-4-5-20251001": "Haiku 4.5",
     "claude-3-5-sonnet-20241022": "Sonnet 3.5",
     "glm-5": "GLM-5",
+    "gemini-2.5-pro": "Gemini 2.5 Pro",
+    "gemini-2.5-flash": "Gemini 2.5 Flash",
+    "gemini-2.0-flash": "Gemini 2.0 Flash",
 }
 
 
@@ -72,8 +75,17 @@ class Orchestrator:
             except Exception as e:
                 logger.debug(f"Dashboard broadcast failed: {e}")
 
-    def _make_agent(self, agent_id: str, *, memory=None, **overrides) -> LLMAgent:
-        """Create LLMAgent with config defaults + optional overrides."""
+    def _make_agent(self, agent_id: str, *, memory=None, **overrides):
+        """Create agent with config defaults + optional overrides.
+
+        Returns LLMAgent (Mode A/B) or StockfishAgent (Mode C).
+        """
+        ts = self.config.tree_search
+        if ts.mode == "stockfish":
+            if not self.stockfish:
+                raise RuntimeError("Stockfish required for Mode C but not available")
+            return StockfishAgent(agent_id, self.stockfish, depth=ts.sf_play_depth)
+
         m = self.config.model
         kwargs = dict(
             agent_id=agent_id,
@@ -85,7 +97,14 @@ class Orchestrator:
             provider=m.provider,
             api_key=m.api_key,
             base_url=m.base_url,
+            search_mode=ts.mode,
         )
+        if ts.mode == "tree":
+            kwargs["tree_search_config"] = {
+                "num_candidates": ts.num_candidates,
+                "eval_depth": ts.eval_depth,
+            }
+            kwargs["stockfish"] = self.stockfish
         if memory is not None:
             kwargs["memory"] = memory
         kwargs.update(overrides)
@@ -156,6 +175,7 @@ class Orchestrator:
             "model_label": model_label,
             "temperature": m.temperature,
             "memory_type": self.config.memory.type,
+            "search_mode": self.config.tree_search.mode,
             "phases": self.config.phases,
         })
 
@@ -167,8 +187,9 @@ class Orchestrator:
                 console.print("[yellow]Memory MCP unreachable — falling back to sqlite-fallback[/yellow]")
                 self.config.memory.type = "sqlite-fallback"
 
-        # Initialize Stockfish if available
-        if self.config.output.save_stockfish_analysis:
+        # Initialize Stockfish — required for tree search (Mode B/C), optional for live eval
+        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
+        if need_sf:
             sf_path = self.config.stockfish.path or find_stockfish()
             if sf_path:
                 try:
@@ -176,18 +197,32 @@ class Orchestrator:
                         stockfish_path=sf_path,
                         depth=self.config.stockfish.analysis_depth,
                         chess960=self.config.stockfish.chess960_mode,
+                        threads=self.config.stockfish.threads,
+                        hash_mb=self.config.stockfish.hash_mb,
                     )
                     console.print(f"[green]Stockfish found: {sf_path}[/green]")
                 except Exception as e:
+                    if self.config.tree_search.mode != "llm":
+                        console.print(f"[bold red]Stockfish init failed: {e} — required for search mode '{self.config.tree_search.mode}'[/bold red]")
+                        return {"phases": {}, "config": self.config.name, "aborted": "stockfish_required"}
                     console.print(f"[yellow]Stockfish init failed: {e} — GQI will be skipped[/yellow]")
             else:
+                if self.config.tree_search.mode != "llm":
+                    console.print(f"[bold red]Stockfish not found — required for search mode '{self.config.tree_search.mode}'[/bold red]")
+                    return {"phases": {}, "config": self.config.name, "aborted": "stockfish_required"}
                 console.print("[yellow]Stockfish not found — GQI will be skipped[/yellow]")
 
-        # LLM API healthcheck — fail fast before burning games
-        if not await self._check_llm_available():
-            console.print("[bold red]LLM API healthcheck FAILED — aborting run.[/bold red]")
-            console.print(f"[red]Check your API key and credits ({self.config.model.provider}: {self.config.model.name}).[/red]")
-            return {"phases": {}, "config": self.config.name, "aborted": "llm_healthcheck_failed"}
+        if self.config.tree_search.mode != "llm":
+            console.print(f"[green]Search mode: {self.config.tree_search.mode}[/green]")
+
+        # LLM API healthcheck — skip for pure Stockfish mode
+        if self.config.tree_search.mode != "stockfish":
+            if not await self._check_llm_available():
+                console.print("[bold red]LLM API healthcheck FAILED — aborting run.[/bold red]")
+                console.print(f"[red]Check your API key and credits ({self.config.model.provider}: {self.config.model.name}).[/red]")
+                return {"phases": {}, "config": self.config.name, "aborted": "llm_healthcheck_failed"}
+        else:
+            console.print("[green]LLM API: skipped (Stockfish-only mode)[/green]")
 
         summary = {"phases": {}, "config": self.config.name}
 
@@ -457,6 +492,182 @@ class Orchestrator:
         _print_phase_summary(summary, "Phase 3")
         return summary
 
+    async def run_mirror(self, n_games: int) -> dict:
+        """Run a mirror match: same model vs itself. Skips phase logic."""
+        self._setup_logging()
+        start_time = time.time()
+
+        # Cost tracker pricing
+        model_name = self.config.model.name
+        if "opus" in model_name:
+            cost_tracker.input_price_per_m = 15.0
+            cost_tracker.output_price_per_m = 75.0
+        elif "haiku" in model_name:
+            cost_tracker.input_price_per_m = 0.80
+            cost_tracker.output_price_per_m = 4.0
+        else:
+            cost_tracker.input_price_per_m = 3.0
+            cost_tracker.output_price_per_m = 15.0
+
+        m = self.config.model
+        model_label = _MODEL_DISPLAY.get(m.name, m.name)
+        console.print(f"\n[bold]Mirror Match: {model_label} vs {model_label} ({n_games} games)[/bold]")
+        console.print(f"Model: {m.name} | temp={m.temperature}")
+
+        await self._broadcast({
+            "type": "run_info",
+            "run_name": self.config.name,
+            "model_name": m.name,
+            "model_label": f"{model_label} (mirror)",
+            "temperature": m.temperature,
+            "memory_type": "none",
+            "search_mode": self.config.tree_search.mode,
+            "phases": [],
+        })
+
+        # Initialize Stockfish
+        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
+        if need_sf:
+            sf_path = self.config.stockfish.path or find_stockfish()
+            if sf_path:
+                try:
+                    self.stockfish = StockfishAnalyzer(
+                        stockfish_path=sf_path,
+                        depth=self.config.stockfish.analysis_depth,
+                        chess960=self.config.stockfish.chess960_mode,
+                        threads=self.config.stockfish.threads,
+                        hash_mb=self.config.stockfish.hash_mb,
+                    )
+                    console.print(f"[green]Stockfish found: {sf_path}[/green]")
+                except Exception as e:
+                    if self.config.tree_search.mode != "llm":
+                        console.print(f"[bold red]Stockfish required for search mode but failed: {e}[/bold red]")
+                        return {"aborted": "stockfish_required"}
+                    console.print(f"[yellow]Stockfish init failed: {e}[/yellow]")
+
+        # LLM healthcheck
+        if self.config.tree_search.mode != "stockfish":
+            if not await self._check_llm_available():
+                console.print("[bold red]LLM API healthcheck FAILED — aborting.[/bold red]")
+                return {"aborted": "llm_healthcheck_failed"}
+
+        agent_a = self._make_agent("model_w")
+        agent_b = self._make_agent("model_b")
+
+        results = await self._play_games(agent_a, agent_b, n_games, phase=0)
+
+        a_wins = sum(1 for r in results if _agent_won(r, "model_w"))
+        b_wins = sum(1 for r in results if _agent_won(r, "model_b"))
+        draws = n_games - a_wins - b_wins
+
+        console.print(f"\n[bold]Results: {model_label} W {a_wins} — D {draws} — L {b_wins}[/bold]")
+        console.print(f"Cost: ${cost_tracker.total_usd:.2f}")
+
+        elapsed = time.time() - start_time
+        if self.stockfish:
+            self.stockfish.close()
+
+        return {
+            "model": m.name,
+            "n_games": n_games,
+            "wins_as_first": a_wins,
+            "wins_as_second": b_wins,
+            "draws": draws,
+            "cost_usd": round(cost_tracker.total_usd, 2),
+            "time_seconds": round(elapsed, 1),
+        }
+
+    async def run_vs(self, n_games: int, opponent_config) -> dict:
+        """Run a match between two different models. Skips phase logic."""
+        from .config import ModelConfig
+        self._setup_logging()
+        start_time = time.time()
+
+        m = self.config.model
+        opp = opponent_config  # ModelConfig
+        label_a = _MODEL_DISPLAY.get(m.name, m.name)
+        label_b = _MODEL_DISPLAY.get(opp.name, opp.name)
+
+        console.print(f"\n[bold]{label_a} vs {label_b} ({n_games} games)[/bold]")
+        console.print(f"A: {m.name} | temp={m.temperature}" +
+                      (f" | thinking={m.thinking_budget}tok" if m.thinking else ""))
+        console.print(f"B: {opp.name} | temp={opp.temperature}" +
+                      (f" | thinking={opp.thinking_budget}tok" if opp.thinking else ""))
+
+        await self._broadcast({
+            "type": "run_info",
+            "run_name": self.config.name,
+            "model_name": f"{m.name} vs {opp.name}",
+            "model_label": f"{label_a} vs {label_b}",
+            "temperature": m.temperature,
+            "memory_type": "none",
+            "search_mode": self.config.tree_search.mode,
+            "phases": [],
+        })
+
+        # Initialize Stockfish
+        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
+        if need_sf:
+            sf_path = self.config.stockfish.path or find_stockfish()
+            if sf_path:
+                try:
+                    self.stockfish = StockfishAnalyzer(
+                        stockfish_path=sf_path,
+                        depth=self.config.stockfish.analysis_depth,
+                        chess960=self.config.stockfish.chess960_mode,
+                        threads=self.config.stockfish.threads,
+                        hash_mb=self.config.stockfish.hash_mb,
+                    )
+                    console.print(f"[green]Stockfish found: {sf_path}[/green]")
+                except Exception as e:
+                    if self.config.tree_search.mode != "llm":
+                        console.print(f"[bold red]Stockfish required but failed: {e}[/bold red]")
+                        return {"aborted": "stockfish_required"}
+                    console.print(f"[yellow]Stockfish init failed: {e}[/yellow]")
+
+        # LLM healthcheck (model A only — B checked on first move)
+        if self.config.tree_search.mode != "stockfish":
+            if not await self._check_llm_available():
+                console.print("[bold red]LLM API healthcheck FAILED — aborting.[/bold red]")
+                return {"aborted": "llm_healthcheck_failed"}
+
+        agent_a = self._make_agent("model_a")
+        agent_b = LLMAgent(
+            agent_id="model_b",
+            model=opp.name,
+            temperature=opp.temperature,
+            max_tokens=opp.max_tokens,
+            thinking=opp.thinking,
+            thinking_budget=opp.thinking_budget,
+            provider=opp.provider,
+            api_key=opp.api_key,
+            base_url=opp.base_url,
+        )
+
+        results = await self._play_games(agent_a, agent_b, n_games, phase=0)
+
+        a_wins = sum(1 for r in results if _agent_won(r, "model_a"))
+        b_wins = sum(1 for r in results if _agent_won(r, "model_b"))
+        draws = n_games - a_wins - b_wins
+
+        console.print(f"\n[bold]Results: {label_a} W {a_wins} — D {draws} — L {b_wins} {label_b}[/bold]")
+        console.print(f"Cost: ${cost_tracker.total_usd:.2f}")
+
+        elapsed = time.time() - start_time
+        if self.stockfish:
+            self.stockfish.close()
+
+        return {
+            "model_a": m.name,
+            "model_b": opp.name,
+            "n_games": n_games,
+            "a_wins": a_wins,
+            "b_wins": b_wins,
+            "draws": draws,
+            "cost_usd": round(cost_tracker.total_usd, 2),
+            "time_seconds": round(elapsed, 1),
+        }
+
     async def _play_games(
         self,
         agent_a,
@@ -466,6 +677,7 @@ class Orchestrator:
     ) -> list[dict]:
         """Play n_games between two agents, alternating colors."""
         results = []
+        budget_exceeded = False
 
         with Progress(
             SpinnerColumn(),
@@ -533,25 +745,28 @@ class Orchestrator:
                     sf_before = None
                     if self.stockfish:
                         try:
-                            sf_before = self.stockfish.quick_eval(fen_before, depth=12)
+                            sf_before = self.stockfish.quick_eval(fen_before, depth=16)
                         except Exception:
                             pass
 
                     game.make_move(move_uci, wall_time_ms=wall_ms, was_error=was_error)
 
-                    # Stockfish live commentary
+                    # Move info (always computed, used for console + dashboard)
+                    moved_side = "black" if game.turn_name == "white" else "white"
+                    mover_name = _display_name(current)
+                    is_llm = _is_model(current)
+                    sf_after = None
+                    tag = ""
+                    cmt = ""
+
+                    # Stockfish live commentary (optional)
                     if self.stockfish and sf_before is not None:
                         try:
-                            sf_after = self.stockfish.quick_eval(game.get_fen(), depth=12)
+                            sf_after = self.stockfish.quick_eval(game.get_fen(), depth=16)
                             bar = self.stockfish.format_eval_bar(sf_after)
-                            # turn_name is now the OTHER side (after push), so invert
-                            moved_side = "black" if game.turn_name == "white" else "white"
-                            mover_name = _display_name(current)
-                            is_llm = _is_model(current)
 
                             if is_llm:
-                                # Full commentary for model moves
-                                tag = self.stockfish.classify_move(sf_before, sf_after, moved_side)
+                                tag = self.stockfish.classify_move(sf_before, sf_after, moved_side, ply=game._ply_count)
                                 cmt = self.stockfish.comment(
                                     sf_after, sf_before, moved_side,
                                     agent_name=mover_name,
@@ -566,30 +781,63 @@ class Orchestrator:
                                 if cmt:
                                     line += f"  — {cmt}"
                             else:
-                                # Minimal line for random/non-model moves
                                 line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name:10s}      | {bar}"
 
                             console.print(line)
                             logger.info(f"SF ply={game._ply_count} move={move_uci} eval={sf_after:.0f}cp {tag}")
-
-                            await self._broadcast({
-                                "type": "move",
-                                "game_id": game_id,
-                                "ply": game._ply_count,
-                                "move_uci": move_uci,
-                                "side": moved_side,
-                                "agent_name": mover_name,
-                                "wall_ms": round(wall_ms, 1),
-                                "fen": game.get_fen(),
-                                "eval_cp": round(sf_after, 1) if sf_after is not None else None,
-                                "move_tag": tag if is_llm else "",
-                                "comment": cmt if is_llm else "",
-                                "was_error": was_error,
-                                "white_name": w_name,
-                                "black_name": b_name,
-                            })
                         except Exception as e:
                             logger.debug(f"SF live eval failed: {e}")
+                    else:
+                        # No Stockfish — minimal console output
+                        color_tag = "W" if moved_side == "white" else "B"
+                        line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name} ({color_tag}, {wall_ms/1000:.1f}s)"
+                        if was_error:
+                            line += "  [ERR]"
+                        console.print(line)
+
+                    # Tree search data for broadcast
+                    ts_event = None
+                    ts_result = getattr(current, 'last_tree_search', None)
+                    if ts_result and ts_result.candidates:
+                        ts_event = {
+                            "candidates": [
+                                {"move": c.move_uci, "eval_cp": round(c.sf_eval_cp, 1), "reasoning": c.reasoning[:100]}
+                                for c in ts_result.candidates
+                            ],
+                            "selected": ts_result.selected_move,
+                            "sf_best": getattr(ts_result, 'sf_best_move', ''),
+                            "gen_ms": round(ts_result.generation_wall_ms),
+                            "eval_ms": round(ts_result.evaluation_wall_ms),
+                            "sel_ms": round(ts_result.selection_wall_ms),
+                        }
+
+                    # Collect thinking/reasoning text for dashboard
+                    thinking_text = ""
+                    reasoning_text = ""
+                    if is_llm:
+                        thinking_text = getattr(current, 'last_thinking', '') or ''
+                        reasoning_text = getattr(current, 'last_reasoning', '') or ''
+
+                    # Dashboard broadcast (always, regardless of Stockfish)
+                    await self._broadcast({
+                        "type": "move",
+                        "game_id": game_id,
+                        "ply": game._ply_count,
+                        "move_uci": move_uci,
+                        "side": moved_side,
+                        "agent_name": mover_name,
+                        "wall_ms": round(wall_ms, 1),
+                        "fen": game.get_fen(),
+                        "eval_cp": round(sf_after, 1) if sf_after is not None else None,
+                        "move_tag": tag,
+                        "comment": cmt,
+                        "was_error": was_error,
+                        "white_name": w_name,
+                        "black_name": b_name,
+                        "tree_search": ts_event,
+                        "thinking": thinking_text[:2000] if thinking_text else "",
+                        "reasoning": reasoning_text[:1500] if reasoning_text else "",
+                    })
 
                     # Save reasoning for LLM agents (not random)
                     if hasattr(current, 'last_reasoning') and current.last_reasoning:
@@ -600,8 +848,16 @@ class Orchestrator:
                             thinking=thinking,
                         )
 
+                    # Save tree search data (Mode B)
+                    if ts_result and ts_result.candidates:
+                        self.storage.append_tree_search(
+                            game_id, game._ply_count, current.agent_id, ts_result,
+                        )
+
                     # Budget check mid-game
                     if not cost_tracker.check_budget(self.config.budget.max_api_cost_usd):
+                        console.print(f"  [red]Budget exceeded mid-game — stopping.[/red]")
+                        budget_exceeded = True
                         break
 
                 result = game.to_result(game_id, white.agent_id, black.agent_id)
@@ -673,6 +929,10 @@ class Orchestrator:
                         self.storage.save_memory_snapshot(agent_b.agent_id, i + 1, dump)
 
                 progress.advance(task)
+
+                # Stop phase if budget exceeded mid-game
+                if budget_exceeded:
+                    break
 
                 # Budget warning
                 if self.config.budget.cost_tracking:
