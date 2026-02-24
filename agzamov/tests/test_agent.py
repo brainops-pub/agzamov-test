@@ -47,6 +47,7 @@ def game_with_history():
 def _mock_api_response(text: str, input_tok: int = 100, output_tok: int = 50):
     resp = MagicMock()
     content_block = MagicMock()
+    content_block.type = "text"
     content_block.text = text
     resp.content = [content_block]
     resp.usage = MagicMock()
@@ -223,8 +224,8 @@ class TestLLMAgent:
     async def test_get_move_success(self, game):
         a = LLMAgent(agent_id="test", model="m")
         resp = _mock_api_response("The center is key.\nMOVE: e2e4\nNOTE: Control center")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=resp)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=resp)
         a.memory = NoMemory()
 
         move, wall_ms, err = await a.get_move(game, "opp")
@@ -240,8 +241,8 @@ class TestLLMAgent:
         a = LLMAgent(agent_id="test", model="m")
         bad_resp = _mock_api_response("I'm thinking deeply about this position")
         good_resp = _mock_api_response("MOVE: d2d4\nNOTE: Queen's pawn")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(side_effect=[bad_resp, good_resp])
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(side_effect=[bad_resp, good_resp])
         a.memory = NoMemory()
 
         move, wall_ms, err = await a.get_move(game, "opp")
@@ -254,8 +255,8 @@ class TestLLMAgent:
         """Both attempts fail → random fallback, error counted."""
         a = LLMAgent(agent_id="test", model="m")
         bad = _mock_api_response("No move here")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=bad)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=bad)
         a.memory = NoMemory()
 
         move, wall_ms, err = await a.get_move(game, "opp")
@@ -271,8 +272,8 @@ class TestLLMAgent:
         a = LLMAgent(agent_id="test", model="m")
         # e2e5 is illegal from starting position
         bad = _mock_api_response("MOVE: e2e5")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=bad)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=bad)
         a.memory = NoMemory()
 
         move, _, err = await a.get_move(game, "opp")
@@ -284,8 +285,8 @@ class TestLLMAgent:
     async def test_get_move_api_error_counts_nonsense(self, game):
         """API exception → nonsense error."""
         a = LLMAgent(agent_id="test", model="m")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(side_effect=Exception("API down"))
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(side_effect=Exception("API down"))
         a.memory = NoMemory()
 
         move, _, err = await a.get_move(game, "opp")
@@ -298,8 +299,8 @@ class TestLLMAgent:
         a = LLMAgent(agent_id="test", model="m")
         a._consecutive_errors = 2
         resp = _mock_api_response("MOVE: e2e4\nNOTE: ok")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=resp)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=resp)
         a.memory = NoMemory()
 
         await a.get_move(game, "opp")
@@ -327,8 +328,8 @@ class TestLLMAgent:
     async def test_call_and_parse_success(self, game):
         a = LLMAgent(agent_id="test", model="m")
         resp = _mock_api_response("Developing.\nMOVE: g1f3\nNOTE: Castle next")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=resp)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=resp)
 
         move, err, text = await a._call_and_parse("system", "prompt", game)
         assert move == "g1f3"
@@ -342,8 +343,8 @@ class TestLLMAgent:
     async def test_call_and_parse_empty_response(self, game):
         a = LLMAgent(agent_id="test", model="m")
         resp = _mock_api_response("")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=resp)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=resp)
 
         move, err, text = await a._call_and_parse("system", "prompt", game)
         assert move is None
@@ -352,8 +353,8 @@ class TestLLMAgent:
     @pytest.mark.asyncio
     async def test_call_and_parse_api_exception(self, game):
         a = LLMAgent(agent_id="test", model="m")
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(side_effect=RuntimeError("timeout"))
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(side_effect=RuntimeError("timeout"))
 
         move, err, text = await a._call_and_parse("system", "prompt", game)
         assert move is None
@@ -366,8 +367,8 @@ class TestLLMAgent:
         resp = MagicMock()
         resp.content = []
         resp.usage = MagicMock(input_tokens=10, output_tokens=5)
-        a._client = MagicMock()
-        a._client.messages.create = AsyncMock(return_value=resp)
+        a._anthropic = MagicMock()
+        a._anthropic.messages.create = AsyncMock(return_value=resp)
 
         move, err, text = await a._call_and_parse("system", "prompt", game)
         assert move is None
