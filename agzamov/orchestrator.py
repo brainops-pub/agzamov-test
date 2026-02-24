@@ -995,10 +995,17 @@ class Orchestrator:
                 if m.base_url:
                     kw["base_url"] = m.base_url
                 client = openai.AsyncOpenAI(**kw)
-                resp = await client.chat.completions.create(
-                    model=m.name, max_tokens=5,
-                    messages=[{"role": "user", "content": "Say OK."}],
-                )
+                # o-series models need max_completion_tokens, not max_tokens
+                is_o = m.name.startswith(("o1", "o3", "o4"))
+                create_kw: dict = {
+                    "model": m.name,
+                    "messages": [{"role": "user", "content": "Say OK."}],
+                }
+                if is_o:
+                    create_kw["max_completion_tokens"] = 50
+                else:
+                    create_kw["max_tokens"] = 5
+                resp = await client.chat.completions.create(**create_kw)
                 await client.close()
                 text = (resp.choices[0].message.content or "")[:20]
             logger.info(f"LLM healthcheck passed: {text}")

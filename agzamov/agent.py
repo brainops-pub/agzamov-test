@@ -380,22 +380,32 @@ class LLMAgent:
     async def _call_openai(self, system: str, user_msg: str) -> tuple[str, str, int, int]:
         """OpenAI-compatible API call. Returns (text, thinking, input_tok, output_tok).
 
-        Reasoning models (GLM-4.7+, o1, o3, etc.) consume tokens for internal
-        reasoning before producing visible content.  We bump max_tokens so
-        the model has room for both thinking and the actual answer.
+        Reasoning models (o1, o3, o4-*, etc.) require max_completion_tokens
+        instead of max_tokens and do not support temperature.
         """
-        # Reasoning models need headroom: reasoning_budget + visible output.
-        # Don't bottleneck thinking — 8192 is plenty for chess analysis.
         effective_max = max(self.max_tokens, 8192)
-        response = await self._openai.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user_msg},
-            ],
-            temperature=self.temperature,
-            max_tokens=effective_max,
-        )
+
+        # o-series reasoning models use different API parameters
+        is_o_series = self.model.startswith(("o1", "o3", "o4"))
+        if is_o_series:
+            response = await self._openai.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "developer", "content": system},
+                    {"role": "user", "content": user_msg},
+                ],
+                max_completion_tokens=effective_max,
+            )
+        else:
+            response = await self._openai.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user_msg},
+                ],
+                temperature=self.temperature,
+                max_tokens=effective_max,
+            )
         choice = response.choices[0] if response.choices else None
         if not choice:
             logger.warning(f"[{self.agent_id}] OpenAI response: no choices. finish_reason=N/A")
