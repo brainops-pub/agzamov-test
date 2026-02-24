@@ -9,14 +9,44 @@ from pathlib import Path
 import yaml
 
 
+
+
+# Known model providers — auto-detected from model name.
+# Each entry: (prefix, provider, base_url, env_var_for_key)
+_PROVIDER_REGISTRY: list[tuple[str, str, str, str]] = [
+    ("claude",  "anthropic", "",                                         "ANTHROPIC_API_KEY"),
+    ("glm",     "openai",    "https://open.bigmodel.cn/api/paas/v4/",   "GLM_API_KEY"),
+    ("deepseek","openai",    "https://api.deepseek.com/v1/",            "DEEPSEEK_API_KEY"),
+    ("gpt",     "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
+    ("o1",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
+    ("o3",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
+    ("o4",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
+    ("qwen",    "openai",    "https://dashscope.aliyuncs.com/compatible-mode/v1/", "QWEN_API_KEY"),
+]
+
+
+def resolve_provider(model_name: str) -> tuple[str, str, str]:
+    """Resolve (provider, base_url, env_var) from model name.
+
+    Returns defaults for unknown models: ("openai", "", "OPENAI_API_KEY").
+    """
+    lower = model_name.lower()
+    for prefix, provider, base_url, env_var in _PROVIDER_REGISTRY:
+        if lower.startswith(prefix):
+            return provider, base_url, env_var
+    return "openai", "", "OPENAI_API_KEY"
+
+
 @dataclass
 class ModelConfig:
-    provider: str = "anthropic"
+    provider: str = "anthropic"     # "anthropic" | "openai" (OpenAI-compatible)
     name: str = "claude-sonnet-4-6"
     temperature: float = 0.6
     max_tokens: int = 300
     thinking: bool = False          # enable extended thinking (Opus)
     thinking_budget: int = 2048     # token budget for thinking block
+    api_key: str = ""               # resolved from env var automatically
+    base_url: str = ""              # resolved from registry automatically
 
 
 @dataclass
@@ -156,7 +186,21 @@ def load_config(config_path: str | Path | None = None) -> RunConfig:
     if api_key := os.environ.get("MEMORY_API_KEY"):
         cfg.memory.api_key = api_key
 
+    # Auto-resolve model provider, base_url, and API key from model name
+    _resolve_model_config(cfg.model)
+
     return cfg
+
+
+def _resolve_model_config(m: ModelConfig) -> None:
+    """Fill in provider, base_url, and api_key from model name + env vars.
+
+    Always re-resolves based on current model name — safe to call after --model override.
+    """
+    provider, base_url, env_var = resolve_provider(m.name)
+    m.provider = provider
+    m.base_url = base_url
+    m.api_key = os.environ.get(env_var, "")
 
 
 def validate_config(cfg: RunConfig) -> list[str]:
@@ -174,7 +218,8 @@ def validate_config(cfg: RunConfig) -> list[str]:
     if cfg.stockfish.path and not Path(cfg.stockfish.path).exists():
         issues.append(f"WARNING: Stockfish not found at {cfg.stockfish.path}")
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        issues.append("ERROR: ANTHROPIC_API_KEY not set — export it or add to agzamov/.env")
+    if not cfg.model.api_key:
+        _, _, env_var = resolve_provider(cfg.model.name)
+        issues.append(f"ERROR: {env_var} not set — add to agzamov/.env")
 
     return issues

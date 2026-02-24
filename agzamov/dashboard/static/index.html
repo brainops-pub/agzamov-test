@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Agzamov Test — Live Dashboard</title>
+    <link rel="stylesheet" href="/static/cm-chessboard/assets/chessboard.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Top bar -->
+    <div id="top-bar">
+        <span id="phase-label">Waiting for game...</span>
+        <span id="matchup"></span>
+        <span id="game-counter"></span>
+    </div>
+
+    <!-- Main area -->
+    <div id="main">
+        <!-- Eval bar -->
+        <div id="eval-bar">
+            <div id="eval-bar-white"></div>
+            <div id="eval-label">0.0</div>
+        </div>
+
+        <!-- Board container -->
+        <div id="board-area">
+            <div id="player-top" class="player-label">
+                <span class="player-name"></span>
+                <span class="player-clock"></span>
+            </div>
+            <div id="board"></div>
+            <div id="player-bottom" class="player-label">
+                <span class="player-name"></span>
+                <span class="player-clock"></span>
+            </div>
+        </div>
+
+        <!-- Right panel -->
+        <div id="right-panel">
+            <div id="moves-panel">
+                <div class="panel-title">MOVES</div>
+                <div id="moves-list"></div>
+            </div>
+            <div id="commentary-panel">
+                <div class="panel-title">COMMENTARY</div>
+                <div id="commentary"></div>
+            </div>
+            <div id="move-info">
+                <span id="move-time"></span>
+                <span id="move-cost"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div id="bottom-bar">
+        <span id="series-score">Series: --</span>
+        <span id="errors-count">Errors: 0</span>
+        <span id="total-cost">Cost: $0.00</span>
+        <span id="status-indicator">DISCONNECTED</span>
+    </div>
+
+    <script type="module" src="/static/app.js"></script>
+</body>
+</html>

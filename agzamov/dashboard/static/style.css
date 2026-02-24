@@ -1,0 +1,285 @@
+/* Agzamov Test — Live Dashboard
+   Dark theme, 16:9 OBS-optimized, 1920x1080 */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+}
+
+/* --- Top bar --- */
+#top-bar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    background: #151515;
+    border-bottom: 1px solid #2a2a2a;
+    font-size: 20px;
+}
+
+#phase-label {
+    color: #888;
+    font-weight: 500;
+}
+
+#matchup {
+    font-weight: 700;
+    font-size: 24px;
+    color: #fff;
+}
+
+#game-counter {
+    color: #888;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+}
+
+/* --- Main area --- */
+#main {
+    display: flex;
+    height: 968px; /* 1080 - 56 top - 56 bottom */
+    padding: 16px;
+    gap: 16px;
+}
+
+/* --- Eval bar --- */
+#eval-bar {
+    width: 32px;
+    background: #1a1a1a;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
+    flex-shrink: 0;
+}
+
+#eval-bar-white {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, #f0d9b5, #e8ccaa);
+    transition: height 0.5s ease-out;
+}
+
+#eval-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: #666;
+    z-index: 2;
+    text-shadow: 0 0 4px #0d0d0d;
+}
+
+/* --- Board area --- */
+#board-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.player-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 8px 4px;
+    height: 40px;
+}
+
+.player-name {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.player-clock {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 18px;
+    color: #888;
+}
+
+#board {
+    width: 856px;
+    height: 856px;
+}
+
+/* cm-chessboard dark theme override */
+.cm-chessboard .board .square.white {
+    fill: #b8b8b8;
+}
+
+.cm-chessboard .board .square.black {
+    fill: #5a5a5a;
+}
+
+.cm-chessboard .coordinates {
+    fill: #666;
+}
+
+/* --- Right panel --- */
+#right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+#moves-panel {
+    flex: 1;
+    background: #151515;
+    border-radius: 8px;
+    padding: 16px;
+    overflow-y: auto;
+    border: 1px solid #2a2a2a;
+}
+
+#moves-list {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.move-row {
+    display: flex;
+    gap: 16px;
+    padding: 2px 0;
+}
+
+.move-row:last-child {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.move-num {
+    color: #555;
+    min-width: 36px;
+    text-align: right;
+}
+
+.move-white, .move-black {
+    min-width: 80px;
+}
+
+.move-time {
+    color: #555;
+    font-size: 13px;
+}
+
+.move-tag {
+    font-size: 13px;
+}
+
+.tag-blunder { color: #e55; }
+.tag-mistake { color: #e95; }
+.tag-inaccuracy { color: #cc5; }
+.tag-great { color: #5c5; }
+
+.move-error {
+    color: #e55;
+    font-size: 12px;
+}
+
+#commentary-panel {
+    height: 200px;
+    background: #151515;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #2a2a2a;
+    overflow-y: auto;
+}
+
+#commentary {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #ccc;
+    font-style: italic;
+}
+
+.commentary-entry {
+    padding: 4px 0;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.commentary-entry:last-child {
+    color: #fff;
+    border-bottom: none;
+}
+
+#move-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #151515;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 16px;
+    color: #888;
+}
+
+/* --- Bottom bar --- */
+#bottom-bar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    background: #151515;
+    border-top: 1px solid #2a2a2a;
+    font-size: 16px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    color: #888;
+}
+
+#status-indicator {
+    font-weight: 700;
+    color: #e55;
+}
+
+#status-indicator.connected {
+    color: #5c5;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+/* Last move highlight */
+.highlight-move {
+    animation: pulse-highlight 0.5s ease-out;
+}
+
+@keyframes pulse-highlight {
+    0% { background: rgba(255, 200, 0, 0.3); }
+    100% { background: transparent; }
+}

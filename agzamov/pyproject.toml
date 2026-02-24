@@ -15,6 +15,7 @@ authors = [
 dependencies = [
     "python-chess>=1.10",
     "anthropic>=0.40",
+    "openai>=1.50",
     "stockfish>=3.28",
     "scipy>=1.14",
     "numpy>=2.0",

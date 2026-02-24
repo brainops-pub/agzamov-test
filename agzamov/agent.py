@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 
 import chess
 import anthropic
+import openai
 
 from .chess_engine import Chess960Game
 from .memory_bridge import MemoryBridge, NoMemory
@@ -81,6 +82,9 @@ class LLMAgent:
         forfeit_threshold: int = 3,
         thinking: bool = False,
         thinking_budget: int = 2048,
+        provider: str = "anthropic",
+        api_key: str = "",
+        base_url: str = "",
     ):
         self.agent_id = agent_id
         self.model = model
@@ -97,7 +101,19 @@ class LLMAgent:
         self.last_thinking: str = ""   # extended thinking text (Opus)
         self.thinking = thinking
         self.thinking_budget = thinking_budget
-        self._client = anthropic.AsyncAnthropic()
+        self.provider = provider
+
+        if provider == "anthropic":
+            self._anthropic = anthropic.AsyncAnthropic()
+            self._openai = None
+        else:
+            self._anthropic = None
+            kw = {}
+            if api_key:
+                kw["api_key"] = api_key
+            if base_url:
+                kw["base_url"] = base_url
+            self._openai = openai.AsyncOpenAI(**kw)
 
     @property
     def has_memory(self) -> bool:
@@ -166,7 +182,8 @@ class LLMAgent:
         fallback = random.choice(legal)
         logger.warning(
             f"[{self.agent_id}] Both attempts failed ({final_error}). "
-            f"Fallback to random: {fallback}. Consecutive: {self._consecutive_errors}"
+            f"Fallback to random: {fallback}. Consecutive: {self._consecutive_errors}\n"
+            f"  Last response (first 200 chars): {response_text_2[:200]!r}"
         )
         elapsed = (time.perf_counter() - start) * 1000
         return fallback, elapsed, final_error
@@ -208,49 +225,18 @@ class LLMAgent:
         try:
             logger.debug(f"[{self.agent_id}] PROMPT:\n{user_msg}")
 
-            # Build API kwargs
-            kwargs: dict = {
-                "model": self.model,
-                "system": system,
-                "messages": [{"role": "user", "content": user_msg}],
-            }
-
-            if self.thinking:
-                # Extended thinking mode (Opus)
-                # - temperature must be 1 (API requirement)
-                # - max_tokens must cover thinking_budget + response
-                # - thinking block goes in kwargs
-                kwargs["temperature"] = 1.0
-                kwargs["max_tokens"] = self.thinking_budget + self.max_tokens
-                kwargs["thinking"] = {
-                    "type": "enabled",
-                    "budget_tokens": self.thinking_budget,
-                }
+            if self.provider == "anthropic":
+                text, thinking_text, input_tok, output_tok = await self._call_anthropic(system, user_msg)
             else:
-                kwargs["temperature"] = self.temperature
-                kwargs["max_tokens"] = self.max_tokens
+                text, thinking_text, input_tok, output_tok = await self._call_openai(system, user_msg)
 
-            response = await self._client.messages.create(**kwargs)
             self.stats.total_api_calls += 1
-            input_tok = response.usage.input_tokens
-            output_tok = response.usage.output_tokens
             self.stats.total_input_tokens += input_tok
             self.stats.total_output_tokens += output_tok
             cost_tracker.log_call(input_tok, output_tok)
 
-            # Extract text from response (skip thinking blocks)
-            text = ""
-            thinking_text = ""
-            for block in response.content:
-                if block.type == "thinking":
-                    thinking_text = block.thinking
-                elif block.type == "text":
-                    text = block.text
-
             if thinking_text:
                 logger.debug(f"[{self.agent_id}] THINKING ({len(thinking_text)} chars):\n{thinking_text[:500]}")
-
-            # Store thinking text for reasoning logs (Opus analysis)
             self.last_thinking = thinking_text
 
             move, error_type = parse_move(text, game)
@@ -266,6 +252,67 @@ class LLMAgent:
             logger.error(f"[{self.agent_id}] LLM API error: {e}")
             self.stats.total_api_calls += 1
             return None, ERR_NONSENSE, str(e)
+
+    async def _call_anthropic(self, system: str, user_msg: str) -> tuple[str, str, int, int]:
+        """Anthropic Messages API call. Returns (text, thinking, input_tok, output_tok)."""
+        kwargs: dict = {
+            "model": self.model,
+            "system": system,
+            "messages": [{"role": "user", "content": user_msg}],
+        }
+        if self.thinking:
+            kwargs["temperature"] = 1.0
+            kwargs["max_tokens"] = self.thinking_budget + self.max_tokens
+            kwargs["thinking"] = {"type": "enabled", "budget_tokens": self.thinking_budget}
+        else:
+            kwargs["temperature"] = self.temperature
+            kwargs["max_tokens"] = self.max_tokens
+
+        response = await self._anthropic.messages.create(**kwargs)
+        text = ""
+        thinking_text = ""
+        for block in response.content:
+            if block.type == "thinking":
+                thinking_text = block.thinking
+            elif block.type == "text":
+                text = block.text
+        return text, thinking_text, response.usage.input_tokens, response.usage.output_tokens
+
+    async def _call_openai(self, system: str, user_msg: str) -> tuple[str, str, int, int]:
+        """OpenAI-compatible API call. Returns (text, thinking, input_tok, output_tok).
+
+        Reasoning models (GLM-4.7+, o1, o3, etc.) consume tokens for internal
+        reasoning before producing visible content.  We bump max_tokens so
+        the model has room for both thinking and the actual answer.
+        """
+        # Reasoning models need headroom: reasoning_budget + visible output.
+        # Don't bottleneck thinking — 8192 is plenty for chess analysis.
+        effective_max = max(self.max_tokens, 8192)
+        response = await self._openai.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_msg},
+            ],
+            temperature=self.temperature,
+            max_tokens=effective_max,
+        )
+        choice = response.choices[0] if response.choices else None
+        if not choice:
+            logger.warning(f"[{self.agent_id}] OpenAI response: no choices. finish_reason=N/A")
+            return "", "", 0, 0
+        text = choice.message.content or ""
+        if not text:
+            logger.warning(
+                f"[{self.agent_id}] OpenAI empty content. "
+                f"finish_reason={choice.finish_reason} "
+                f"refusal={getattr(choice.message, 'refusal', None)} "
+                f"model={response.model} "
+                f"usage={response.usage}"
+            )
+        input_tok = response.usage.prompt_tokens if response.usage else 0
+        output_tok = response.usage.completion_tokens if response.usage else 0
+        return text, "", input_tok, output_tok
 
 
 class RandomAgent:

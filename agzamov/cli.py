@@ -51,6 +51,11 @@ def run(
         "-n",
         help="Override number of games per phase.",
     ),
+    dashboard: bool = typer.Option(
+        False,
+        "--dashboard",
+        help="Launch live web dashboard on http://localhost:8960",
+    ),
 ):
     """Run the Agzamov Test."""
     cfg = load_config(config)
@@ -75,9 +80,27 @@ def run(
             raise typer.Exit(1)
         console.print(f"[yellow]{issue}[/yellow]")
 
-    # Run
-    orchestrator = Orchestrator(cfg)
-    summary = asyncio.run(orchestrator.run())
+    # Run (with optional dashboard)
+    async def _run_with_dashboard():
+        emitter = None
+        server_task = None
+        if dashboard:
+            from .dashboard.server import start_dashboard, broadcast
+            import webbrowser
+            server_task = await start_dashboard()
+            emitter = broadcast
+            url = "http://localhost:8960"
+            console.print(f"[green]Dashboard: {url}[/green]")
+            webbrowser.open(url)
+
+        orchestrator = Orchestrator(cfg, event_emitter=emitter)
+        result = await orchestrator.run()
+
+        if server_task:
+            server_task.cancel()
+        return result
+
+    summary = asyncio.run(_run_with_dashboard())
 
     # Generate report
     report_content = generate_report(
@@ -304,18 +327,21 @@ def analyze(
 def test(
     config: str = typer.Option(None, "--config", "-c"),
     n: int = typer.Option(10, "--n", help="Number of games for smoke test."),
-    model: str = typer.Option(None, "--model", "-m", help="Override model name (e.g. claude-opus-4-6)."),
+    model: str = typer.Option(None, "--model", "-m", help="Override model name (e.g. claude-opus-4-6, glm-5)."),
     thinking: bool = typer.Option(False, "--thinking", help="Enable extended thinking (for Opus)."),
     thinking_budget: int = typer.Option(2048, "--thinking-budget", help="Thinking token budget."),
+    dashboard: bool = typer.Option(False, "--dashboard", help="Launch live web dashboard on http://localhost:8960"),
 ):
     """Quick smoke test (few games, no full stats)."""
     cfg = load_config(config)
     cfg.phases = [0]
     cfg.sanity_check.chess_games = n
 
-    # Override model if specified
+    # Override model — provider/base_url/api_key auto-resolved by load_config
     if model:
         cfg.model.name = model
+        from .config import _resolve_model_config
+        _resolve_model_config(cfg.model)
     if thinking:
         cfg.model.thinking = True
         cfg.model.thinking_budget = thinking_budget
@@ -329,8 +355,26 @@ def test(
             raise typer.Exit(1)
         console.print(f"[yellow]{issue}[/yellow]")
 
-    orchestrator = Orchestrator(cfg)
-    summary = asyncio.run(orchestrator.run())
+    async def _run_with_dashboard():
+        emitter = None
+        server_task = None
+        if dashboard:
+            from .dashboard.server import start_dashboard, broadcast
+            import webbrowser
+            server_task = await start_dashboard()
+            emitter = broadcast
+            url = "http://localhost:8960"
+            console.print(f"[green]Dashboard: {url}[/green]")
+            webbrowser.open(url)
+
+        orchestrator = Orchestrator(cfg, event_emitter=emitter)
+        result = await orchestrator.run()
+
+        if server_task:
+            server_task.cancel()
+        return result
+
+    summary = asyncio.run(_run_with_dashboard())
 
     passed = summary.get("phases", {}).get(0, {}).get("passed", False)
     if passed:

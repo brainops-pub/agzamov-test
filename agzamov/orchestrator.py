@@ -30,6 +30,7 @@ _MODEL_DISPLAY = {
     "claude-opus-4-5-20251101": "Opus 4.5",
     "claude-haiku-4-5-20251001": "Haiku 4.5",
     "claude-3-5-sonnet-20241022": "Sonnet 3.5",
+    "glm-5": "GLM-5",
 }
 
 
@@ -52,7 +53,7 @@ def _is_model(agent) -> bool:
 class Orchestrator:
     """Configures and runs test phases."""
 
-    def __init__(self, config: RunConfig):
+    def __init__(self, config: RunConfig, event_emitter=None):
         self.config = config
         self.storage = RunStorage(config.output.results_dir, config.name)
         self.stats_engine = StatsEngine(
@@ -61,6 +62,34 @@ class Orchestrator:
         )
         self.stockfish: StockfishAnalyzer | None = None
         self._phase_results: dict[int, list[dict]] = {}
+        self._emit = event_emitter  # async callable or None
+
+    async def _broadcast(self, event: dict) -> None:
+        """Push event to dashboard if connected."""
+        if self._emit:
+            try:
+                await self._emit(event)
+            except Exception as e:
+                logger.debug(f"Dashboard broadcast failed: {e}")
+
+    def _make_agent(self, agent_id: str, *, memory=None, **overrides) -> LLMAgent:
+        """Create LLMAgent with config defaults + optional overrides."""
+        m = self.config.model
+        kwargs = dict(
+            agent_id=agent_id,
+            model=m.name,
+            temperature=m.temperature,
+            max_tokens=m.max_tokens,
+            thinking=m.thinking,
+            thinking_budget=m.thinking_budget,
+            provider=m.provider,
+            api_key=m.api_key,
+            base_url=m.base_url,
+        )
+        if memory is not None:
+            kwargs["memory"] = memory
+        kwargs.update(overrides)
+        return LLMAgent(**kwargs)
 
     def _setup_logging(self) -> None:
         """Configure file + console logging into results/{run}/logs/."""
@@ -115,6 +144,21 @@ class Orchestrator:
         console.print(f"Memory: {self.config.memory.type}")
         console.print(f"Phases: {self.config.phases}\n")
 
+        # Broadcast run info for dashboard
+        m = self.config.model
+        model_label = _MODEL_DISPLAY.get(m.name, m.name)
+        if m.thinking:
+            model_label += f" (thinking {m.thinking_budget}tok)"
+        await self._broadcast({
+            "type": "run_info",
+            "run_name": self.config.name,
+            "model_name": m.name,
+            "model_label": model_label,
+            "temperature": m.temperature,
+            "memory_type": self.config.memory.type,
+            "phases": self.config.phases,
+        })
+
         # Check memory availability — auto-fallback if MCP is unreachable
         if self.config.memory.type == "brainops-mcp":
             if await self._check_memory_available():
@@ -142,7 +186,7 @@ class Orchestrator:
         # LLM API healthcheck — fail fast before burning games
         if not await self._check_llm_available():
             console.print("[bold red]LLM API healthcheck FAILED — aborting run.[/bold red]")
-            console.print("[red]Check your ANTHROPIC_API_KEY and account credits.[/red]")
+            console.print(f"[red]Check your API key and credits ({self.config.model.provider}: {self.config.model.name}).[/red]")
             return {"phases": {}, "config": self.config.name, "aborted": "llm_healthcheck_failed"}
 
         summary = {"phases": {}, "config": self.config.name}
@@ -185,14 +229,7 @@ class Orchestrator:
         n = self.config.sanity_check.chess_games
         console.print(f"\n[bold]Phase 0: Sanity Check ({n} games vs random)[/bold]")
 
-        agent = LLMAgent(
-            agent_id="model",
-            model=self.config.model.name,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-            thinking=self.config.model.thinking,
-            thinking_budget=self.config.model.thinking_budget,
-        )
+        agent = self._make_agent("model")
         random_agent = RandomAgent(agent_id="random")
 
         results = await self._play_games(agent, random_agent, n, phase=0)
@@ -278,18 +315,8 @@ class Orchestrator:
         n = self.config.chess.games_phase_1
         console.print(f"\n[bold]Phase 1: Baseline ({n} games, naked vs naked)[/bold]")
 
-        agent_a = LLMAgent(
-            agent_id="agent_a",
-            model=self.config.model.name,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-        )
-        agent_b = LLMAgent(
-            agent_id="agent_b",
-            model=self.config.model.name,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-        )
+        agent_a = self._make_agent("agent_a")
+        agent_b = self._make_agent("agent_b")
 
         results = await self._play_games(agent_a, agent_b, n, phase=1)
         self._phase_results[1] = results
@@ -324,19 +351,8 @@ class Orchestrator:
             api_key=self.config.memory.api_key,
         )
 
-        agent_a = LLMAgent(
-            agent_id="agent_a_memory",
-            model=self.config.model.name,
-            memory=memory_a,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-        )
-        agent_b = LLMAgent(
-            agent_id="agent_b_naked",
-            model=self.config.model.name,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-        )
+        agent_a = self._make_agent("agent_a_memory", memory=memory_a)
+        agent_b = self._make_agent("agent_b_naked")
 
         # Clean slate — use actual agent IDs
         await memory_a.clear(agent_b.agent_id)
@@ -408,20 +424,8 @@ class Orchestrator:
         await memory_a.clear("agent_b_armed")
         await memory_b.clear("agent_a_armed")
 
-        agent_a = LLMAgent(
-            agent_id="agent_a_armed",
-            model=self.config.model.name,
-            memory=memory_a,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-        )
-        agent_b = LLMAgent(
-            agent_id="agent_b_armed",
-            model=self.config.model.name,
-            memory=memory_b,
-            temperature=self.config.model.temperature,
-            max_tokens=self.config.model.max_tokens,
-        )
+        agent_a = self._make_agent("agent_a_armed", memory=memory_a)
+        agent_b = self._make_agent("agent_b_armed", memory=memory_b)
 
         results = await self._play_games(agent_a, agent_b, n, phase=3)
         self._phase_results[3] = results
@@ -490,6 +494,16 @@ class Orchestrator:
                 logger.info(f"--- {game_id} | pos={game.starting_position_id} | W={w_name} B={b_name} ---")
                 console.print(f"\n[bold]Game {game_id}[/bold] — [white]{w_name}[/white] (W) vs [white]{b_name}[/white] (B) | pos #{game.starting_position_id}")
 
+                await self._broadcast({
+                    "type": "game_start",
+                    "game_id": game_id,
+                    "phase": phase,
+                    "position_id": game.starting_position_id,
+                    "starting_fen": game.get_fen(),
+                    "white_name": w_name,
+                    "black_name": b_name,
+                })
+
                 while True:
                     over, reason = game.is_game_over()
                     if over:
@@ -557,6 +571,23 @@ class Orchestrator:
 
                             console.print(line)
                             logger.info(f"SF ply={game._ply_count} move={move_uci} eval={sf_after:.0f}cp {tag}")
+
+                            await self._broadcast({
+                                "type": "move",
+                                "game_id": game_id,
+                                "ply": game._ply_count,
+                                "move_uci": move_uci,
+                                "side": moved_side,
+                                "agent_name": mover_name,
+                                "wall_ms": round(wall_ms, 1),
+                                "fen": game.get_fen(),
+                                "eval_cp": round(sf_after, 1) if sf_after is not None else None,
+                                "move_tag": tag if is_llm else "",
+                                "comment": cmt if is_llm else "",
+                                "was_error": was_error,
+                                "white_name": w_name,
+                                "black_name": b_name,
+                            })
                         except Exception as e:
                             logger.debug(f"SF live eval failed: {e}")
 
@@ -594,6 +625,17 @@ class Orchestrator:
                     "pgn": result.pgn,
                 }
                 results.append(result_dict)
+
+                await self._broadcast({
+                    "type": "game_end",
+                    "game_id": game_id,
+                    "result": result.result,
+                    "result_reason": result.result_reason,
+                    "total_moves": result.total_moves,
+                    "white_errors": result.white_errors,
+                    "black_errors": result.black_errors,
+                    "duration_seconds": round(result.duration_seconds, 1),
+                })
 
                 # Per-game log
                 logger.info(
@@ -674,16 +716,32 @@ class Orchestrator:
 
     async def _check_llm_available(self) -> bool:
         """Quick LLM API healthcheck — send a trivial request to verify credits/auth."""
-        import anthropic
+        m = self.config.model
         try:
-            client = anthropic.AsyncAnthropic()
-            resp = await client.messages.create(
-                model=self.config.model.name,
-                max_tokens=5,
-                messages=[{"role": "user", "content": "Say OK."}],
-            )
-            await client.close()
-            logger.info(f"LLM healthcheck passed: {resp.content[0].text[:20]}")
+            if m.provider == "anthropic":
+                import anthropic
+                client = anthropic.AsyncAnthropic()
+                resp = await client.messages.create(
+                    model=m.name, max_tokens=5,
+                    messages=[{"role": "user", "content": "Say OK."}],
+                )
+                await client.close()
+                text = resp.content[0].text[:20]
+            else:
+                import openai
+                kw = {}
+                if m.api_key:
+                    kw["api_key"] = m.api_key
+                if m.base_url:
+                    kw["base_url"] = m.base_url
+                client = openai.AsyncOpenAI(**kw)
+                resp = await client.chat.completions.create(
+                    model=m.name, max_tokens=5,
+                    messages=[{"role": "user", "content": "Say OK."}],
+                )
+                await client.close()
+                text = (resp.choices[0].message.content or "")[:20]
+            logger.info(f"LLM healthcheck passed: {text}")
             console.print("[green]LLM API: OK[/green]")
             return True
         except Exception as e:
