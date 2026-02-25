@@ -52,4 +52,5 @@ The full benchmark specification is in [`latex/agzamov-test.tex`](latex/agzamov-
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Code: MIT. See [LICENSE](LICENSE).
+Paper and specification (`latex/`): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

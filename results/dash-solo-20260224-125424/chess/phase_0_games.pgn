@@ -1,0 +1,390 @@
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0001"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "nrknqbbr/pppppppp/8/8/8/8/PPPPPPPP/NRKNQBBR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Ne3 b6 2. d4 a5 3. Nb3 d5 4. Nxa5 Ne6 5. Nb7 Qd7 6. Nd8 Qxd8 7. Ra1 Qd6 8. Nf5 Rb7 9. Nxd6+ Kb8 10. Nxb7 Nf4 11. Kd2 Nh5 12. Nd8 c5 13. Nxf7 Bxf7 14. dxc5 Rg8 15. cxb6 Kb7 16. e4 d4 17. Bb5 Bg6 18. Bc6+ Kb8 19. b7 Nc7 20. Bd7 Nd5 21. Bc8 Nb4 22. e5 Nc6 23. Bd7 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0002"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "bnqbrnkr/pppppppp/8/8/8/8/PPPPPPPP/BNQBRNKR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. h3 e5 2. d3 Nc6 3. Qd2 d5 4. Na3 Qg4 5. Qe3 Qh4 6. Qd4 Qxd4 7. e4 Qxf2+ 8. Kxf2 Nd4 9. g4 Nf3 10. Bxf3 Bh4+ 11. Ke2 Bf2 12. Nd2 Bxe1 13. Rxe1 dxe4 14. Bg2 e3 15. Kf3 e2 16. Nb5 Re6 17. b3 e4+ 18. Kg3 e3 19. Nxc7 exd2 20. Rg1 d1=Q 21. c3 Qxg1 22. h4 Qxg2+ 23. Kxg2 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0003"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "nrkbbrqn/pppppppp/8/8/8/8/PPPPPPPP/NRKBBRQN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 h6 2. d4 a5 3. Bf3 a4 4. Bb4 f5 5. e5 Rf6 6. Bxe7 b5 7. exf6 Nf7 8. Bxa8 b4 9. fxg7 Ne5 10. Bf8 Qxg7 11. Bxg7 Bf7 12. Bxe5 b3 13. Bxc7 Bxc7 14. Nxb3 d5 15. Bxd5 Bg3 16. Nxg3 Bg8 17. Nxf5 h5 18. Ne7+ Kd7 19. Nc6 Re8 20. Ne7 axb3 21. Bf7 Ra8 22. Be8+ Rxe8 23. Nxg8 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0004"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "nnbrqbkr/pppppppp/8/8/8/8/PPPPPPPP/NNBRQBKR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. b4 b5 2. Na3 d5 3. Nxb5 Qxb5 4. f3 Qxe2 5. Bxe2 e5 6. Kf2 Bc5+ 7. Kg3 Bf2+ 8. Qxf2 Be6 9. Bf1 d4 10. c4 e4 11. Bd3 exd3 12. a4 Bxc4 13. Qxd4 Rxd4 14. a5 Bb3 15. Rhe1 Bxd1 16. Kh3 Rh4+ 17. Kg3 Rh3+ 18. Kf4 Bxf3 19. Re6 Bxg2 20. b5 fxe6 21. Kg4 Bf3+ 22. Kg5 Rh5+ 23. Kf4 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0005"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "rkbbrnnq/pppppppp/8/8/8/8/PPPPPPPP/RKBBRNNQ w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 c6 2. d4 d5 3. Nf3 e5 4. exd5 Ne6 5. Nxe5 Re7 6. Nxf7 Rxf7 7. dxe6 g5 8. e7 Qg7 9. exd8=Q Re7 10. Qxe7 g4 11. Qc7+ Qxc7 12. Re8 Nf6 13. Rxc8+ Qxc8 14. Bxg4 Ne8 15. Bxc8 b6 16. Bb7 b5 17. Bxa8 Nf6 18. Bxc6 b4 19. Bb5 Ng4 20. Bg5 Nxf2 21. Ne3 a6 22. Qf1 axb5 23. Qxf2 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0006"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rqnbbnkr/pppppppp/8/8/8/8/PPPPPPPP/RQNBBNKR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. a3 e5 2. Ra2 d5 3. d4 e4 4. Qa1 e3 5. Bd2 exd2 6. h4 dxc1=Q 7. Rh3 Qxa1 8. b4 Qxa2 9. f3 Bxh4 10. Rh2 Bf2+ 11. Kxf2 Qxc2 12. Kg1 Qxd1 13. Rh1 Qxe2 14. Kh2 Qxg2+ 15. Kxg2 Bc6 16. Rg1 Ne6 17. Nd2 Nxd4 18. Ra1 Nb3 19. b5 Nxa1 20. Kf1 Bxb5+ 21. Kg2 Bd3 22. Kg3 Nb3 23. Kg2 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0007"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "rqnbbknr/pppppppp/8/8/8/8/PPPPPPPP/RQNBBKNR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 b6 2. d4 Nd6 3. Nd3 h5 4. d5 a5 5. Bxa5 Rxa5 6. Ne5 Rxa2 7. Nxf7 Rh7 8. Qxa2 Qa8 9. Qxa8 g5 10. Qxd8 Nc4 11. Qxe7+ Nxe7 12. Bxh5 Rh6 13. Nd6 Bf7 14. Nxf7 Ne3+ 15. fxe3 Nc8 16. Nxh6 b5 17. d6 g4 18. dxc7 Nd6 19. Ra8+ Ne8 20. Rxe8+ Kg7 21. c8=Q Kf6 22. Qc6+ Kg7 23. Rg8+ { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0008"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rkbnrnqb/pppppppp/8/8/8/8/PPPPPPPP/RKBNRNQB w KQkq - 0 1"]
+[SetUp "1"]
+
+1. a4 d5 2. Ka2 e5 3. Ng3 Nc6 4. b4 Nxb4+ 5. Kb2 Nd3+ 6. exd3 c6 7. Rxe5 Rxe5 8. Nh5 Re1 9. Kc3 Rxg1 10. Ng3 Rxd1 11. f4 Rxd2 12. h3 Rxc2+ 13. Kb3 Rc3+ 14. Ka2 Rc2+ 15. Ka3 Ra2+ 16. Kxa2 Bxh3 17. Rb1 d4 18. Rxb7+ Kxb7 19. f5 Bxg2 20. Ne2 Bxh1 21. Ba3 c5 22. f6 Bc6 23. Ka1 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0009"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "bbrnkqrn/pppppppp/8/8/8/8/PPPPPPPP/BBRNKQRN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 f6 2. d4 a5 3. d5 h6 4. Ne3 g6 5. Qc4 a4 6. Qxc7 h5 7. Qxd7+ Kf7 8. Qxe7+ Kxe7 9. d6+ Kd7 10. e5 b5 11. exf6 Bc6 12. f7 Nhxf7 13. Nd5 Bxd6 14. Nc7 Qh6 15. Nxb5 Bc7 16. Nxc7 Ba8 17. Ne6 Nb7 18. Nf8+ Ke8 19. Nd7 Nbd6 20. Nf6+ Ke7 21. Nd7 Bd5 22. Nf6 Ba8 23. Nh7 a3 24. Nf8 Bf3 25. O-O axb2 26. Bxb2 Bb7 27. Nd7 Nf5 28. Nf6 Rxc2 29. Rxc2 Ne5 30. Rc8 Ne3 31. Ne8 Bf3 32. Ng7 N3g4 33. Rxg8 g5 34. Bh7 Ba8 35. Ne8 Nxh2 36. Kxh2 Bc6 37. Nf6 Qf8 38. Rxf8 Nf3+ 39. gxf3 Bxf3 40. Ne8 Be2 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0010"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "nnbbrkrq/pppppppp/8/8/8/8/PPPPPPPP/NNBBRKRQ w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Nc3 e5 2. d3 d5 3. Bh6 gxh6 4. Nb1 e4 5. f4 exf3 6. Nd2 fxe2+ 7. Rxe2 Rxe2 8. Nb1 Rf2+ 9. Kxf2 Rxg2+ 10. Ke1 Rxg1+ 11. Ke2 Rg2+ 12. Kf1 Qxb2 13. h4 Rg1+ 14. Kxg1 Qxb1 15. Qe4 Qxa1 16. Kh2 dxe4 17. Bg4 Bxg4 18. c4 Qh1+ 19. Kg3 e3 20. Kf4 Qf3+ 21. Ke5 Qf5+ 22. Kd4 Qxd3+ 23. Kc5 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0011"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "nbbqnrkr/pppppppp/8/8/8/8/PPPPPPPP/NBBQNRKR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Nf3 d6 2. e4 b5 3. d4 e6 4. Nb3 Ba6 5. Nc5 f5 6. Nxe6 g6 7. Nxc7 Rf6 8. d5 Kf8 9. Nxe8 f4 10. Nxf6 Nb6 11. Nd7+ Ke8 12. Nf8 Qe7 13. Ne6 Rf8 14. Nd8 b4 15. Nf7 Qe6 16. dxe6 Bc4 17. e7 Ba6 18. exf8=Q+ Kxf8 19. e5 Bc7 20. Qxd6+ Kxf7 21. Qxc7+ Kf8 22. Qb8+ Ke7 23. Qxb6 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0012"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rnnkbbrq/pppppppp/8/8/8/8/PPPPPPPP/RNNKBBRQ w KQkq - 0 1"]
+[SetUp "1"]
+
+1. f3 d5 2. Nd3 e5 3. c3 e4 4. e3 exd3 5. e4 dxe4 6. h3 Bc5 7. Bg3 Bxg1 8. b4 exf3 9. Qh2 Bxh2 10. a4 f2 11. Na3 Bxg3 12. Rb1 Bh4 13. Rb2 Rf8 14. Ra2 Bg3 15. Kc1 Bb5 16. Nb1 Bh2 17. axb5 Bg1 18. Ra4 Qg8 19. Kb2 Nd6 20. Ra2 Bh2 21. Ra3 Bg1 22. Be2 f1=Q 23. Bg4 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0013"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "bbrnknqr/pppppppp/8/8/8/8/PPPPPPPP/BBRNKNQR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 Ng6 2. d4 a6 3. Ng3 b6 4. Ne3 c6 5. Nd5 h5 6. Nxe7 f6 7. Nxg8 Rc7 8. Nxf6+ Ke7 9. Nxd7 Rh7 10. Nf8 Nh8 11. Nxh7 Kd6 12. e5+ Kd7 13. Nf6+ gxf6 14. e6+ Kxe6 15. d5+ Kxd5 16. Ne4 Kxe4 17. Kd2 Ra7 18. g3 Ke5 19. f4+ Ke4 20. Qd4+ Kxd4 21. f5 Re7 22. c3+ Kd5 23. c4+ Kc5 24. Rc3 Ndf7 25. Be4 Bd6 26. Bxc6 Re5 27. Bb5 Rd5+ 28. cxd5+ Kxb5 29. Rc5+ Kb4 30. Rc4+ Kb5 31. Rc5+ Kb4 32. Rc4+ Ka5 33. Ra4+ Kxa4 34. b4 b5 35. Bxf6 Kxb4 36. Bxh8 Bc7 37. d6 Bd5 38. dxc7 Nd6 39. c8=Q h4 40. Qxa6 hxg3 41. hxg3 Bc4 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0014"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "bnrknbrq/pppppppp/8/8/8/8/PPPPPPPP/BNRKNBRQ w KQkq - 0 1"]
+[SetUp "1"]
+
+1. f3 e5 2. b4 Bxb4 3. h3 Bxd2 4. e4 Bxc1 5. Bb2 Bxb2 6. Kd2 Bd4 7. h4 Bxg1 8. Ke2 d5 9. Na3 Be3 10. c3 Bf4 11. Nb5 Nc6 12. Kd1 Bd2 13. Nd3 Nd4 14. Qh2 Bc1 15. Nf2 Bb2 16. h5 Nb3 17. Qg1 Nd2 18. Nxa7 Nxf3 19. exd5 Nxg1 20. Kc2 Bc1 21. Ne4 Bd2 22. Nd6 Bxc3 23. Bd3 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0015"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "qbrkbnrn/pppppppp/8/8/8/8/PPPPPPPP/QBRKBNRN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 c6 2. d4 Bd6 3. Nhg3 Bc5 4. Bc3 f5 5. dxc5 Qb8 6. Bf6 fxe4 7. Bxe7+ Kc7 8. Bxf8 Rd8 9. Nxe4 b6 10. cxb6+ Kxb6 11. Bd6 g6 12. Bxb8 Ka6 13. Nf6 Rf8 14. Nxe8 Nf7 15. Nf6 Nd6 16. Nxd7 Nf5 17. Bd6 Rfe8 18. Bc5 h6 19. Bb6 Re6 20. Bc7 Rxd7+ 21. Bd6 Rc7 22. Bxc7 Kb7 23. Bd8 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0016"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "nrqkbbrn/pppppppp/8/8/8/8/PPPPPPPP/NRQKBBRN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e3 e5 2. c4 d5 3. Nc2 dxc4 4. Bd3 cxd3 5. a3 dxc2+ 6. Qxc2 Bc5 7. Qe4 Bxe3 8. Qf3 Bxf2 9. Qc3 Bxe1 10. h3 Bxd2 11. Kc2 Bxc3 12. b4 Ba1 13. Rbf1 Qxh3 14. Re1 Qxg2+ 15. Kb1 Qb2# { checkmate } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0017"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "rqnbbnkr/pppppppp/8/8/8/8/PPPPPPPP/RQNBBNKR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 c6 2. d4 Nd6 3. Bc3 Ba5 4. Bxa5 Ne6 5. d5 Nc8 6. dxe6 c5 7. exf7+ Kxf7 8. Bh5+ Ke6 9. Bf7+ Kf6 10. Bg8 Qxh2+ 11. Kxh2 c4 12. Be6 Bh5 13. Bd8 Rb8 14. Bxe7+ Kg6 15. Bf6 Rf8 16. Bxg7 d6 17. Bxc8 Bf3 18. gxf3 h5 19. Bh6 d5 20. Bxf8 a5 21. Bxb7 Re8 22. Bg7 Rxe4 23. Bf6 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0018"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "qbrkrnbn/pppppppp/8/8/8/8/PPPPPPPP/QBRKRNBN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. a4 e5 2. c4 d5 3. f3 e4 4. Ne3 d4 5. Qa2 dxe3 6. Rf1 exd2 7. Be3 dxc1=Q+ 8. Kxc1 exf3 9. Bg5+ f6 10. gxf3 fxg5 11. e3 Rxe3 12. Be4 Rxe4 13. f4 Re1+ 14. Kc2 Re2+ 15. Kb3 Re3+ 16. Kc2 Rc3+ 17. Kd2 gxf4 18. Ke1 Re3+ 19. Kd1 f3 20. Ng3 f2 21. Rh1 f1=Q+ 22. Rxf1 Re1+ 23. Kxe1 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0019"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "nbrkbnrq/pppppppp/8/8/8/8/PPPPPPPP/NBRKBNRQ w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Ng3 c6 2. e4 h6 3. d4 f5 4. Nxf5 e6 5. Nd6 Nb6 6. Nf7+ Kc7 7. Nxh8 c5 8. Nf7 d6 9. Nxh6 a5 10. Nf7 Bc6 11. Bxa5 g5 12. Bxb6+ Kd7 13. Nd8 d5 14. Nxe6 cxd4 15. Nc7 Ba4 16. Nxd5 Bc6 17. Ne7 Rg6 18. Nxg6 Nxg6 19. Bd8 Be5 20. Bc7 Bh8 21. Bd6 Bd5 22. exd5 Nf4 23. Be7 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0020"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "brkqnbrn/pppppppp/8/8/8/8/PPPPPPPP/BRKQNBRN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. b4 d5 2. Kb2 d4 3. d3 e5 4. Ng3 Bc5 5. Nf3 e4 6. h4 exf3 7. c4 fxe2 8. Nf5 exd1=Q 9. Nd6+ cxd6 10. g3 Qxb1+ 11. Ka3 Qb3+ 12. axb3 Qa5+ 13. Kb2 Qa2+ 14. Kc1 Qb1+ 15. Kd2 Qxf1 16. Kc2 Qxd3+ 17. Kc1 Qb1+ 18. Kxb1 Nf6 19. Bc3 dxc3 20. Ka2 c2 21. Ka1 c1=R+ 22. Rxc1 Bxf2 23. Rh1 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0021"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "brnnqkrb/pppppppp/8/8/8/8/PPPPPPPP/BRNNQKRB w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Ne3 d5 2. Nf5 b5 3. Nxe7 Nc6 4. Nxc8 Qe4 5. f3 Ne7 6. fxe4 a5 7. Nxe7 Kxe7 8. exd5 h6 9. e4 c5 10. d6+ Ke6 11. e5 Kd7 12. e6+ Kc6 13. exf7 Rbc8 14. f8=Q Rc7 15. dxc7 Bb7 16. c8=Q+ Kb6 17. Qxb7+ Kxb7 18. Qxc5 Ka6 19. Qb6+ Kxb6 20. b4 Ka6 21. Qe6+ Ka7 22. Qa6+ Kb8 23. Qc8+ { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0022"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "qbrkbrnn/pppppppp/8/8/8/8/PPPPPPPP/QBRKBRNN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Nf3 e5 2. Nh4 d5 3. Ng3 Nf6 4. b3 e4 5. Nhf5 Bd7 6. Qb2 e3 7. c4 exd2 8. a3 dxc1=Q+ 9. Qxc1 Bxf5 10. h4 Bc2+ 11. Qxc2 dxc4 12. Bb4 c3 13. Kc1 Ne4 14. Ba2 Nxg3 15. Qxh7 c2 16. f4 Nxf1 17. Qxh8 Rxh8 18. Be1 Ne3 19. Bd2 Nd1 20. Bc3 Rg8 21. Kxc2 Ne3+ 22. Kb2 Nxg2 23. Kc2 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0023"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "qbbnrkrn/pppppppp/8/8/8/8/PPPPPPPP/QBBNRKRN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 d5 2. d4 dxe4 3. Ne3 Be6 4. Nd5 O-O 5. Nxe7+ Rxe7 6. d5 b5 7. d6 Bd5 8. dxe7 c6 9. exf8=Q+ Kxf8 10. Rxe4 h6 11. Re8+ Kxe8 12. Bxh6 f6 13. Ke2 Bf3+ 14. Kxf3 Kf7 15. Bxg7 a5 16. Ke4 Bd6 17. Kf5 Qa6 18. Bxf6 Ba3 19. Bxh8 Bxb2 20. Qxb2 Qa7 21. Qg7+ Ke8 22. Qe7+ Kxe7 23. Bf6+ Kf8 24. Bxd8 c5 25. Kf6 c4 26. Be7+ Kg8 27. Bf8 Kxf8 28. Ng3 b4 29. Kg5 Qb6 30. Ne4 Kg7 31. Nc5 Qxc5+ 32. Kf4 Qd6+ 33. Kg5 Qg3+ 34. fxg3 Kf7 35. c3 Ke6 36. Bh7 bxc3 37. Bd3 Kd5 38. Bxc4+ Kc5 39. Rc1 Kb6 40. Rxc3 Kc7 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0024"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rkrqbbnn/pppppppp/8/8/8/8/PPPPPPPP/RKRQBBNN w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Ng3 e5 2. c4 d5 3. Qa4 Bxa4 4. e4 dxe4 5. b4 Bc2+ 6. Rxc2 Qxd2 7. h3 Qxe1+ 8. Kb2 Qxa1+ 9. Kxa1 Bxb4 10. Nxe4 Bd2 11. a4 Nf6 12. f4 Bxf4 13. Nc3 Bh2 14. Rd2 Bxg1 15. g4 Be3 16. Rc2 Bd2 17. Nd1 Bc3+ 18. Rb2 Be1 19. Rb1 a5 20. Be2 Bb4 21. Nb2 c5 22. Rh1 Ne4 23. Rf1 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0025"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "brnbknqr/pppppppp/8/8/8/8/PPPPPPPP/BRNBKNQR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 f5 2. d4 Qf7 3. Bh5 a6 4. Bxf7+ Kxf7 5. exf5 Nd6 6. Nd3 Ne6 7. f6 Nxd4 8. Ne5+ Kf8 9. f7 Rg8 10. fxg8=Q+ Kxg8 11. Nf7 Kf8 12. Nxd6 Nb5 13. Nxb7 Nd6 14. Nxd6 Rc8 15. Nxc8 Be4 16. Nxe7 Bd5 17. Nxd5 g5 18. Nxc7 Bf6 19. Ne6+ Kg8 20. Nf8 Kg7 21. Nxh7 a5 22. Nxf6 Kxf6 23. Ng3 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0026"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rnbbkqnr/pppppppp/8/8/8/8/PPPPPPPP/RNBBKQNR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. Na3 e5 2. Nc4 d5 3. a4 Qb4 4. f4 Qxc4 5. b4 Qxe2+ 6. Nxe2 Bh4+ 7. Qf2 Bxf2+ 8. Kxf2 Bf5 9. Kf3 exf4 10. Nxf4 Nf6 11. Rg1 Ne4 12. g3 Nf2 13. Be2 Nd1 14. Bxd1 d4 15. Be2 d3 16. Kf2 dxe2 17. Kxe2 Bxc2 18. Ke1 Bd1 19. h4 O-O 20. Rg2 Bh5 21. g4 Bxg4 22. d3 Bf5 23. Bd2 Bxd3 24. Re2 Bxe2 25. Nd5 Nd7 26. Ne3 Bd1 27. Nc4 Ne5 28. Bc3 Bxa4 29. Kd2 Bb5 30. Kc2 Nxc4 31. Re1 Nd2 32. Re6 fxe6 33. Bf6 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0027"]
+[White "model"]
+[Black "random"]
+[Result "1/2-1/2"]
+[Variant "Chess960"]
+[FEN "rqnnbkrb/pppppppp/8/8/8/8/PPPPPPPP/RQNNBKRB w KQkq - 0 1"]
+[SetUp "1"]
+
+1. d4 g5 2. e4 Ne6 3. Nd3 Rg7 4. Nf4 Nxd4 5. Ne6+ dxe6 6. Bc3 Bc6 7. Ne3 Nb3 8. Bxg7+ Ke8 9. cxb3 e5 10. Nf5 f6 11. Nd6+ cxd6 12. Bxf6 Kd7 13. Bxe7 b5 14. Bxd6 Bd5 15. Bxb8 Ke7 16. Bd6+ Kf6 17. exd5 b4 18. Qg6+ hxg6 19. Bxe5+ Kxe5 20. d6 Ke6 21. d7 g4 22. dxc8=Q+ Ke5 23. Qxg4 g5 24. Qe6+ Kxe6 25. Re1+ Be5 26. Rxe5+ Kf7 27. Re7+ Kxe7 28. f4 a6 29. fxg5 Kf8 30. g6 Rc8 31. g7+ Kxg7 32. g4 Kg8 33. g5 Rc7 34. g6 Rc1+ 35. Ke2 Ra1 36. g7 Kh7 37. g8=Q+ Kh6 38. Rg6+ Kh5 39. Rh6+ Kxh6 40. Bc6 Rxa2 41. Qg5+ Kxg5 42. Kd2 a5 43. Ba4 Ra1 44. Ke3 Kf6 45. Bb5 Rg1 46. Bc4 Rg7 47. Kd4 Rg2 48. Kc5 Rxb2 49. Kb5 Rxh2 50. Kc6 Rh4 51. Bb5 Rh3 52. Kd7 Rh7+ 53. Kc6 Rh8 54. Bc4 Ra8 55. Bb5 Rd8 56. Kc7 Re8 57. Bc4 Re2 58. Bb5 Rh2 59. Bc4 Kg6 60. Bb5 Rh5 61. Bc4 Rh1 62. Bb5 Kf6 63. Bd7 Rh6 64. Bc6 Ke5 65. Bd5 Rg6 66. Bb7 Kf6 67. Kb6 Rg7 68. Kxa5 Kf5 69. Kxb4 Rg1 70. Kb5 Ke6 71. Kc6 Ra1 72. Kc7 Re1 73. b4 Re3 74. b5 Ra3 75. Bc6 Rc3 76. Kb7 Kf5 77. b6 Rd3 78. Kc7 Re3 79. Kd6 Rd3+ 80. Ke7 Rd7+ 81. Kxd7 Kf6 82. b7 Ke5 83. b8=Q+ Kf6 84. Qe5+ Kg6 85. Qg7+ Kxg7 { insufficient_material } 1/2-1/2
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0028"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rbqnknbr/pppppppp/8/8/8/8/PPPPPPPP/RBQNKNBR w KQkq - 0 1"]
+[SetUp "1"]
+
+1. d3 e5 2. Nd2 d5 3. h3 Nc6 4. Nf3 Qxh3 5. Qd2 Qxf3 6. Qf4 exf4 7. Bh2 Qxe2+ 8. Kxe2 f3+ 9. gxf3 Ne5 10. c3 Nxf3 11. Re1 Nxh2 12. Bc2 Nf3 13. Bb1 Nxe1 14. Kd2 Nc2 15. Ne3 Nxa1 16. f4 Nb3+ 17. axb3 Ne6 18. Nc2 Nxf4 19. b4 Nxd3 20. Ne1 Nxb4 21. Ke3 Nc2+ 22. Ke2 Na1 23. b3 { adjudication } 0-1
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0029"]
+[White "model"]
+[Black "random"]
+[Result "1-0"]
+[Variant "Chess960"]
+[FEN "rnbkqrnb/pppppppp/8/8/8/8/PPPPPPPP/RNBKQRNB w KQkq - 0 1"]
+[SetUp "1"]
+
+1. e4 c5 2. Nf3 Na6 3. d4 Kc7 4. d5 c4 5. d6+ Kc6 6. Qc3 f5 7. Ne5+ Kc5 8. Qxc4+ Kxd6 9. Qc6+ Kxe5 10. exf5 Nh6 11. Qd6+ Ke4 12. Re1+ Kxf5 13. Re5+ Kg4 14. Qg6+ Qxg6 15. Rg5+ Qxg5 16. Bxg5 Re8 17. Bf6 b5 18. Bg5 Nb8 19. g3 Kh3 20. Bf3 Ng8 21. g4 Nc6 22. Bh4 Nd4 23. Bg3 Rd8 24. Bg2+ Kxg2 25. f3 Nb3 26. cxb3 Kh1 27. Bf2 Re8 28. Be1 Nf6 29. Bf2 Rb8 30. Bh4 g6 31. Bg3 Nd5 32. Bxb8 a5 33. Nd2 Rd8 34. g5 e6 35. Ne4 b4 36. Nf6 Ba6 37. Nxd7 Rg8 38. Nf6 Bxf6 39. gxf6 Bf1 40. f7 Ne3+ 41. Kd2 e5 42. fxg8=Q e4 43. Rxf1+ Kg2 44. h3 Nd1 { adjudication } 1-0
+
+[Event "Agzamov Test"]
+[Site "BrainOps"]
+[Date "????.??.??"]
+[Round "p0_g0030"]
+[White "random"]
+[Black "model"]
+[Result "0-1"]
+[Variant "Chess960"]
+[FEN "rnkqnrbb/pppppppp/8/8/8/8/PPPPPPPP/RNKQNRBB w KQkq - 0 1"]
+[SetUp "1"]
+
+1. c3 d5 2. f4 Nf6 3. Nd3 e5 4. a3 e4 5. Qb3 exd3 6. h3 dxe2 7. Qc4 exf1=Q+ 8. Kc2 Qxc4 9. b3 Qxc3+ 10. dxc3 Nc6 11. Kc1 d4 12. Bf2 d3 13. Bh4 d2+ 14. Kb2 d1=Q 15. b4 Q8d2+ 16. Nxd2 Qxd2+ 17. Kb3 Qxc3+ 18. Kxc3 Nd4 19. Rd1 Ne2+ 20. Kd2 Nxf4 21. g3 Nd3 22. Bc6 bxc6 23. Ra1 { adjudication } 0-1
+

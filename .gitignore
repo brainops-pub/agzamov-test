@@ -19,8 +19,9 @@ venv/
 # Test cache
 .pytest_cache/
 
-# Results (large, regeneratable)
-results/
+# Results — only canonical runs included, trial/archive ignored
+results/_archive/
+results/_trial_runs/
 
 # Archives
 *.zip
