@@ -4,7 +4,7 @@ import math
 
 import pytest
 from agzamov.stats import (
-    StatsEngine, DeltaResult, TauResult, EloResult, GQIResult,
+    StatsEngine, DeltaResult, TauResult, Glicko2Result, Glicko2Rating, GQIResult,
     _extract_scores, _score_for_agent, _cohens_h,
 )
 
@@ -52,7 +52,7 @@ class TestDelta:
         delta = engine.calculate_delta(baseline, memory, "agent_a")
         assert delta.delta > 0
         assert delta.baseline_win_rate == pytest.approx(50.0, abs=1)
-        assert delta.memory_win_rate == pytest.approx(65.0, abs=1)
+        assert delta.augmented_win_rate == pytest.approx(65.0, abs=1)
 
     def test_zero_delta(self, engine):
         baseline = _make_results(50, 50, 0)
@@ -95,7 +95,7 @@ class TestTau:
         assert len(tau.curve) > 0
 
 
-class TestElo:
+class TestGlicko2:
     def test_equal_play(self, engine):
         # Interleave wins to simulate realistic alternating play
         results = []
@@ -107,16 +107,27 @@ class TestElo:
                 "white_id": "agent_a",
                 "black_id": "agent_b",
             })
-        elo = engine.calculate_elo(results, "agent_a", "agent_b")
-        # After perfectly alternating play, Elos should be close to 1500
-        assert abs(elo.agent_a_final_elo - 1500) < 50
-        assert abs(elo.agent_b_final_elo - 1500) < 50
+        glicko = engine.calculate_glicko2(results, "agent_a", "agent_b")
+        # After perfectly alternating play, ratings should be close to 1500
+        assert abs(glicko.agent_a_final.rating - 1500) < 100
+        assert abs(glicko.agent_b_final.rating - 1500) < 100
+        # RD should decrease from initial 350
+        assert glicko.agent_a_final.rd < 350
 
     def test_dominant_player(self, engine):
-        results = _make_results(90, 10, 0)
-        elo = engine.calculate_elo(results, "agent_a", "agent_b")
-        assert elo.agent_a_final_elo > elo.agent_b_final_elo
-        assert len(elo.trajectory_a) == 101  # 0 + 100 games
+        # Interleave results: A wins 9/10 games throughout the match
+        results = []
+        for i in range(100):
+            result = "0-1" if i % 10 == 9 else "1-0"  # 90% A wins, spread evenly
+            results.append({
+                "game_id": f"g{i:04d}",
+                "result": result,
+                "white_id": "agent_a",
+                "black_id": "agent_b",
+            })
+        glicko = engine.calculate_glicko2(results, "agent_a", "agent_b")
+        assert glicko.agent_a_final.rating > glicko.agent_b_final.rating
+        assert len(glicko.trajectory_a) == 101  # 0 + 100 games
 
 
 class TestSanityCheck:
@@ -201,7 +212,7 @@ class TestDeltaEdgeCases:
     def test_empty_memory(self, engine):
         delta = engine.calculate_delta(_make_results(10, 5, 0), [], "agent_a")
         assert delta.delta == 0
-        assert delta.n_memory == 0
+        assert delta.n_augmented == 0
 
     def test_baseline_agent_id_different(self, engine):
         baseline = [{"result": "1-0", "white_id": "base_a", "black_id": "agent_b",
@@ -209,7 +220,7 @@ class TestDeltaEdgeCases:
         memory = _make_results(40, 10, 0)  # 80% win rate
         delta = engine.calculate_delta(baseline, memory, "agent_a", baseline_agent_id="base_a")
         assert delta.baseline_win_rate == pytest.approx(100.0, abs=1)
-        assert delta.memory_win_rate == pytest.approx(80.0, abs=5)
+        assert delta.augmented_win_rate == pytest.approx(80.0, abs=5)
 
     def test_ci_95_format(self, engine):
         baseline = _make_results(50, 50, 0)
@@ -315,19 +326,21 @@ class TestCohensH:
 
 class TestDataclasses:
     def test_delta_result(self):
-        d = DeltaResult(delta=10.0, baseline_win_rate=50.0, memory_win_rate=60.0,
+        d = DeltaResult(delta=10.0, baseline_win_rate=50.0, augmented_win_rate=60.0,
                         p_value=0.03, ci_95=(-5.0, 25.0), n_baseline=100,
-                        n_memory=100, significant=True, effect_size_h=0.2)
+                        n_augmented=100, significant=True, effect_size_h=0.2)
         assert d.delta == 10.0
 
     def test_tau_result(self):
         t = TauResult(tau=42, max_win_rate=0.7, curve=[(20, 0.6)])
         assert t.tau == 42
 
-    def test_elo_result(self):
-        e = EloResult(agent_a_final_elo=1600.0, agent_b_final_elo=1400.0,
-                      trajectory_a=[(0, 1500)], trajectory_b=[(0, 1500)])
-        assert e.agent_a_final_elo == 1600.0
+    def test_glicko2_result(self):
+        r = Glicko2Rating(rating=1600.0, rd=80.0, volatility=0.06)
+        assert r.rating == 1600.0
+        ci = r.ci_95
+        assert ci[0] == 1600.0 - 160.0
+        assert ci[1] == 1600.0 + 160.0
 
     def test_gqi_result(self):
         g = GQIResult(agent_a_avg_cpl=25.0, agent_b_avg_cpl=40.0,

@@ -5,6 +5,8 @@
 let providers = []
 let runActive = false
 
+const STORAGE_KEY = "agzamov-last-run"
+
 // --- Init ---
 async function init() {
     try {
@@ -22,6 +24,9 @@ async function init() {
     } catch (e) {
         // API not available (CLI-launched dashboard) — modal still works with HTML defaults
     }
+
+    // Restore last run settings (overrides defaults)
+    restoreLastSettings()
 
     populateModelHints()
     bindEvents()
@@ -91,7 +96,7 @@ function populateFormDefaults(d) {
     // Stats
     set("cfg-stats-sig", d.stats?.significance_threshold)
     set("cfg-stats-bootstrap", d.stats?.bootstrap_samples)
-    set("cfg-stats-elo-k", d.stats?.elo_k_factor)
+    set("cfg-stats-glicko-rd", d.stats?.glicko2_initial_rd)
     // Output
     set("cfg-output-dir", d.output?.results_dir)
     setChecked("cfg-save-history", d.output?.save_game_history !== false)
@@ -171,6 +176,60 @@ function updateKeyIndicator(inputId, statusId) {
     }
 }
 
+// --- Last settings persistence ---
+function saveLastSettings(payload) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+    } catch (e) { /* quota exceeded or private mode */ }
+}
+
+function restoreLastSettings() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY)
+        if (!raw) return
+        const saved = JSON.parse(raw)
+
+        // Match tab
+        if (saved.match_type) {
+            const radio = document.querySelector(`input[name="match_type"][value="${saved.match_type}"]`)
+            if (radio) {
+                radio.checked = true
+                radio.dispatchEvent(new Event("change", { bubbles: true }))
+            }
+        }
+        if (saved.n_games) {
+            const el = document.getElementById("cfg-n-games")
+            if (el) el.value = saved.n_games
+        }
+        if (saved.config?.phases) {
+            document.querySelectorAll('input[name="phase"]').forEach(cb => {
+                cb.checked = saved.config.phases.includes(parseInt(cb.value))
+            })
+        }
+
+        // Restore full config via same function used for API defaults
+        if (saved.config) populateFormDefaults(saved.config)
+
+        // Opponent model (vs mode)
+        if (saved.opponent_model) {
+            const opp = saved.opponent_model
+            const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.value = v }
+            set("cfg-opp-model", opp.name)
+            set("cfg-opp-temperature", opp.temperature)
+            set("cfg-opp-max-tokens", opp.max_tokens)
+            const thk = document.getElementById("cfg-opp-thinking")
+            if (thk) { thk.checked = !!opp.thinking; thk.dispatchEvent(new Event("change")) }
+            set("cfg-opp-thinking-budget", opp.thinking_budget)
+        }
+
+        // Sync visibility toggles
+        const thinking = document.getElementById("cfg-thinking")
+        if (thinking) thinking.dispatchEvent(new Event("change"))
+        const searchMode = document.getElementById("cfg-search-mode")
+        if (searchMode) searchMode.dispatchEvent(new Event("change"))
+    } catch (e) { /* corrupt data — ignore */ }
+}
+
 // --- Modal ---
 function openModal() {
     if (runActive) return
@@ -239,7 +298,8 @@ function buildPayload() {
         stats: {
             significance_threshold: num("cfg-stats-sig"),
             bootstrap_samples: int("cfg-stats-bootstrap"),
-            elo_k_factor: int("cfg-stats-elo-k"),
+            glicko2_initial_rd: int("cfg-stats-glicko-rd"),
+            glicko2_initial_vol: 0.06,
             tau_window_size: 20,
             tau_threshold: 0.95,
         },
@@ -311,6 +371,7 @@ async function submitRun() {
             showWarning(result.warnings.join("\n"), "warning")
         }
 
+        saveLastSettings(payload)
         closeModal()
         setRunActive(true)
     } catch (e) {

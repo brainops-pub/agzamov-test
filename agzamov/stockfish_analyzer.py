@@ -319,7 +319,12 @@ class StockfishAnalyzer:
     def close(self):
         """Clean up Stockfish process."""
         try:
-            # Kill the subprocess directly to avoid __del__ trying to write to dead stdin
+            # Use the package's own quit first (graceful shutdown)
+            self.engine.send_quit_command()
+        except Exception:
+            pass
+        try:
+            # Then kill the subprocess to prevent __del__ from touching a dead pipe
             if hasattr(self.engine, '_stockfish') and self.engine._stockfish:
                 self.engine._stockfish.kill()
                 self.engine._stockfish.wait()

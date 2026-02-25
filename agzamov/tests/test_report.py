@@ -1,7 +1,7 @@
 """Tests for report generator — generate_report, _pct, section helpers."""
 
 import pytest
-from agzamov.report import generate_report, _pct, _add_elo_section, _add_gqi_section
+from agzamov.report import generate_report, _pct, _add_rating_section, _add_gqi_section
 
 
 # ── _pct ──────────────────────────────────────────────────────────────
@@ -27,33 +27,52 @@ class TestPct:
         assert "33.3%" in result
 
 
-# ── _add_elo_section ──────────────────────────────────────────────────
+# ── _add_rating_section ──────────────────────────────────────────────
 
-class TestAddEloSection:
-    def test_no_elo_data(self):
+class TestAddRatingSection:
+    def test_no_data(self):
         lines = []
-        _add_elo_section(lines, {})
+        _add_rating_section(lines, {})
         assert lines == []
 
-    def test_with_elo(self):
+    def test_with_glicko2(self):
         lines = []
-        _add_elo_section(lines, {
+        _add_rating_section(lines, {
+            "glicko2": {
+                "agent_a_final": {"rating": 1600, "rd": 80, "volatility": 0.06},
+                "agent_b_final": {"rating": 1400, "rd": 90, "volatility": 0.06},
+            }
+        })
+        text = "\n".join(lines)
+        assert "Glicko-2" in text
+        assert "1600" in text
+        assert "1400" in text
+        assert "±" in text
+
+    def test_legacy_elo_fallback(self):
+        lines = []
+        _add_rating_section(lines, {
             "elo": {"agent_a_final_elo": 1600, "agent_b_final_elo": 1400}
         })
         text = "\n".join(lines)
-        assert "Elo" in text
+        assert "legacy" in text
         assert "1600" in text
         assert "1400" in text
 
-    def test_empty_elo_dict_skipped(self):
-        """Empty elo dict is falsy → no section added."""
+    def test_empty_glicko2_skipped(self):
+        """Empty glicko2 dict is falsy → falls through to elo check."""
         lines = []
-        _add_elo_section(lines, {"elo": {}})
+        _add_rating_section(lines, {"glicko2": {}})
         assert lines == []
 
-    def test_partial_elo_uses_defaults(self):
+    def test_partial_glicko2_uses_defaults(self):
         lines = []
-        _add_elo_section(lines, {"elo": {"agent_a_final_elo": 1600}})
+        _add_rating_section(lines, {
+            "glicko2": {
+                "agent_a_final": {"rating": 1600},
+                "agent_b_final": {},
+            }
+        })
         text = "\n".join(lines)
         assert "1600" in text
         assert "1500" in text  # default for agent_b
@@ -85,6 +104,28 @@ class TestAddGqiSection:
         _add_gqi_section(lines, {"gqi": []}, "a", "b")
         assert lines == []
 
+    def test_gqi_phase4_flag(self):
+        """Phase 4+ adds engine-alignment caveat."""
+        lines = []
+        _add_gqi_section(lines, {
+            "gqi": [
+                {"white_id": "a", "white_avg_cpl": 30.0, "black_avg_cpl": 50.0},
+            ]
+        }, "a", "b", phase_num=4)
+        text = "\n".join(lines)
+        assert "engine-alignment" in text
+
+    def test_gqi_phase1_no_flag(self):
+        """Phase 1 has no engine-alignment caveat."""
+        lines = []
+        _add_gqi_section(lines, {
+            "gqi": [
+                {"white_id": "a", "white_avg_cpl": 30.0, "black_avg_cpl": 50.0},
+            ]
+        }, "a", "b", phase_num=1)
+        text = "\n".join(lines)
+        assert "engine-alignment" not in text
+
 
 # ── generate_report ───────────────────────────────────────────────────
 
@@ -93,7 +134,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test-001",
             model_name="claude-test",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={},
             results_dir="/tmp/results",
         )
@@ -106,7 +147,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={0: {"passed": True}},
             results_dir="/tmp",
         )
@@ -117,7 +158,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={0: {"passed": False}},
             results_dir="/tmp",
         )
@@ -127,7 +168,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={1: {
                 "n_games": 100, "agent_a_wins": 55, "agent_b_wins": 40,
                 "draws": 5, "agent_a_errors": 2, "agent_b_errors": 3,
@@ -143,13 +184,13 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="sqlite",
+            augmentation_type="sqlite",
             phase_summaries={2: {
                 "n_games": 100, "agent_a_wins": 60, "agent_b_wins": 35,
                 "draws": 5, "agent_a_errors": 1, "agent_b_errors": 2,
                 "delta": {
                     "delta": 10.5, "baseline_win_rate": 50.0,
-                    "memory_win_rate": 60.5, "p_value": 0.03,
+                    "augmented_win_rate": 60.5, "p_value": 0.03,
                     "ci_95": [3.2, 17.8], "significant": True,
                     "effect_size_h": 0.21,
                 },
@@ -169,7 +210,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={2: {
                 "n_games": 50, "agent_a_wins": 25, "agent_b_wins": 20,
                 "draws": 5, "agent_a_errors": 0, "agent_b_errors": 0,
@@ -185,7 +226,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="brainops",
+            augmentation_type="brainops",
             phase_summaries={3: {
                 "n_games": 50, "agent_a_wins": 28, "agent_b_wins": 22,
                 "draws": 0, "cost_usd": 3.0,
@@ -199,7 +240,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="full-run",
             model_name="claude-sonnet",
-            memory_type="brainops-mcp",
+            augmentation_type="brainops-mcp",
             phase_summaries={
                 0: {"passed": True, "cost_usd": 0.5},
                 1: {"n_games": 100, "agent_a_wins": 50, "agent_b_wins": 45,
@@ -207,7 +248,7 @@ class TestGenerateReport:
                 2: {"n_games": 100, "agent_a_wins": 65, "agent_b_wins": 30,
                     "draws": 5, "agent_a_errors": 1, "agent_b_errors": 2,
                     "delta": {"delta": 15.0, "baseline_win_rate": 50.0,
-                              "memory_win_rate": 65.0, "p_value": 0.001,
+                              "augmented_win_rate": 65.0, "p_value": 0.001,
                               "ci_95": [8.0, 22.0], "significant": True,
                               "effect_size_h": 0.30},
                     "tau": {"tau": 35, "max_win_rate": 0.70},
@@ -227,7 +268,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={1: {"n_games": 10, "agent_a_wins": 5, "agent_b_wins": 5,
                                  "draws": 0, "cost_usd": 42.50,
                                  "agent_a_errors": 0, "agent_b_errors": 0}},
@@ -240,7 +281,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={},
             results_dir="/my/results",
         )
@@ -251,12 +292,12 @@ class TestGenerateReport:
         report = generate_report(
             config_name="test",
             model_name="m",
-            memory_type="none",
+            augmentation_type="none",
             phase_summaries={2: {
                 "n_games": 50, "agent_a_wins": 25, "agent_b_wins": 20,
                 "draws": 5, "agent_a_errors": 0, "agent_b_errors": 0,
                 "delta": {"delta": 5.0, "baseline_win_rate": 50.0,
-                          "memory_win_rate": 55.0, "p_value": 0.2,
+                          "augmented_win_rate": 55.0, "p_value": 0.2,
                           "ci_95": [-5.0, 15.0], "significant": False,
                           "effect_size_h": 0.1},
                 "tau": {"tau": None, "max_win_rate": 0.55},

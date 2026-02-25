@@ -10,7 +10,7 @@ from pathlib import Path
 def generate_report(
     config_name: str,
     model_name: str,
-    memory_type: str,
+    augmentation_type: str,
     phase_summaries: dict[int, dict],
     results_dir: str,
 ) -> str:
@@ -23,7 +23,7 @@ def generate_report(
         "## Configuration",
         "",
         f"- **Model:** {model_name}",
-        f"- **Memory:** {memory_type}",
+        f"- **Augmentation:** {augmentation_type}",
         f"- **Results directory:** `{results_dir}`",
         "",
     ]
@@ -32,7 +32,7 @@ def generate_report(
     if 0 in phase_summaries:
         p0 = phase_summaries[0]
         lines.extend([
-            "## Phase 0: Sanity Check",
+            "## Phase 0: Sanity Gate",
             "",
             f"- **Passed:** {'Yes' if p0.get('passed') else 'No'}",
             "",
@@ -56,8 +56,8 @@ def generate_report(
             f"- **Agent B errors:** {p1.get('agent_b_errors', 0)}",
             "",
         ])
-        _add_elo_section(lines, p1)
-        _add_gqi_section(lines, p1, "agent_a", "agent_b")
+        _add_rating_section(lines, p1)
+        _add_gqi_section(lines, p1, "agent_a", "agent_b", phase_num=1)
 
     # Phase 2
     if 2 in phase_summaries:
@@ -67,10 +67,10 @@ def generate_report(
         b_wins = p2.get("agent_b_wins", 0)
         draws = p2.get("draws", 0)
         lines.extend([
-            "## Phase 2: Asymmetric (Memory vs Naked)",
+            "## Phase 2: Asymmetric (Augmented vs Naked)",
             "",
             f"- **Games:** {n}",
-            f"- **Agent A (memory) win rate:** {_pct(a_wins, n)}",
+            f"- **Agent A (augmented) win rate:** {_pct(a_wins, n)}",
             f"- **Agent B (naked) win rate:** {_pct(b_wins, n)}",
             f"- **Draw rate:** {_pct(draws, n)}",
             "",
@@ -83,7 +83,7 @@ def generate_report(
                 "",
                 f"- **Δₐ = {delta.get('delta', 0):+.2f} percentage points**",
                 f"- Baseline win rate: {delta.get('baseline_win_rate', 0):.1f}%",
-                f"- Memory win rate: {delta.get('memory_win_rate', 0):.1f}%",
+                f"- Augmented win rate: {delta.get('augmented_win_rate', 0):.1f}%",
                 f"- p-value: {delta.get('p_value', 1.0)}",
                 f"- 95% CI: [{delta.get('ci_95', [0,0])[0]:+.2f}, {delta.get('ci_95', [0,0])[1]:+.2f}]",
                 f"- Effect size (Cohen's h): {delta.get('effect_size_h', 0):.4f}",
@@ -102,11 +102,11 @@ def generate_report(
                 "",
             ])
 
-        _add_elo_section(lines, p2)
-        _add_gqi_section(lines, p2, "agent_a_memory", "agent_b_naked")
+        _add_rating_section(lines, p2)
+        _add_gqi_section(lines, p2, "agent_a_memory", "agent_b_naked", phase_num=2)
 
         lines.extend([
-            f"- **Memory entries stored:** {p2.get('memory_entries', 'N/A')}",
+            f"- **Augmentation entries stored:** {p2.get('memory_entries', 'N/A')}",
             f"- **Agent A errors:** {p2.get('agent_a_errors', 0)}",
             f"- **Agent B errors:** {p2.get('agent_b_errors', 0)}",
             "",
@@ -120,7 +120,7 @@ def generate_report(
         b_wins = p3.get("agent_b_wins", 0)
         draws = p3.get("draws", 0)
         lines.extend([
-            "## Phase 3: Arms Race (Memory vs Memory)",
+            "## Phase 3: Arms Race (Augmented vs Augmented)",
             "",
             f"- **Games:** {n}",
             f"- **Agent A win rate:** {_pct(a_wins, n)}",
@@ -128,7 +128,7 @@ def generate_report(
             f"- **Draw rate:** {_pct(draws, n)}",
             "",
         ])
-        _add_elo_section(lines, p3)
+        _add_rating_section(lines, p3)
 
     # Cost summary
     total_cost = max(
@@ -148,7 +148,7 @@ def generate_report(
         "",
         f"- Game histories: `{results_dir}/chess/`",
         f"- Stockfish analyses: `{results_dir}/stats/`",
-        f"- Memory dumps: `{results_dir}/stats/`",
+        f"- Augmentation dumps: `{results_dir}/stats/`",
         "",
         "---",
         "",
@@ -164,20 +164,35 @@ def _pct(count: int, total: int) -> str:
     return f"{count}/{total} ({count/total:.1%})"
 
 
-def _add_elo_section(lines: list[str], phase_data: dict) -> None:
-    elo = phase_data.get("elo")
-    if not elo:
+def _add_rating_section(lines: list[str], phase_data: dict) -> None:
+    glicko = phase_data.get("glicko2")
+    if not glicko:
+        # Backwards compatibility with old elo format
+        elo = phase_data.get("elo")
+        if elo:
+            lines.extend([
+                "### Rating Trajectories (Elo, legacy)",
+                "",
+                f"- Agent A final: {elo.get('agent_a_final_elo', 1500)}",
+                f"- Agent B final: {elo.get('agent_b_final_elo', 1500)}",
+                "",
+            ])
         return
+
+    a = glicko.get("agent_a_final", {})
+    b = glicko.get("agent_b_final", {})
+    a_r, a_rd = a.get("rating", 1500), a.get("rd", 350)
+    b_r, b_rd = b.get("rating", 1500), b.get("rd", 350)
     lines.extend([
-        "### Elo Trajectories",
+        "### Glicko-2 Ratings",
         "",
-        f"- Agent A final Elo: {elo.get('agent_a_final_elo', 1500)}",
-        f"- Agent B final Elo: {elo.get('agent_b_final_elo', 1500)}",
+        f"- Agent A: {a_r:.0f} ± {a_rd:.0f} (95% CI: {a_r - 2*a_rd:.0f}–{a_r + 2*a_rd:.0f})",
+        f"- Agent B: {b_r:.0f} ± {b_rd:.0f} (95% CI: {b_r - 2*b_rd:.0f}–{b_r + 2*b_rd:.0f})",
         "",
     ])
 
 
-def _add_gqi_section(lines: list[str], phase_data: dict, a_label: str, b_label: str) -> None:
+def _add_gqi_section(lines: list[str], phase_data: dict, a_label: str, b_label: str, phase_num: int = 0) -> None:
     gqi_list = phase_data.get("gqi")
     if not gqi_list:
         return
@@ -203,5 +218,7 @@ def _add_gqi_section(lines: list[str], phase_data: dict, a_label: str, b_label: 
             f"- Agent B avg CPL: {avg_b:.1f}",
             f"- GQI improvement: {avg_b - avg_a:+.1f} centipawns",
             f"- Games analyzed: {len(gqi_list)}",
-            "",
         ])
+        if phase_num >= 4:
+            lines.append("- **Note:** GQI in tool-augmented phases measures engine-alignment, not independent quality (Stockfish is both tool and judge).")
+        lines.append("")

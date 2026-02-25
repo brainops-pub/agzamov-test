@@ -15,7 +15,7 @@ from .agent import LLMAgent, RandomAgent, StockfishAgent, CostTracker, cost_trac
 from .chess_engine import Chess960Game, GameResult
 from .config import RunConfig
 from .memory_bridge import create_memory_bridge, NoMemory
-from .stats import StatsEngine, DeltaResult, TauResult, EloResult
+from .stats import StatsEngine, DeltaResult, TauResult, Glicko2Result
 from .stockfish_analyzer import StockfishAnalyzer, find_stockfish
 from .storage import RunStorage
 
@@ -135,7 +135,7 @@ class Orchestrator:
         logger.info(f"Agzamov Test: {self.config.name}")
         logger.info(f"Model: {self.config.model.name} | temp={self.config.model.temperature}" +
                     (f" | thinking={self.config.model.thinking_budget}tok" if self.config.model.thinking else ""))
-        logger.info(f"Memory: {self.config.memory.type}")
+        logger.info(f"Memory: {self.config.augmentation.type}")
         logger.info(f"Phases: {self.config.phases}")
         logger.info(f"Log file: {log_path}")
         logger.info("=" * 60)
@@ -160,7 +160,7 @@ class Orchestrator:
         console.print(f"\n[bold]Agzamov Test: {self.config.name}[/bold]")
         console.print(f"Model: {self.config.model.name}" +
                       (f" [thinking={self.config.model.thinking_budget}tok]" if self.config.model.thinking else ""))
-        console.print(f"Memory: {self.config.memory.type}")
+        console.print(f"Memory: {self.config.augmentation.type}")
         console.print(f"Phases: {self.config.phases}\n")
 
         # Broadcast run info for dashboard
@@ -174,18 +174,18 @@ class Orchestrator:
             "model_name": m.name,
             "model_label": model_label,
             "temperature": m.temperature,
-            "memory_type": self.config.memory.type,
+            "memory_type": self.config.augmentation.type,
             "search_mode": self.config.tree_search.mode,
             "phases": self.config.phases,
         })
 
         # Check memory availability — auto-fallback if MCP is unreachable
-        if self.config.memory.type == "brainops-mcp":
+        if self.config.augmentation.type == "brainops-mcp":
             if await self._check_memory_available():
                 console.print("[green]Memory MCP: connected[/green]")
             else:
                 console.print("[yellow]Memory MCP unreachable — falling back to sqlite-fallback[/yellow]")
-                self.config.memory.type = "sqlite-fallback"
+                self.config.augmentation.type = "sqlite-fallback"
 
         # Initialize Stockfish — required for tree search (Mode B/C), optional for live eval
         need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
@@ -231,7 +231,7 @@ class Orchestrator:
                 passed = await self._run_phase_0()
                 summary["phases"][0] = {"passed": passed}
                 if not passed:
-                    console.print("[bold red]Phase 0 sanity check FAILED. Aborting.[/bold red]")
+                    console.print("[bold red]Phase 0 sanity gate FAILED. Aborting.[/bold red]")
                     break
             elif phase == 1:
                 results = await self._run_phase_1()
@@ -260,9 +260,9 @@ class Orchestrator:
         return summary
 
     async def _run_phase_0(self) -> bool:
-        """Sanity check: model vs random legal moves."""
+        """Sanity gate: model vs random legal moves."""
         n = self.config.sanity_check.chess_games
-        console.print(f"\n[bold]Phase 0: Sanity Check ({n} games vs random)[/bold]")
+        console.print(f"\n[bold]Phase 0: Sanity Gate ({n} games vs random)[/bold]")
 
         agent = self._make_agent("model")
         random_agent = RandomAgent(agent_id="random")
@@ -356,7 +356,11 @@ class Orchestrator:
         results = await self._play_games(agent_a, agent_b, n, phase=1)
         self._phase_results[1] = results
 
-        elo = self.stats_engine.calculate_elo(results, "agent_a", "agent_b", self.config.stats.elo_k_factor)
+        glicko = self.stats_engine.calculate_glicko2(
+            results, "agent_a", "agent_b",
+            initial_rd=self.config.stats.glicko2_initial_rd,
+            initial_vol=self.config.stats.glicko2_initial_vol,
+        )
         analysis = self._run_stockfish_analysis(results, 1)
 
         summary = {
@@ -364,7 +368,7 @@ class Orchestrator:
             "agent_a_wins": sum(1 for r in results if _agent_won(r, "agent_a")),
             "agent_b_wins": sum(1 for r in results if _agent_won(r, "agent_b")),
             "draws": sum(1 for r in results if r.get("result") == "1/2-1/2"),
-            "elo": asdict(elo) if elo else None,
+            "glicko2": asdict(glicko) if glicko else None,
             "gqi": analysis,
             "agent_a_errors": agent_a.stats.errors,
             "agent_b_errors": agent_b.stats.errors,
@@ -381,9 +385,9 @@ class Orchestrator:
 
         # Agent A gets memory
         memory_a = create_memory_bridge(
-            self.config.memory.type,
-            endpoint=self.config.memory.endpoint,
-            api_key=self.config.memory.api_key,
+            self.config.augmentation.type,
+            endpoint=self.config.augmentation.endpoint,
+            api_key=self.config.augmentation.api_key,
         )
 
         agent_a = self._make_agent("agent_a_memory", memory=memory_a)
@@ -401,7 +405,11 @@ class Orchestrator:
             baseline, results, "agent_a_memory", baseline_agent_id="agent_a"
         )
         tau = self.stats_engine.calculate_tau(results, "agent_a_memory", self.config.stats.tau_window_size)
-        elo = self.stats_engine.calculate_elo(results, "agent_a_memory", "agent_b_naked", self.config.stats.elo_k_factor)
+        glicko = self.stats_engine.calculate_glicko2(
+            results, "agent_a_memory", "agent_b_naked",
+            initial_rd=self.config.stats.glicko2_initial_rd,
+            initial_vol=self.config.stats.glicko2_initial_vol,
+        )
         analysis = self._run_stockfish_analysis(results, 2)
 
         # Memory dump for audit
@@ -419,7 +427,7 @@ class Orchestrator:
             "draws": sum(1 for r in results if r.get("result") == "1/2-1/2"),
             "delta": asdict(delta),
             "tau": asdict(tau),
-            "elo": asdict(elo) if elo else None,
+            "glicko2": asdict(glicko) if glicko else None,
             "gqi": analysis,
             "agent_a_errors": agent_a.stats.errors,
             "agent_b_errors": agent_b.stats.errors,
@@ -445,15 +453,15 @@ class Orchestrator:
         console.print(f"\n[bold]Phase 3: Arms Race ({n} games, memory vs memory)[/bold]")
 
         memory_a = create_memory_bridge(
-            self.config.memory.type,
-            endpoint=self.config.memory.endpoint,
-            api_key=self.config.memory.api_key,
+            self.config.augmentation.type,
+            endpoint=self.config.augmentation.endpoint,
+            api_key=self.config.augmentation.api_key,
             namespace="agzamov-a",
         )
         memory_b = create_memory_bridge(
-            self.config.memory.type,
-            endpoint=self.config.memory.endpoint,
-            api_key=self.config.memory.api_key,
+            self.config.augmentation.type,
+            endpoint=self.config.augmentation.endpoint,
+            api_key=self.config.augmentation.api_key,
             namespace="agzamov-b",
         )
         await memory_a.clear("agent_b_armed")
@@ -465,7 +473,11 @@ class Orchestrator:
         results = await self._play_games(agent_a, agent_b, n, phase=3)
         self._phase_results[3] = results
 
-        elo = self.stats_engine.calculate_elo(results, "agent_a_armed", "agent_b_armed", self.config.stats.elo_k_factor)
+        glicko = self.stats_engine.calculate_glicko2(
+            results, "agent_a_armed", "agent_b_armed",
+            initial_rd=self.config.stats.glicko2_initial_rd,
+            initial_vol=self.config.stats.glicko2_initial_vol,
+        )
 
         # Memory dumps
         dump_a = await memory_a.dump()
@@ -483,7 +495,7 @@ class Orchestrator:
             "agent_a_wins": sum(1 for r in results if _agent_won(r, "agent_a_armed")),
             "agent_b_wins": sum(1 for r in results if _agent_won(r, "agent_b_armed")),
             "draws": sum(1 for r in results if r.get("result") == "1/2-1/2"),
-            "elo": asdict(elo) if elo else None,
+            "glicko2": asdict(glicko) if glicko else None,
             "agent_a_errors": agent_a.stats.errors,
             "agent_b_errors": agent_b.stats.errors,
             "cost_usd": round(cost_tracker.total_usd, 2),
@@ -1018,7 +1030,7 @@ class Orchestrator:
     async def _check_memory_available(self) -> bool:
         """Ping the BrainOps Memory MCP to check if it's reachable."""
         import aiohttp
-        endpoint = self.config.memory.endpoint.rstrip("/")
+        endpoint = self.config.augmentation.endpoint.rstrip("/")
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(f"{endpoint}/ping", timeout=aiohttp.ClientTimeout(total=3)) as resp:

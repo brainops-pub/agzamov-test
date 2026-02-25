@@ -1,15 +1,15 @@
 name: "agzamov-mvp-001"
-description: "MVP run: Chess960, Claude Sonnet, BrainOps Memory"
+description: "MVP run: Chess960, Claude Sonnet, four augmentation levels"
 
 phases: [0, 1, 2]
 
 model:
   provider: "anthropic"
   name: "claude-sonnet-4-20250514"
-  temperature: 0.6
+  temperature: 0
   max_tokens: 300
 
-memory:
+augmentation:
   type: "brainops-mcp"
   endpoint: "http://127.0.0.1:3200/api/v1"
   max_context_tokens: 500
@@ -36,7 +36,8 @@ stockfish:
 stats:
   significance_threshold: 0.05
   bootstrap_samples: 10000
-  elo_k_factor: 32
+  glicko2_initial_rd: 350
+  glicko2_initial_vol: 0.06
   tau_window_size: 20
   tau_threshold: 0.95
 

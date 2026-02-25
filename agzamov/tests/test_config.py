@@ -57,12 +57,6 @@ class TestValidation:
         issues = validate_config(cfg)
         assert any("Phase 1" in i for i in issues)
 
-    def test_bad_memory_type(self):
-        cfg = load_config()
-        cfg.memory.type = "nonexistent"
-        issues = validate_config(cfg)
-        assert any("ERROR" in i and "memory" in i.lower() for i in issues)
-
     @patch.dict(os.environ, {}, clear=True)
     def test_missing_api_key(self):
         cfg = load_config()

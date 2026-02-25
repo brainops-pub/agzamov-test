@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "agzamov"
 version = "0.1.0"
-description = "Agzamov Test — game-theoretic benchmark for AI memory infrastructure"
+description = "Agzamov Test — game-theoretic benchmark for measuring real AI capabilities under adversarial conditions"
 readme = "../agzamov-test.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"

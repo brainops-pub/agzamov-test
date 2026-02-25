@@ -55,7 +55,7 @@ def resolve_provider(model_name: str) -> tuple[str, str, str]:
 class ModelConfig:
     provider: str = "anthropic"     # "anthropic" | "openai" (OpenAI-compatible)
     name: str = "claude-sonnet-4-6"
-    temperature: float = 0.6
+    temperature: float = 0.0
     max_tokens: int = 300
     thinking: bool = False          # enable extended thinking (Opus)
     thinking_budget: int = 2048     # token budget for thinking block
@@ -64,7 +64,7 @@ class ModelConfig:
 
 
 @dataclass
-class MemoryConfig:
+class AugmentationConfig:
     type: str = "none"  # "brainops-mcp" | "sqlite-fallback" | "none"
     endpoint: str = "http://127.0.0.1:3200/api/v1"
     api_key: str = ""
@@ -104,7 +104,8 @@ class StockfishConfig:
 class StatsConfig:
     significance_threshold: float = 0.05
     bootstrap_samples: int = 10_000
-    elo_k_factor: int = 32
+    glicko2_initial_rd: float = 350.0
+    glicko2_initial_vol: float = 0.06
     tau_window_size: int = 20
     tau_threshold: float = 0.95
 
@@ -148,7 +149,7 @@ class RunConfig:
     description: str = ""
     phases: list[int] = field(default_factory=lambda: [0, 1, 2])
     model: ModelConfig = field(default_factory=ModelConfig)
-    memory: MemoryConfig = field(default_factory=MemoryConfig)
+    augmentation: AugmentationConfig = field(default_factory=AugmentationConfig)
     chess: ChessConfig = field(default_factory=ChessConfig)
     sanity_check: SanityCheckConfig = field(default_factory=SanityCheckConfig)
     stockfish: StockfishConfig = field(default_factory=StockfishConfig)
@@ -194,7 +195,7 @@ def load_config(config_path: str | Path | None = None) -> RunConfig:
 
     If config_path is None, returns default configuration.
     Environment variables can override:
-      AGZAMOV_STOCKFISH_PATH, ANTHROPIC_API_KEY, MEMORY_API_KEY
+      AGZAMOV_STOCKFISH_PATH, ANTHROPIC_API_KEY, AUGMENTATION_API_KEY
     """
     if config_path is None:
         cfg = RunConfig()
@@ -209,8 +210,8 @@ def load_config(config_path: str | Path | None = None) -> RunConfig:
     # Environment variable overrides
     if sf_path := os.environ.get("AGZAMOV_STOCKFISH_PATH"):
         cfg.stockfish.path = sf_path
-    if api_key := os.environ.get("MEMORY_API_KEY"):
-        cfg.memory.api_key = api_key
+    if api_key := os.environ.get("AUGMENTATION_API_KEY"):
+        cfg.augmentation.api_key = api_key
 
     # Auto-resolve model provider, base_url, and API key from model name
     _resolve_model_config(cfg.model)
@@ -239,8 +240,8 @@ def validate_config(cfg: RunConfig) -> list[str]:
         issues.append("WARNING: Phase 2 games < 50 — Δₐ may not be statistically significant")
     if cfg.model.temperature > 1.0:
         issues.append("WARNING: Temperature > 1.0 may produce erratic play")
-    if cfg.memory.type not in ("brainops-mcp", "sqlite-fallback", "none"):
-        issues.append(f"ERROR: Unknown memory type: {cfg.memory.type}")
+    if cfg.augmentation.type not in ("brainops-mcp", "sqlite-fallback", "none"):
+        issues.append(f"ERROR: Unknown augmentation type: {cfg.augmentation.type}")
     if cfg.stockfish.path and not Path(cfg.stockfish.path).exists():
         issues.append(f"WARNING: Stockfish not found at {cfg.stockfish.path}")
 

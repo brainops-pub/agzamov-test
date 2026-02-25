@@ -28,3 +28,28 @@ results/
 # OS
 Thumbs.db
 .DS_Store
+
+# Internal docs (not for public repo)
+AUDIT_GUIDE.md
+DECISIONS.md
+PRESS_RELEASE.md
+PUBLICATION-OPTIONS.md
+publication-plan.md
+mvp-task-spec.md
+vision-implementation.md
+anthropic-fellows-application-plan.md
+industry-benchmark-factcheck.md
+ip-protection-plan.md
+
+# Claude Code
+.claude/
+
+# LaTeX build artifacts
+latex/*.aux
+latex/*.bbl
+latex/*.blg
+latex/*.log
+latex/*.out
+latex/*.pdf
+latex/*.synctex*
+latex/GPT version/

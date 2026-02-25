@@ -192,7 +192,7 @@ function onRunInfo(data) {
     document.getElementById("phase-label").textContent = data.model_label
     document.getElementById("matchup").textContent = data.run_name
     document.getElementById("game-counter").textContent =
-        `temp=${data.temperature} | memory=${data.memory_type}`
+        `temp=${data.temperature} | augmentation=${data.augmentation_type}`
 
     // Show search mode badge
     const modeEl = document.getElementById("search-mode-label")

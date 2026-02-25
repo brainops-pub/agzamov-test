@@ -18,6 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
+class MoveMetrics:
+    """Per-move compute metrics for efficiency frontier analysis."""
+    input_tokens: int = 0
+    output_tokens: int = 0
+    wall_time_ms: float = 0.0
+    api_calls: int = 0  # 1 for normal, 2+ for retries
+
+
+@dataclass
 class AgentStats:
     total_moves: int = 0
     errors: int = 0
@@ -29,6 +38,34 @@ class AgentStats:
     total_input_tokens: int = 0
     total_output_tokens: int = 0
     total_api_calls: int = 0
+    move_metrics: list = field(default_factory=list)  # list[MoveMetrics]
+
+    @property
+    def tokens_per_move(self) -> dict:
+        """Compute per-move token stats."""
+        if not self.move_metrics:
+            return {"mean": 0, "median": 0, "p95": 0}
+        totals = [m.input_tokens + m.output_tokens for m in self.move_metrics]
+        totals.sort()
+        n = len(totals)
+        return {
+            "mean": sum(totals) / n,
+            "median": totals[n // 2],
+            "p95": totals[int(n * 0.95)] if n >= 20 else totals[-1],
+        }
+
+    @property
+    def time_per_move(self) -> dict:
+        """Compute per-move wall time stats (ms)."""
+        if not self.move_metrics:
+            return {"mean": 0, "median": 0, "p95": 0}
+        times = sorted(m.wall_time_ms for m in self.move_metrics)
+        n = len(times)
+        return {
+            "mean": sum(times) / n,
+            "median": times[n // 2],
+            "p95": times[int(n * 0.95)] if n >= 20 else times[-1],
+        }
 
 
 @dataclass
@@ -76,7 +113,7 @@ class LLMAgent:
         agent_id: str,
         model: str,
         memory: MemoryBridge | None = None,
-        temperature: float = 0.6,
+        temperature: float = 0.0,
         max_tokens: int = 300,
         synthetic_constraints: list[str] | None = None,
         forfeit_threshold: int = 3,
@@ -109,6 +146,8 @@ class LLMAgent:
         self.search_mode = search_mode
         self._tree_config = tree_search_config or {}
         self._stockfish = stockfish
+        self._last_call_input_tok = 0
+        self._last_call_output_tok = 0
 
         if provider == "anthropic":
             self._anthropic = anthropic.AsyncAnthropic()
@@ -150,6 +189,7 @@ class LLMAgent:
         """Mode A: single-shot LLM move (original pipeline)."""
         start = time.perf_counter()
         self.stats.total_moves += 1
+        move_tok_in, move_tok_out, move_calls = 0, 0, 0
 
         # Build prompt
         memory_context = await self.memory.get_opponent_profile(opponent_id)
@@ -158,12 +198,16 @@ class LLMAgent:
 
         # Attempt 1
         move, error_type, response_text = await self._call_and_parse(system, prompt, game)
+        move_tok_in += self._last_call_input_tok
+        move_tok_out += self._last_call_output_tok
+        move_calls += 1
         if move:
             self._consecutive_errors = 0
             self._scratchpad = parse_note(response_text)
             self.last_reasoning = response_text
             self.last_note = self._scratchpad
             elapsed = (time.perf_counter() - start) * 1000
+            self.stats.move_metrics.append(MoveMetrics(move_tok_in, move_tok_out, elapsed, move_calls))
             return move, elapsed, None
 
         # Attempt 2 — retry with correction
@@ -171,12 +215,16 @@ class LLMAgent:
         logger.info(f"[{self.agent_id}] Invalid move (attempt 1: {error_type}), retrying...")
         retry_prompt = _build_retry_prompt(game, None if error_type == ERR_FORMAT else move, response_text)
         move, error_type_2, response_text_2 = await self._call_and_parse(system, retry_prompt, game)
+        move_tok_in += self._last_call_input_tok
+        move_tok_out += self._last_call_output_tok
+        move_calls += 1
         if move:
             self._consecutive_errors = 0
             self._scratchpad = parse_note(response_text_2)
             self.last_reasoning = response_text_2
             self.last_note = self._scratchpad
             elapsed = (time.perf_counter() - start) * 1000
+            self.stats.move_metrics.append(MoveMetrics(move_tok_in, move_tok_out, elapsed, move_calls))
             return move, elapsed, None
 
         # Both failed — classify and count
@@ -200,6 +248,7 @@ class LLMAgent:
             f"  Last response (first 200 chars): {response_text_2[:200]!r}"
         )
         elapsed = (time.perf_counter() - start) * 1000
+        self.stats.move_metrics.append(MoveMetrics(move_tok_in, move_tok_out, elapsed, move_calls))
         return fallback, elapsed, final_error
 
     async def post_game(
@@ -332,6 +381,8 @@ class LLMAgent:
             self.stats.total_api_calls += 1
             self.stats.total_input_tokens += input_tok
             self.stats.total_output_tokens += output_tok
+            self._last_call_input_tok = input_tok
+            self._last_call_output_tok = output_tok
             cost_tracker.log_call(input_tok, output_tok)
 
             if thinking_text:
@@ -350,6 +401,8 @@ class LLMAgent:
         except Exception as e:
             logger.error(f"[{self.agent_id}] LLM API error: {e}")
             self.stats.total_api_calls += 1
+            self._last_call_input_tok = 0
+            self._last_call_output_tok = 0
             return None, ERR_NONSENSE, str(e)
 
     async def _call_anthropic(self, system: str, user_msg: str) -> tuple[str, str, int, int]:
@@ -383,11 +436,14 @@ class LLMAgent:
         Reasoning models (o1, o3, o4-*, etc.) require max_completion_tokens
         instead of max_tokens and do not support temperature.
         """
-        effective_max = max(self.max_tokens, 8192)
-
         # o-series reasoning models use different API parameters
         is_o_series = self.model.startswith(("o1", "o3", "o4"))
         if is_o_series:
+            # reasoning tokens come OUT of max_completion_tokens, so we need
+            # a large budget: internal thinking can easily consume 8-16K,
+            # leaving nothing for the visible answer.  32K gives plenty of
+            # headroom while staying within model limits.
+            effective_max = max(self.max_tokens, 32_768)
             response = await self._openai.chat.completions.create(
                 model=self.model,
                 messages=[
@@ -397,6 +453,7 @@ class LLMAgent:
                 max_completion_tokens=effective_max,
             )
         else:
+            effective_max = max(self.max_tokens, 8192)
             response = await self._openai.chat.completions.create(
                 model=self.model,
                 messages=[
@@ -425,7 +482,7 @@ class LLMAgent:
 
 
 class RandomAgent:
-    """Agent that plays random legal moves. Used for sanity check."""
+    """Agent that plays random legal moves. Used for sanity gate."""
 
     def __init__(self, agent_id: str = "random"):
         self.agent_id = agent_id

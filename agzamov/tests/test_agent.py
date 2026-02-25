@@ -186,7 +186,7 @@ class TestLLMAgent:
         assert a.model == "claude-test"
         assert a.has_memory is False
         assert isinstance(a.memory, NoMemory)
-        assert a.temperature == 0.6
+        assert a.temperature == 0.0
         assert a.max_tokens == 300
         assert a.is_forfeited is False
         assert a._scratchpad == ""

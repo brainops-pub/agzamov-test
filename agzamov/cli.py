@@ -20,7 +20,7 @@ from .report import generate_report
 
 app = typer.Typer(
     name="agzamov",
-    help="Agzamov Test — game-theoretic benchmark for AI memory infrastructure.",
+    help="Agzamov Test — game-theoretic benchmark for measuring real AI capabilities under adversarial conditions.",
     no_args_is_help=True,
 )
 console = Console()
@@ -128,7 +128,7 @@ def run(
     report_content = generate_report(
         config_name=cfg.name,
         model_name=cfg.model.name,
-        memory_type=cfg.memory.type,
+        augmentation_type=cfg.augmentation.type,
         phase_summaries=summary.get("phases", {}),
         results_dir=str(Path(cfg.output.results_dir) / cfg.name),
     )
@@ -173,8 +173,10 @@ def stats(
         console.print(f"\n[bold]Phase {phase}: {len(results)} games[/bold]")
 
         if phase == 1:
-            elo = engine.calculate_elo(results, "agent_a", "agent_b")
-            console.print(f"  Elo: A={elo.agent_a_final_elo}, B={elo.agent_b_final_elo}")
+            glicko = engine.calculate_glicko2(results, "agent_a", "agent_b")
+            a = glicko.agent_a_final
+            b = glicko.agent_b_final
+            console.print(f"  Glicko-2: A={a.rating:.0f}±{a.rd:.0f}, B={b.rating:.0f}±{b.rd:.0f}")
 
         elif phase == 2:
             # Need Phase 1 for delta
@@ -221,7 +223,7 @@ def report(
     report_content = generate_report(
         config_name=results_path.name,
         model_name="(from saved results)",
-        memory_type="(from saved results)",
+        augmentation_type="(from saved results)",
         phase_summaries=phase_summaries,
         results_dir=str(results_path),
     )
@@ -353,7 +355,7 @@ def test(
     thinking: bool = typer.Option(False, "--thinking", help="Enable extended thinking (for Opus)."),
     thinking_budget: int = typer.Option(2048, "--thinking-budget", help="Thinking token budget."),
     dashboard: bool = typer.Option(False, "--dashboard", help="Launch live web dashboard on http://localhost:8960"),
-    mirror: bool = typer.Option(False, "--mirror", help="Mirror match: model vs itself (skip sanity check)."),
+    mirror: bool = typer.Option(False, "--mirror", help="Mirror match: model vs itself (skip sanity gate)."),
     vs: str = typer.Option(None, "--vs", help="Opponent model for head-to-head match (e.g. --vs gemini-2.5-flash)."),
     vs_thinking: bool = typer.Option(False, "--vs-thinking", help="Enable thinking for opponent model."),
     vs_thinking_budget: int = typer.Option(2048, "--vs-thinking-budget", help="Thinking budget for opponent."),

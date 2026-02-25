@@ -1,6 +1,6 @@
 # The Agzamov Test
 
-**A Benchmark for Measuring Real AI Capabilities Under Adversarial Conditions**
+**A Benchmark Proposal for Measuring Augmented AI Capabilities Under Adversarial Conditions**
 
 Ali Agzamov · BrainOps Limited · Queenstown, New Zealand
 February 2026
@@ -11,11 +11,13 @@ February 2026
 
 Every major AI benchmark is an exam. A question is asked, an answer is given, a score is assigned. The model is tested naked — no tools, no memory, no context. In laboratory conditions — fixed questions with known answers. On tasks that can be memorized — training data contamination is an unsolved problem.
 
-None of this reflects how AI is actually used. In production, models operate with tools, memory, and orchestration layers. They face tasks that cannot be memorized. They work against adversaries who adapt.
+None of this reflects how AI is actually used. In production, models are augmented: equipped with memory, tools, retrieval systems, and orchestration layers. No standard benchmark measures how much these augmentations actually help, or which combinations work best.
 
-The Agzamov Test measures what no existing benchmark measures: how AI models perform in a real adversarial environment, at every level of augmentation. Two agents play repeated games in two environments — Chess960 (complete information) and poker (incomplete information) — across four augmentation levels: naked, with memory, with tools, and with full orchestration. The test produces a single headline metric, the Agzamov Score, with breakdown by environment and augmentation level.
+The Agzamov Test is designed to address this gap: how do AI models perform in a real adversarial environment, at every level of augmentation? Two agents play repeated games in two environments — Chess960 (complete information) and poker (incomplete information) — across five phases of increasing augmentation: naked baseline, single augmentation (memory, tools, or retrieval), asymmetric augmentation, full-stack orchestration, and positional stress testing. The test produces a single headline metric, the Agzamov Score, with breakdown by environment and augmentation level.
 
-Chess960 eliminates memorized openings. Poker eliminates complete information. Every position is unique. Every opponent adapts. "Smart model" is not a claim — it is a number.
+Chess960 minimizes the value of memorized openings. Poker introduces incomplete information. Every position is effectively unique. Every opponent adapts. "Smart model" is not a claim — it is a number.
+
+**Status:** This paper presents the benchmark design, theoretical motivation, and infrastructure validation (Phase 0, chess environment). The poker environment is designed but not yet validated. Phases 1–3 are in progress. Preliminary results demonstrating non-zero Δₐ will be reported in subsequent work.
 
 ---
 
@@ -29,7 +31,7 @@ There is no way to measure how much value augmentation adds. A company builds a 
 
 ### 1.2 They Use Laboratory Conditions
 
-Benchmarks present fixed questions with known answers. Models can memorize them. Training data contamination is documented across MMLU, HumanEval, and GSM8K. Even ARC-AGI-2 — the most contamination-resistant benchmark available — is solved by brute-force program synthesis: generating thousands of candidate programs per task and testing which one matches the examples (Greenblatt, 2024: k=2,048 programs at 43%; NVARC: test-time training at 28%). This is search in program space, not reasoning.
+Benchmarks present fixed questions with known answers. Models can memorize them. Training data contamination is documented across MMLU, HumanEval, and GSM8K. Even the ARC-AGI family — the most contamination-resistant benchmarks available — yields to brute-force program synthesis: on ARC-AGI v1, generating k=2,048 candidate programs per task reached 43% (Greenblatt, 2024); test-time training achieved 28% (Alford et al., 2024). ARC-AGI-2 raises the difficulty ceiling but preserves the same task structure — finite, example-verifiable puzzles amenable to search.
 
 Real tasks do not have answer keys. Real opponents adapt. Real environments change.
 
@@ -41,7 +43,7 @@ A model scores 90% on MMLU. What does this mean in practice? Nothing. It means t
 
 ### 1.4 The ARC-AGI-2 Illusion
 
-ARC-AGI-2 (Chollet, 2025) is the most credible reasoning benchmark available — used on model cards by all four major labs (OpenAI, Google, Anthropic, xAI). It presents novel visual-logic grid puzzles that cannot be solved by memorization. Humans average 60%; pure LLMs score 0%.
+ARC-AGI-2 (Chollet, 2025) is the most credible reasoning benchmark available — used on model cards by all four major labs (OpenAI, Google, Anthropic, xAI). It presents novel visual-logic grid puzzles that cannot be solved by memorization. Humans average 60%; base LLMs without augmentation score near 0%.
 
 In February 2026, Google announced Gemini 3.1 Pro scored 77.1%. Headlines declared a "reasoning breakthrough." But examine *how* these scores are achieved:
 
@@ -58,7 +60,7 @@ In February 2026, Google announced Gemini 3.1 Pro scored 77.1%. Headlines declar
 | Positional evaluation | Chess: "who is winning?" | ✓ Partial | Pattern matching on game commentary |
 | **Adversarial adaptation** | **Repeated games, shifting opponent** | **? Unmeasured** | **No existing benchmark tests this** |
 
-The Agzamov Test fills the empty quadrant.
+The Agzamov Test is designed to fill this gap.
 
 ---
 
@@ -76,14 +78,18 @@ Now give the second player a calculator that can check tactics. And a notebook o
 
 The Agzamov Test measures exactly this — at each level of augmentation, in two different environments, producing one number: the Agzamov Score.
 
-### 2.2 Four Augmentation Levels
+### 2.2 Augmentation Types
 
-| Level | What the model has | What it tests |
-|-------|-------------------|---------------|
-| **Naked** | Nothing. Raw model. | Baseline capability |
-| **+ Memory** | Persistent memory across games | Adaptation, opponent modeling |
-| **+ Tools** | External calculation tools (e.g., Stockfish for chess) | Tool use effectiveness |
-| **+ Full Stack** | Memory + Tools + Orchestration | Complete agent architecture |
+The Agzamov Test is designed to evaluate any augmentation applied to an AI model. The framework is augmentation-agnostic: it measures the *effect* of augmentation on adversarial performance, not the mechanism.
+
+| Type | Mechanism | Chess/Poker example |
+|------|-----------|---------------------|
+| **Memory** | Persistent cross-session storage | Opponent pattern history |
+| **Tools** | External computation (engines, solvers) | Stockfish analysis, equity calculator |
+| **Retrieval (RAG)** | Context injection from external data | Position database lookup |
+| **Orchestration** | Multi-component coordination | LLM + Stockfish + Memory |
+| **Fine-tuning** | Model weight modification | Chess-specialized model |
+| **Prompting** | System prompt engineering | Chain-of-thought, few-shot |
 
 ### 2.3 Two Environments
 
@@ -91,16 +97,17 @@ The Agzamov Test measures exactly this — at each level of augmentation, in two
 |----------|----------|--------------|
 | Information | Complete — both players see the full board | Incomplete — hidden cards |
 | Randomness | None — deterministic | High — card distribution |
-| Contamination risk | Eliminated — 960 random starting positions | Low — no memorizable "answers" |
-| Memory value | Pattern exploitation, positional preferences | Bet sizing tells, bluff profiling |
-| Tool value | Tactical calculation (Stockfish) | GTO solvers |
+| Opponent modeling | Useful but optional  | Essential |
+| Bluffing | Minimal | Core mechanic |
+| Augmentation value | Pattern exploitation, tactical calculation | Bet sizing tells, bluff profiling |
+| Nash Equilibrium | Single optimal (unknown) | Well-defined GTO baseline |
 | What it reveals | Performance under full information | Performance under uncertainty |
 
 A model that improves with augmentation in both environments demonstrates general capability. A model that improves in one but not the other reveals domain-specific limitations.
 
 ### 2.4 Why Games
 
-Games are the only domain that satisfies all requirements simultaneously:
+Games are among the few domains that satisfy all requirements simultaneously:
 
 1. **Real adversarial pressure.** The opponent adapts, punishes mistakes, and actively tries to make your strategy obsolete. This cannot be simulated by static benchmarks.
 2. **Cannot be memorized.** Chess960 eliminates opening theory. Every position is unique. There is no answer key.
@@ -159,19 +166,19 @@ The full breakdown. Take N models and M augmentation configurations. Run all com
 
 **Chess (win rate %)**
 
-|                | Naked | + Memory | + Tools | + Full Stack |
-|----------------|-------|----------|---------|-------------|
-| **Claude**     | ...   | ...      | ...     | ...         |
-| **GPT**        | ...   | ...      | ...     | ...         |
-| **Gemini**     | ...   | ...      | ...     | ...         |
+|                | Naked | + Memory | + Stockfish | + RAG | + Full Stack |
+|----------------|-------|----------|-------------|-------|-------------|
+| **Claude**     | ...   | ...      | ...         | ...   | ...         |
+| **GPT**        | ...   | ...      | ...         | ...   | ...         |
+| **Gemini**     | ...   | ...      | ...         | ...   | ...         |
 
 **Poker (bb/100)**
 
-|                | Naked | + Memory | + Tools | + Full Stack |
-|----------------|-------|----------|---------|-------------|
-| **Claude**     | ...   | ...      | ...     | ...         |
-| **GPT**        | ...   | ...      | ...     | ...         |
-| **Gemini**     | ...   | ...      | ...     | ...         |
+|                | Naked | + Memory | + Tools | + RAG | + Full Stack |
+|----------------|-------|----------|---------|-------|-------------|
+| **Claude**     | ...   | ...      | ...     | ...   | ...         |
+| **GPT**        | ...   | ...      | ...     | ...   | ...         |
+| **Gemini**     | ...   | ...      | ...     | ...   | ...         |
 
 Reading the matrix:
 - **Rows** (fixed model, vary augmentation): What does each augmentation level add for this model?
@@ -181,31 +188,51 @@ Reading the matrix:
 
 ### 3.5 Derived Diagnostics
 
-**Elo Rating:** Running rating updated after every game/hand. Captures trajectory — improvement speed, plateau timing, recovery after opponent adaptation.
+**Glicko-2 Rating:** Running rating updated after every game/hand, using the Glicko-2 system (Glickman, 1999) rather than classical Elo. Glicko-2 tracks rating deviation (uncertainty) alongside the point estimate, which is critical for early-phase measurements where few games have been played and rating confidence is low. It also accounts for rating volatility — a model that fluctuates wildly receives a wider confidence interval than one that performs consistently. Captures trajectory — improvement speed, plateau timing, recovery after opponent adaptation.
+
+**Why not classical Elo:** With K=32 and 500-game series, classical Elo fluctuates excessively and provides no uncertainty estimate. In a two-agent system, Elo is also purely relative: if Agent A improves and Agent B improves more, Agent A's Elo drops despite getting stronger. Glicko-2's deviation parameter makes this uncertainty explicit.
 
 **Game Quality Index (GQI):** Average move quality measured against a strong oracle (Stockfish for chess). Two draws can be radically different: a 15-move repetition is stagnation; an 80-move endgame battle is mastery. GQI detects improvement even when outcomes don't change, and provides early warning of memory poisoning (retrieved stale information degrades decisions before it affects win rate).
+
+**GQI limitation:** In Phases 4a–4c, Stockfish serves as both the tactical tool available to the agent and the evaluation oracle for GQI. This creates a circularity: the agent's move quality is judged by the same engine it consults. GQI in tool-augmented phases should therefore be interpreted as an *engine-alignment* metric (how well the agent follows Stockfish's advice) rather than an independent quality measure. For tool-augmented phases, win rate and Glicko-2 remain the primary metrics; GQI is reported but flagged.
 
 ---
 
 ## 4. Test Protocol
 
+### Phase 0: Sanity Gate
+Each model plays 30 games against a random-move opponent (no augmentation). Pass criteria: >70% win rate, <20% error rate (invalid/illegal moves), binomial p < 0.05. Models that fail Phase 0 are excluded from subsequent phases. This gate ensures models can play legal, purposeful chess before measuring augmentation effects.
+
 ### Phase 1: Baseline (E₀)
 Both agents play without augmentation. Chess: N ≥ 500 games, alternating colors. Poker: N ≥ 10,000 hands. Establishes baseline performance.
 
-### Phase 2: Asymmetric (Δₐ measurement)
-Agent A receives augmentation. Agent B plays naked (same model). Same N. The performance difference = Agzamov Delta.
+**Self-play vs cross-model:** Phase 1 uses self-play (same model as both agents) to establish each model's individual baseline. Cross-model comparisons are derived from the matrix (§3.4) by comparing baseline rows, not from direct head-to-head play without augmentation. This avoids confounding baseline measurement with model strength differences.
 
-**Three conditions** for isolating causation:
+### Phase 2: Asymmetric Augmentation (Δₐ measurement)
+Agent A receives augmentation. Agent B plays naked (same model). Same N. The performance difference = Agzamov Delta. This phase is repeated for each augmentation type to isolate individual effects:
+
+- Phase 2a: + Memory only
+- Phase 2b: + Tools only (e.g., Stockfish)
+- Phase 2c: + RAG only
+- Phase 2d: + Full stack (all augmentations combined)
+
+The difference Δ_2d - (Δ_2a + Δ_2b + Δ_2c) reveals interaction effects: positive means synergy, negative means redundancy.
+
+**Three experimental conditions** (applied within each sub-phase):
 - **Naked:** No augmentation (control)
-- **Placebo:** Random/fake memory of equal size — memory from a different match, or shuffled entries (active control)
+- **Placebo:** Randomized augmentation of equal size — shuffled memory entries, random tool outputs, irrelevant retrieved documents (active control)
 - **Real:** Genuine augmentation (treatment)
 
-Real memory must outperform placebo to demonstrate that memory *quality* matters, not just additional context in the prompt. Without placebo, "memory helps" could mean "more tokens in context helps."
+Real augmentation must outperform placebo to demonstrate that augmentation *quality* matters, not just additional context in the prompt. Without placebo, "memory helps" could mean "more tokens in context helps." The three conditions are orthogonal to the four augmentation types (2a–2d): each sub-phase can be run under all three conditions.
 
 Run separately for each model × augmentation combination.
 
 ### Phase 3: Arms Race (E₂)
-Both agents receive augmentation (same or different systems). Same N. Measures equilibrium when both sides adapt.
+Both agents receive augmentation (same or different systems). Same N. Measures equilibrium when both sides are augmented:
+
+- Identical augmentation → E₂ ≈ E₀: augmentation cancels out.
+- Superior augmentation on one side → E₂ ≠ E₀: augmentation quality creates persistent advantage.
+- Different augmentation types → reveals which type wins under competitive pressure.
 
 **Recovery τ Protocol:** At a pre-defined trigger point (configurable), one agent's strategy is forcibly shifted. Measures adaptation speed:
 
@@ -220,8 +247,10 @@ strategy_shift:
   recovery_τ: games/hands until performance returns within 5% of pre-shift baseline
 ```
 
-### Phase 4: Full Orchestration (chess only)
-LLM + Stockfish (as tool) + Memory vs human player. Tests the complete agent architecture:
+### Phase 4: Full Orchestration (chess only) — *Extended Protocol*
+LLM + Stockfish (as tool) + Memory vs human player. Tests the complete agent architecture.
+
+> **Note:** Phase 4 requires human opponents, making it expensive, slow, and difficult to standardize. It is an optional extended protocol — not required for computing the Agzamov Score. The core benchmark (Phases 0–3) is fully automated. Phase 4 results are reported separately when available.
 
 - **Layer 1 — Tactics:** Stockfish provides calculation ("expert witness")
 - **Layer 2 — Memory:** Opponent history, weaknesses, patterns ("case archive")
@@ -260,16 +289,18 @@ Competence is revealed under pressure, not in comfort. An agent that fights inte
 
 Two AI agents play N ≥ 500 games of Chess960 (Fischer Random). Colors alternate every game. Win = 1 point, draw = 0.5, loss = 0.
 
-**Why Chess960, not standard chess:** LLMs have extensive knowledge of standard openings from training data. Chess960 randomizes the starting position (960 configurations), eliminating opening book knowledge entirely. Every strategic insight must come from real-time reasoning or retrieved memory. Parametric knowledge becomes useless for opening preparation.
+**Why Chess960, not standard chess:** LLMs have extensive knowledge of standard openings from training data. Chess960 randomizes the starting position (960 configurations), greatly reducing the value of memorized opening book knowledge. Strategic insight must come primarily from real-time reasoning or retrieved memory. Parametric knowledge of standard opening theory becomes largely irrelevant.
 
 ### 5.1.1 Synthetic Opponent Patterns
 
-To further isolate augmentation effects, agents face opponents with **injected behavioral patterns** that do not exist in any training data:
+To further isolate augmentation effects, agents face opponents with **injected behavioral patterns** — configurable tendencies that must be inferred online from match evidence only:
 
 - "Opponent always castles within 8 moves when possible"
 - "Opponent avoids trading queens until forced"
 
-Patterns are enforced via system prompt constraints on the opponent agent — it still plays autonomously, just with a behavioral tendency. This is distinct from move substitution. System prompt constraints produce naturalistic behavior with a detectable statistical signature — exactly the kind of pattern a memory-equipped agent should learn to exploit.
+Patterns are enforced via system prompt constraints on the opponent agent — it still plays autonomously, just with a behavioral tendency. This is distinct from move substitution. System prompt constraints produce naturalistic behavior with a detectable statistical signature — exactly the kind of pattern an augmented agent should learn to exploit or calculate against.
+
+**Note on contamination:** We do not claim these patterns are absent from training data — such a claim is unprovable for any closed-weight model. Instead, the protocol relies on Chess960's positional novelty and the combinatorial context (specific pattern × specific random starting position × specific game state) to ensure that rote recall is insufficient. The test measures whether an agent can detect and exploit a *specific opponent's* tendency within a match, isolating the effect of the augmentation.
 
 ### 5.2 Poker
 
@@ -283,6 +314,34 @@ Poker is the ideal adversarial testbed because:
 Synthetic patterns for poker: "Opponent always min-raises with pocket pairs" or "Opponent folds to 3-bets 85% on the button."
 
 **Statistical note:** Standard deviation in HU NLHE ≈ 80-100 bb/100. To detect 3-5 bb/100 effect at p < 0.05 with 80% power, minimum ~7,000-15,000 hands. 10,000 hand minimum detects moderate effects (≥ 4 bb/100).
+
+### 5.2.1 Poker State Representation and the Naked Baseline Problem
+
+LLMs have finite context windows. 10,000 hands of poker history cannot fit in a single prompt. This creates a methodological tension: in the Naked condition, the model receives only the current hand state (hole cards, board, pot, action history for this hand). It has no memory of previous hands and plays each hand independently — effectively a one-shot GTO approximation.
+
+This means the Naked baseline in poker is fundamentally different from the Naked baseline in chess. In chess, the model plays a full game with sequential moves and accumulates within-game context. In poker, each hand is a fresh decision with no cross-hand information.
+
+**This is a feature, not a bug.** The Naked poker baseline establishes what a model can do with zero opponent history — pure strategy from first principles. The Δₐ then measures exactly what cross-hand memory adds: opponent modeling, pattern exploitation, adaptation. The gap between "play each hand in isolation" and "play with opponent history" is the core measurement.
+
+**State input per hand (Naked):**
+```
+Hole cards: [Ah, Kd]
+Board: [Qs, Jh, 3c, 7d]
+Pot: 12 BB | To call: 4 BB
+Action: Opponent bet 4 BB
+Position: Button
+```
+
+**State input per hand (+ Memory):**
+Same as above, plus a memory-retrieved summary:
+```
+Opponent profile (last 200 hands):
+- VPIP: 68% | PFR: 42% | 3-Bet: 12%
+- Folds to c-bet: 55% | Check-raise freq: 8%
+- Bluff-to-value ratio on river: 2.1:1
+```
+
+The augmented agent receives the same hand state plus a structured opponent summary from external memory. Memory quality determines summary accuracy; the benchmark measures whether better augmentation produces better exploitation.
 
 ---
 
@@ -309,7 +368,7 @@ The matrix (§3.4) is the analytical instrument:
 
 ### 6.3 The Evaluation-Calculation Gap
 
-LLMs possess two separable chess competencies: positional *evaluation* (pattern-matching assessment of who stands better) and tactical *calculation* (tree-search computation of forced sequences). Evaluation is strong — models correctly identify winning positions. Calculation is broken — models cannot compute forced mating sequences even in trivially won positions.
+LLMs possess two separable chess competencies: positional *evaluation* (pattern-matching assessment of who stands better) and tactical *calculation* (tree-search computation of forced sequences). Evaluation is strong — models correctly identify winning positions. Calculation is weak — current models struggle to compute forced mating sequences even in trivially won positions.
 
 This is not a problem for the benchmark. It is a finding. The benchmark *measures* this gap rather than assuming it away. At each augmentation level, the gap manifests differently:
 
@@ -318,7 +377,13 @@ This is not a problem for the benchmark. It is a finding. The benchmark *measure
 - **+ Tools:** Stockfish provides calculation. Gap is filled by tool use.
 - **+ Full Stack:** Memory directs tool use toward opponent-specific weaknesses. Synergy.
 
-The benchmark tracks how this gap closes across augmentation levels — a dimension no other benchmark captures.
+The benchmark tracks how this gap closes across augmentation levels — a dimension not captured by existing benchmarks.
+
+### 6.4 Production Relevance
+
+The evaluation-calculation gap is not a chess curiosity — it maps directly to failure modes in production AI systems. A medical AI that correctly identifies a disease (evaluation) but cannot plan a multi-step treatment protocol (calculation). A financial model that recognizes an undervalued asset (evaluation) but cannot construct a hedging strategy across correlated instruments (calculation). A coding assistant that understands what a function should do (evaluation) but cannot reason through a multi-step refactor without introducing bugs (calculation).
+
+In all these domains, the pattern is identical: pattern-matching competence paired with sequential-reasoning fragility. The Agzamov Test provides a controlled environment to measure this gap and to quantify how augmentation (memory, tools, orchestration) can compensate for it. Results from chess and poker are not directly transferable to medicine or finance — but the *structure* of the capability gap, and the *degree* to which augmentation closes it, are informative for any domain where AI systems must combine evaluation with multi-step planning.
 
 ---
 
@@ -326,15 +391,15 @@ The benchmark tracks how this gap closes across augmentation levels — a dimens
 
 ### Primary (5)
 
-**H1: Augmentation helps.** Δₐ > 0 for real augmentation in both environments.
+**H1: Augmentation helps.** Δₐ > 0 for at least one augmentation type in both game formats.
 
-**H2: Real memory > placebo.** Real memory outperforms random/fake memory of equal size, demonstrating that memory quality matters, not just additional context.
+**H2: Different Profile.** Different augmentation types (memory, tools, RAG) produce measurably different Δₐ profiles with the same model.
 
-**H3: Environment interaction.** Δₐ differs between chess (complete information) and poker (incomplete information), revealing how augmentation value depends on information structure.
+**H3: Tool Focus.** Tool augmentation (Stockfish) produces larger Δₐ in chess than memory augmentation; in poker, the reverse holds.
 
-**H4: Synergy.** In Phase 4 (full stack), Δ_full_stack > Δ_orchestration + Δ_memory. Memory + tools are synergistic, not additive — memory directs calculation toward opponent-specific weaknesses.
+**H4: Synergy.** Full-stack augmentation Δₐ exceeds the sum of individual augmentation deltas (synergy > 0).
 
-**H5: Speed matters.** τ varies significantly across augmentation systems even when Δₐ is similar — convergence speed is an independent quality dimension.
+**H5: Speed matters.** τ is near-zero for tool augmentation and significantly positive for memory augmentation — convergence speed is an independent quality dimension.
 
 ### Exploratory (not corrected for multiple comparisons)
 
@@ -383,7 +448,7 @@ The benchmark tracks how this gap closes across augmentation levels — a dimens
 - Poker engine: heads-up NLHE with standard hand evaluation
 - Memory systems: BrainOps Memory MCP as primary; competitor systems for matrix
 - Model API access: Claude, GPT, Gemini (minimum 3 providers)
-- Statistical framework: p < 0.05, confidence intervals for all metrics; Bonferroni correction on 5 primary hypotheses
+- Statistical framework: see §9.6
 - Game/hand history storage for reproducibility
 - Error tracking: invalid/illegal moves per agent per game
 
@@ -395,10 +460,11 @@ The benchmark tracks how this gap closes across augmentation levels — a dimens
 
 | Allowed | Forbidden |
 |---------|-----------|
-| Game/hand IDs and timestamps | Pre-loaded opening databases |
+| Game/hand results from current match | Pre-loaded opening databases |
 | Observed moves and actions | External GTO charts or solvers |
-| Derived patterns with evidence trail | Opponent data from outside the match |
-| Consolidated analytical summaries | General strategy guides |
+| Derived patterns with evidence trail | Opponent data from other matches |
+| Tool outputs on current position | General strategy guides |
+| Win/loss outcomes and contexts | Training data regurgitation triggers |
 
 **Enforcement:**
 1. Pre-match audit — memory store verified empty.
@@ -408,16 +474,51 @@ The benchmark tracks how this gap closes across augmentation levels — a dimens
 
 Audit logs published alongside results. Runs without audit logs are unverified.
 
-### 9.3 Error Handling
+### 9.3 Sampling Determinism
+
+LLMs are stochastic: temperature > 0 introduces response variance independent of augmentation effects. This noise can mask or inflate Δₐ measurements.
+
+**Default protocol:** All models run at temperature = 0 (greedy decoding) for the primary benchmark. This maximizes reproducibility and isolates augmentation effects from sampling noise.
+
+**Exception:** Reasoning models (OpenAI o-series) do not support temperature control — they use internal chain-of-thought with provider-managed sampling. These models are benchmarked in their default configuration, and their inherent stochasticity is documented.
+
+**Robustness check:** A subset of games (≥ 50 per condition) is re-run at temperature = 0.3 to measure sensitivity. If Δₐ changes by more than 1 SE between temperature settings, both results are reported.
+
+### 9.4 Error Handling
 
 1. Invalid move → random legal move substitution.
 2. Error rate tracked per agent, per phase.
 3. Δₐ calculated with and without error-containing games.
 4. Agent exceeding 5% error rate = flagged as unreliable.
 
-### 9.4 Cost Target
+### 9.5 Statistical Framework
 
-A standard Agzamov Test run should cost <$50 per model. This enables routine inclusion in eval suites. N values (games/hands) are calibrated to balance statistical power with cost.
+**Significance threshold:** α = 0.05 for all tests, with corrections as described below.
+
+**Primary hypotheses (H1–H5):** Bonferroni correction applied across the 5 primary hypotheses, yielding per-test α = 0.01. These are the confirmatory tests; results are reported as significant only if they survive correction.
+
+**Exploratory hypotheses (E1–E12):** No correction applied. These are clearly labeled as exploratory and reported with uncorrected p-values and effect sizes. Benjamini-Hochberg FDR correction is reported alongside for transparency, but individual E-hypotheses are not claimed as confirmed findings. They serve to generate hypotheses for future work.
+
+**Confidence intervals:** 95% bootstrap CIs (10,000 resamples) reported for all point estimates (win rates, Δₐ, τ, GQI). Glicko-2 ratings reported with ±1 SE.
+
+**Effect sizes:** Cohen's d or equivalent reported alongside p-values for all primary hypotheses. Statistical significance without meaningful effect size is noted but not emphasized.
+
+**Multiple model comparisons:** When comparing N models in the matrix (§3.4), pairwise comparisons use Tukey's HSD or equivalent. The matrix is presented as descriptive; only pre-registered contrasts are tested for significance.
+
+**Chess-specific:** Win rates tested via binomial test (Phase 0) or paired comparison (alternating colors). Poker: Welch's t-test on session-level bb/100 means, with sessions of 100 hands.
+
+### 9.6 Compute Budget Fairness
+
+Models differ dramatically in per-move compute: reasoning models (OpenAI o3, o4) consume 10–50× more tokens and wall-clock time than standard models (Sonnet, GPT-4o) for a single move. This creates a fairness question: is a reasoning model "better" at chess, or just spending more compute?
+
+The Agzamov Test does not attempt to equalize compute. Each model runs in its default mode with provider-default parameters. Reasoning models use chain-of-thought by design; suppressing it would measure a crippled model. Instead, compute is tracked and reported:
+
+- **Tokens per move** (input + output, including reasoning tokens)
+- **Wall-clock time per move** (mean, median, p95)
+- **API cost per game** (provider-reported)
+- **Total run cost** per phase
+
+This allows readers to construct their own efficiency frontier: performance vs compute, performance vs cost. A model that wins 80% of games at $0.10/game is arguably more useful than one that wins 85% at $5.00/game. The benchmark reports both dimensions; the tradeoff is left to the reader.
 
 ---
 
@@ -432,10 +533,18 @@ The benchmark is named the Agzamov Test — a double reference to the author's s
 1. **Phase 0** — Smoke test: 30 games, 3 models, confirm they can play
 2. **Preliminary data** — 100+ games with/without memory, first Δₐ numbers
 3. **Paper** — Methodology + preliminary findings on arXiv (establish priority)
-4. **MVP** — Full protocol: two agents, chess + poker, four augmentation levels
-5. **Matrix** — 3+ models × 3+ augmentation configs × 2 environments
+4. **MVP** — Full protocol: two agents, chess + poker, five augmentation phases
+5. **Matrix** — 3+ models × 4+ augmentation configs × 2 environments
 6. **Leaderboard** — Public, updatable (agzamovtest.com or HuggingFace Spaces)
 7. **Standard** — Propose as standard evaluation framework for augmented AI
+
+---
+
+---
+
+## Competing Interests
+
+The Agzamov Test uses BrainOps Memory MCP as its primary memory system in augmented conditions. BrainOps Memory MCP is developed by BrainOps Limited, the author's company. To mitigate conflict of interest: (1) the benchmark protocol is fully open and any augmentation system can be substituted; (2) the matrix design (§3.4) explicitly compares multiple augmentation systems, not just the author's; (3) all code, configuration, and raw game data are published for independent verification. The benchmark measures augmentation quality in general — it is not a product evaluation for any specific memory system.
 
 ---
 
