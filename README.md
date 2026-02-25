@@ -4,6 +4,8 @@
 
 A benchmark for measuring augmented AI capabilities under adversarial conditions.
 
+![Dashboard — live Chess960 game with tree search and thinking](docs/dashboard.png)
+
 ## What it measures
 
 How much value does augmentation (memory, tools, RAG, orchestration) add to an AI model's actual performance? Two agents play repeated games in Chess960 (complete information) and poker (incomplete information) across four augmentation levels. The result is a single number: the **Agzamov Score** (0-100).
