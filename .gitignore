@@ -53,5 +53,6 @@ latex/*.blg
 latex/*.log
 latex/*.out
 latex/*.pdf
+!latex/agzamov-test.pdf
 latex/*.synctex*
 latex/GPT version/
