@@ -23,10 +23,10 @@ from aiohttp import web
 from ..config import (
     RunConfig,
     ModelConfig,
-    _PROVIDER_REGISTRY,
-    _MODEL_HINTS,
-    _dict_to_dataclass,
-    _resolve_model_config,
+    PROVIDER_REGISTRY,
+    MODEL_HINTS,
+    dict_to_dataclass,
+    resolve_model_config,
     validate_config,
 )
 from ..orchestrator import Orchestrator
@@ -56,7 +56,7 @@ def _defaults_dict() -> dict:
     d = asdict(RunConfig())
     d["model"]["api_key"] = ""
     d["model"]["base_url"] = ""
-    d["memory"]["api_key"] = ""
+    d["augmentation"]["api_key"] = ""
     return d
 
 
@@ -70,14 +70,14 @@ async def handle_get_defaults(request: web.Request) -> web.Response:
 
 async def handle_get_providers(request: web.Request) -> web.Response:
     seen: dict[str, dict] = {}
-    for prefix, provider, _base_url, env_var in _PROVIDER_REGISTRY:
+    for prefix, provider, _base_url, env_var in PROVIDER_REGISTRY:
         if prefix not in seen:
             seen[prefix] = {
                 "prefix": prefix,
                 "provider": provider,
                 "env_var": env_var,
                 "available": bool(os.environ.get(env_var)),
-                "models": _MODEL_HINTS.get(prefix, []),
+                "models": MODEL_HINTS.get(prefix, []),
             }
     return web.json_response(list(seen.values()))
 
@@ -112,8 +112,8 @@ async def handle_post_run(request: web.Request) -> web.Response:
 
     # Build RunConfig
     try:
-        cfg = _dict_to_dataclass(RunConfig, config_data)
-        _resolve_model_config(cfg.model)
+        cfg = dict_to_dataclass(RunConfig, config_data)
+        resolve_model_config(cfg.model)
     except Exception as e:
         return web.json_response({"error": f"Config error: {e}"}, status=400)
 
@@ -132,8 +132,8 @@ async def handle_post_run(request: web.Request) -> web.Response:
                 {"error": "Opponent model name required for vs mode"},
                 status=400,
             )
-        opponent_config = _dict_to_dataclass(ModelConfig, opp_data)
-        _resolve_model_config(opponent_config)
+        opponent_config = dict_to_dataclass(ModelConfig, opp_data)
+        resolve_model_config(opponent_config)
         if not opponent_config.api_key:
             return web.json_response(
                 {"error": f"API key not found for opponent model '{opponent_config.name}'"},

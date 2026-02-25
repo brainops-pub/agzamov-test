@@ -140,22 +140,55 @@ class Orchestrator:
         logger.info(f"Log file: {log_path}")
         logger.info("=" * 60)
 
+    def _set_pricing(self, model_name: str | None = None) -> None:
+        """Set cost tracker pricing based on model name."""
+        name = model_name or self.config.model.name
+        if "opus" in name:
+            cost_tracker.input_price_per_m = 15.0
+            cost_tracker.output_price_per_m = 75.0
+        elif "haiku" in name:
+            cost_tracker.input_price_per_m = 0.80
+            cost_tracker.output_price_per_m = 4.0
+        else:  # sonnet / default
+            cost_tracker.input_price_per_m = 3.0
+            cost_tracker.output_price_per_m = 15.0
+
+    def _init_stockfish(self) -> bool:
+        """Initialize Stockfish if needed. Returns True if required but failed."""
+        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
+        if not need_sf:
+            return False
+        sf_path = self.config.stockfish.path or find_stockfish()
+        if sf_path:
+            try:
+                self.stockfish = StockfishAnalyzer(
+                    stockfish_path=sf_path,
+                    depth=self.config.stockfish.analysis_depth,
+                    chess960=self.config.stockfish.chess960_mode,
+                    threads=self.config.stockfish.threads,
+                    hash_mb=self.config.stockfish.hash_mb,
+                )
+                console.print(f"[green]Stockfish found: {sf_path}[/green]")
+                return False
+            except Exception as e:
+                if self.config.tree_search.mode != "llm":
+                    console.print(f"[bold red]Stockfish required for search mode but failed: {e}[/bold red]")
+                    return True
+                console.print(f"[yellow]Stockfish init failed: {e} — GQI will be skipped[/yellow]")
+                return False
+        else:
+            if self.config.tree_search.mode != "llm":
+                console.print(f"[bold red]Stockfish not found — required for search mode '{self.config.tree_search.mode}'[/bold red]")
+                return True
+            console.print("[yellow]Stockfish not found — GQI will be skipped[/yellow]")
+            return False
+
     async def run(self) -> dict:
         """Run all configured phases. Returns summary dict."""
         self._setup_logging()
         start_time = time.time()
 
-        # Set cost tracker pricing based on model
-        model_name = self.config.model.name
-        if "opus" in model_name:
-            cost_tracker.input_price_per_m = 15.0
-            cost_tracker.output_price_per_m = 75.0
-        elif "haiku" in model_name:
-            cost_tracker.input_price_per_m = 0.80
-            cost_tracker.output_price_per_m = 4.0
-        else:  # sonnet default
-            cost_tracker.input_price_per_m = 3.0
-            cost_tracker.output_price_per_m = 15.0
+        self._set_pricing()
 
         console.print(f"\n[bold]Agzamov Test: {self.config.name}[/bold]")
         console.print(f"Model: {self.config.model.name}" +
@@ -188,29 +221,8 @@ class Orchestrator:
                 self.config.augmentation.type = "sqlite-fallback"
 
         # Initialize Stockfish — required for tree search (Mode B/C), optional for live eval
-        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
-        if need_sf:
-            sf_path = self.config.stockfish.path or find_stockfish()
-            if sf_path:
-                try:
-                    self.stockfish = StockfishAnalyzer(
-                        stockfish_path=sf_path,
-                        depth=self.config.stockfish.analysis_depth,
-                        chess960=self.config.stockfish.chess960_mode,
-                        threads=self.config.stockfish.threads,
-                        hash_mb=self.config.stockfish.hash_mb,
-                    )
-                    console.print(f"[green]Stockfish found: {sf_path}[/green]")
-                except Exception as e:
-                    if self.config.tree_search.mode != "llm":
-                        console.print(f"[bold red]Stockfish init failed: {e} — required for search mode '{self.config.tree_search.mode}'[/bold red]")
-                        return {"phases": {}, "config": self.config.name, "aborted": "stockfish_required"}
-                    console.print(f"[yellow]Stockfish init failed: {e} — GQI will be skipped[/yellow]")
-            else:
-                if self.config.tree_search.mode != "llm":
-                    console.print(f"[bold red]Stockfish not found — required for search mode '{self.config.tree_search.mode}'[/bold red]")
-                    return {"phases": {}, "config": self.config.name, "aborted": "stockfish_required"}
-                console.print("[yellow]Stockfish not found — GQI will be skipped[/yellow]")
+        if self._init_stockfish():
+            return {"phases": {}, "config": self.config.name, "aborted": "stockfish_required"}
 
         if self.config.tree_search.mode != "llm":
             console.print(f"[green]Search mode: {self.config.tree_search.mode}[/green]")
@@ -509,17 +521,7 @@ class Orchestrator:
         self._setup_logging()
         start_time = time.time()
 
-        # Cost tracker pricing
-        model_name = self.config.model.name
-        if "opus" in model_name:
-            cost_tracker.input_price_per_m = 15.0
-            cost_tracker.output_price_per_m = 75.0
-        elif "haiku" in model_name:
-            cost_tracker.input_price_per_m = 0.80
-            cost_tracker.output_price_per_m = 4.0
-        else:
-            cost_tracker.input_price_per_m = 3.0
-            cost_tracker.output_price_per_m = 15.0
+        self._set_pricing()
 
         m = self.config.model
         model_label = _MODEL_DISPLAY.get(m.name, m.name)
@@ -538,24 +540,8 @@ class Orchestrator:
         })
 
         # Initialize Stockfish
-        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
-        if need_sf:
-            sf_path = self.config.stockfish.path or find_stockfish()
-            if sf_path:
-                try:
-                    self.stockfish = StockfishAnalyzer(
-                        stockfish_path=sf_path,
-                        depth=self.config.stockfish.analysis_depth,
-                        chess960=self.config.stockfish.chess960_mode,
-                        threads=self.config.stockfish.threads,
-                        hash_mb=self.config.stockfish.hash_mb,
-                    )
-                    console.print(f"[green]Stockfish found: {sf_path}[/green]")
-                except Exception as e:
-                    if self.config.tree_search.mode != "llm":
-                        console.print(f"[bold red]Stockfish required for search mode but failed: {e}[/bold red]")
-                        return {"aborted": "stockfish_required"}
-                    console.print(f"[yellow]Stockfish init failed: {e}[/yellow]")
+        if self._init_stockfish():
+            return {"aborted": "stockfish_required"}
 
         # LLM healthcheck
         if self.config.tree_search.mode != "stockfish":
@@ -618,24 +604,8 @@ class Orchestrator:
         })
 
         # Initialize Stockfish
-        need_sf = self.config.tree_search.mode != "llm" or self.config.output.save_stockfish_analysis
-        if need_sf:
-            sf_path = self.config.stockfish.path or find_stockfish()
-            if sf_path:
-                try:
-                    self.stockfish = StockfishAnalyzer(
-                        stockfish_path=sf_path,
-                        depth=self.config.stockfish.analysis_depth,
-                        chess960=self.config.stockfish.chess960_mode,
-                        threads=self.config.stockfish.threads,
-                        hash_mb=self.config.stockfish.hash_mb,
-                    )
-                    console.print(f"[green]Stockfish found: {sf_path}[/green]")
-                except Exception as e:
-                    if self.config.tree_search.mode != "llm":
-                        console.print(f"[bold red]Stockfish required but failed: {e}[/bold red]")
-                        return {"aborted": "stockfish_required"}
-                    console.print(f"[yellow]Stockfish init failed: {e}[/yellow]")
+        if self._init_stockfish():
+            return {"aborted": "stockfish_required"}
 
         # LLM healthcheck (model A only — B checked on first move)
         if self.config.tree_search.mode != "stockfish":
@@ -679,6 +649,77 @@ class Orchestrator:
             "cost_usd": round(cost_tracker.total_usd, 2),
             "time_seconds": round(elapsed, 1),
         }
+
+    def _eval_and_display_move(self, game, current, white, black, move_uci, wall_ms, was_error, w_name, b_name):
+        """Evaluate move with Stockfish (if available) and display in console."""
+        moved_side = "black" if game.turn_name == "white" else "white"
+        mover_name = _display_name(current)
+        is_llm = _is_model(current)
+        sf_after = None
+        tag = ""
+        cmt = ""
+
+        if self.stockfish and self._sf_before is not None:
+            try:
+                sf_after = self.stockfish.quick_eval(game.get_fen(), depth=16)
+                bar = self.stockfish.format_eval_bar(sf_after)
+
+                if is_llm:
+                    tag = self.stockfish.classify_move(self._sf_before, sf_after, moved_side, ply=game._ply_count)
+                    cmt = self.stockfish.comment(
+                        sf_after, self._sf_before, moved_side,
+                        agent_name=mover_name,
+                        white_name=w_name, black_name=b_name,
+                    )
+                    color_tag = "W" if moved_side == "white" else "B"
+                    line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name} ({color_tag}, {wall_ms/1000:.1f}s) | {bar}"
+                    if tag:
+                        line += f"  {tag}"
+                    if was_error:
+                        line += "  [ERR]"
+                    if cmt:
+                        line += f"  — {cmt}"
+                else:
+                    line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name:10s}      | {bar}"
+
+                console.print(line)
+                logger.info(f"SF ply={game._ply_count} move={move_uci} eval={sf_after:.0f}cp {tag}")
+            except Exception as e:
+                logger.debug(f"SF live eval failed: {e}")
+        else:
+            color_tag = "W" if moved_side == "white" else "B"
+            line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name} ({color_tag}, {wall_ms/1000:.1f}s)"
+            if was_error:
+                line += "  [ERR]"
+            console.print(line)
+
+        return sf_after, tag, cmt, moved_side, mover_name, is_llm
+
+    async def _post_game_memory(self, agent_a, agent_b, game, result, game_id, white, game_index):
+        """Handle post-game memory operations: store observations, consolidate, snapshot."""
+        my_color_a = "white" if white is agent_a else "black"
+        my_color_b = "white" if white is agent_b else "black"
+        opponent_a = agent_b.agent_id
+        opponent_b = agent_a.agent_id
+
+        await agent_a.post_game(game, result.result, opponent_a, game_id, my_color=my_color_a)
+        await agent_b.post_game(game, result.result, opponent_b, game_id, my_color=my_color_b)
+
+        # Consolidate memory every 5 games
+        if (game_index + 1) % 5 == 0:
+            if agent_a.has_memory:
+                await agent_a.memory.consolidate(opponent_a)
+            if hasattr(agent_b, 'has_memory') and agent_b.has_memory:
+                await agent_b.memory.consolidate(opponent_b)
+
+        # Memory snapshot every 50 games
+        if (game_index + 1) % 50 == 0:
+            if agent_a.has_memory:
+                dump = await agent_a.memory.dump()
+                self.storage.save_memory_snapshot(agent_a.agent_id, game_index + 1, dump)
+            if hasattr(agent_b, 'has_memory') and agent_b.has_memory:
+                dump = await agent_b.memory.dump()
+                self.storage.save_memory_snapshot(agent_b.agent_id, game_index + 1, dump)
 
     async def _play_games(
         self,
@@ -752,60 +793,19 @@ class Orchestrator:
                         move_uci = random.choice(game.get_legal_moves())
                         was_error = True
 
-                    fen_before = game.get_fen()
-                    # Get eval BEFORE the move (for delta calculation)
-                    sf_before = None
+                    # Get eval BEFORE the move
+                    self._sf_before = None
                     if self.stockfish:
                         try:
-                            sf_before = self.stockfish.quick_eval(fen_before, depth=16)
+                            self._sf_before = self.stockfish.quick_eval(game.get_fen(), depth=16)
                         except Exception:
                             pass
 
                     game.make_move(move_uci, wall_time_ms=wall_ms, was_error=was_error)
 
-                    # Move info (always computed, used for console + dashboard)
-                    moved_side = "black" if game.turn_name == "white" else "white"
-                    mover_name = _display_name(current)
-                    is_llm = _is_model(current)
-                    sf_after = None
-                    tag = ""
-                    cmt = ""
-
-                    # Stockfish live commentary (optional)
-                    if self.stockfish and sf_before is not None:
-                        try:
-                            sf_after = self.stockfish.quick_eval(game.get_fen(), depth=16)
-                            bar = self.stockfish.format_eval_bar(sf_after)
-
-                            if is_llm:
-                                tag = self.stockfish.classify_move(sf_before, sf_after, moved_side, ply=game._ply_count)
-                                cmt = self.stockfish.comment(
-                                    sf_after, sf_before, moved_side,
-                                    agent_name=mover_name,
-                                    white_name=w_name, black_name=b_name,
-                                )
-                                color_tag = "W" if moved_side == "white" else "B"
-                                line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name} ({color_tag}, {wall_ms/1000:.1f}s) | {bar}"
-                                if tag:
-                                    line += f"  {tag}"
-                                if was_error:
-                                    line += "  [ERR]"
-                                if cmt:
-                                    line += f"  — {cmt}"
-                            else:
-                                line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name:10s}      | {bar}"
-
-                            console.print(line)
-                            logger.info(f"SF ply={game._ply_count} move={move_uci} eval={sf_after:.0f}cp {tag}")
-                        except Exception as e:
-                            logger.debug(f"SF live eval failed: {e}")
-                    else:
-                        # No Stockfish — minimal console output
-                        color_tag = "W" if moved_side == "white" else "B"
-                        line = f"  {game._ply_count:3d}. {move_uci:6s}  {mover_name} ({color_tag}, {wall_ms/1000:.1f}s)"
-                        if was_error:
-                            line += "  [ERR]"
-                        console.print(line)
+                    sf_after, tag, cmt, moved_side, mover_name, is_llm = self._eval_and_display_move(
+                        game, current, white, black, move_uci, wall_ms, was_error, w_name, b_name,
+                    )
 
                     # Tree search data for broadcast
                     ts_event = None
@@ -916,29 +916,8 @@ class Orchestrator:
                 self.storage.append_game_result(result, phase)
                 self.storage.append_pgn(result.pgn, phase)
 
-                # Post-game memory — pass actual color assignment
-                my_color_a = "white" if white is agent_a else "black"
-                my_color_b = "white" if white is agent_b else "black"
-                opponent_a = black.agent_id if white is agent_a else white.agent_id
-                opponent_b = white.agent_id if black is agent_b else black.agent_id
-                await agent_a.post_game(game, result.result, opponent_a, game_id, my_color=my_color_a)
-                await agent_b.post_game(game, result.result, opponent_b, game_id, my_color=my_color_b)
-
-                # Consolidate memory every 5 games (avoids O(n²) re-reads)
-                if (i + 1) % 5 == 0:
-                    if agent_a.has_memory:
-                        await agent_a.memory.consolidate(opponent_a)
-                    if hasattr(agent_b, 'has_memory') and agent_b.has_memory:
-                        await agent_b.memory.consolidate(opponent_b)
-
-                # Memory snapshot every 50 games
-                if (i + 1) % 50 == 0:
-                    if agent_a.has_memory:
-                        dump = await agent_a.memory.dump()
-                        self.storage.save_memory_snapshot(agent_a.agent_id, i + 1, dump)
-                    if hasattr(agent_b, 'has_memory') and agent_b.has_memory:
-                        dump = await agent_b.memory.dump()
-                        self.storage.save_memory_snapshot(agent_b.agent_id, i + 1, dump)
+                # Post-game memory
+                await self._post_game_memory(agent_a, agent_b, game, result, game_id, white, i)
 
                 progress.advance(task)
 

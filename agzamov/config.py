@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import typing
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -13,7 +14,7 @@ import yaml
 
 # Known model providers — auto-detected from model name.
 # Each entry: (prefix, provider, base_url, env_var_for_key)
-_PROVIDER_REGISTRY: list[tuple[str, str, str, str]] = [
+PROVIDER_REGISTRY: list[tuple[str, str, str, str]] = [
     ("claude",  "anthropic", "",                                         "ANTHROPIC_API_KEY"),
     ("glm",     "openai",    "https://open.bigmodel.cn/api/paas/v4/",   "GLM_API_KEY"),
     ("deepseek","openai",    "https://api.deepseek.com/v1/",            "DEEPSEEK_API_KEY"),
@@ -27,7 +28,7 @@ _PROVIDER_REGISTRY: list[tuple[str, str, str, str]] = [
 
 
 # Model hints per provider prefix — shown in dashboard UI.
-_MODEL_HINTS: dict[str, list[str]] = {
+MODEL_HINTS: dict[str, list[str]] = {
     "claude":   ["claude-sonnet-4-6", "claude-opus-4-6", "claude-haiku-4-5-20251001"],
     "gemini":   ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.0-flash"],
     "gpt":      ["gpt-4o", "gpt-4.1", "gpt-4.1-mini"],
@@ -45,7 +46,7 @@ def resolve_provider(model_name: str) -> tuple[str, str, str]:
     Returns defaults for unknown models: ("openai", "", "OPENAI_API_KEY").
     """
     lower = model_name.lower()
-    for prefix, provider, base_url, env_var in _PROVIDER_REGISTRY:
+    for prefix, provider, base_url, env_var in PROVIDER_REGISTRY:
         if lower.startswith(prefix):
             return provider, base_url, env_var
     return "openai", "", "OPENAI_API_KEY"
@@ -170,21 +171,19 @@ def _merge_dict(target: dict, source: dict) -> dict:
     return target
 
 
-def _dict_to_dataclass(cls, data: dict):
+def dict_to_dataclass(cls, data: dict):
     """Recursively convert a dict to a dataclass, ignoring unknown keys."""
     if not isinstance(data, dict):
         return data
+    hints = typing.get_type_hints(cls)
     field_names = {f.name for f in cls.__dataclass_fields__.values()}
     filtered = {}
     for k, v in data.items():
         if k not in field_names:
             continue
-        field_type = cls.__dataclass_fields__[k].type
-        # Resolve string annotations
-        if isinstance(field_type, str):
-            field_type = eval(field_type)
-        if hasattr(field_type, "__dataclass_fields__") and isinstance(v, dict):
-            filtered[k] = _dict_to_dataclass(field_type, v)
+        field_type = hints.get(k)
+        if field_type and hasattr(field_type, "__dataclass_fields__") and isinstance(v, dict):
+            filtered[k] = dict_to_dataclass(field_type, v)
         else:
             filtered[k] = v
     return cls(**filtered)
@@ -205,7 +204,7 @@ def load_config(config_path: str | Path | None = None) -> RunConfig:
             raise FileNotFoundError(f"Config file not found: {path}")
         with open(path) as f:
             raw = yaml.safe_load(f) or {}
-        cfg = _dict_to_dataclass(RunConfig, raw)
+        cfg = dict_to_dataclass(RunConfig, raw)
 
     # Environment variable overrides
     if sf_path := os.environ.get("AGZAMOV_STOCKFISH_PATH"):
@@ -214,12 +213,12 @@ def load_config(config_path: str | Path | None = None) -> RunConfig:
         cfg.augmentation.api_key = api_key
 
     # Auto-resolve model provider, base_url, and API key from model name
-    _resolve_model_config(cfg.model)
+    resolve_model_config(cfg.model)
 
     return cfg
 
 
-def _resolve_model_config(m: ModelConfig) -> None:
+def resolve_model_config(m: ModelConfig) -> None:
     """Fill in provider, base_url, and api_key from model name + env vars.
 
     Always re-resolves based on current model name — safe to call after --model override.

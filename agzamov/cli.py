@@ -371,8 +371,8 @@ def test(
     # Override model — provider/base_url/api_key auto-resolved by load_config
     if model:
         cfg.model.name = model
-        from .config import _resolve_model_config
-        _resolve_model_config(cfg.model)
+        from .config import resolve_model_config
+        resolve_model_config(cfg.model)
     if thinking:
         cfg.model.thinking = True
         cfg.model.thinking_budget = thinking_budget
@@ -396,9 +396,9 @@ def test(
     # Build opponent config if --vs
     opp_config = None
     if vs:
-        from .config import ModelConfig, _resolve_model_config
+        from .config import ModelConfig, resolve_model_config
         opp_config = ModelConfig(name=vs)
-        _resolve_model_config(opp_config)
+        resolve_model_config(opp_config)
         if vs_thinking:
             opp_config.thinking = True
             opp_config.thinking_budget = vs_thinking_budget

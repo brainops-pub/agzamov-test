@@ -22,6 +22,7 @@ venv/
 # Results — only canonical runs included, trial/archive ignored
 results/_archive/
 results/_trial_runs/
+results/*/logs/
 
 # Archives
 *.zip
