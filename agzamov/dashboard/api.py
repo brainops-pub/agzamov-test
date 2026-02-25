@@ -190,6 +190,7 @@ async def handle_post_run(request: web.Request) -> web.Response:
             if hasattr(orchestrator, 'stockfish') and orchestrator.stockfish:
                 try:
                     orchestrator.stockfish.close()
+                    orchestrator.stockfish = None
                 except Exception:
                     pass
             _state.status = "idle"

@@ -284,6 +284,11 @@ function onMove(data) {
     document.getElementById("move-time").textContent =
         `Last: ${formatTime(data.wall_ms)}  (${data.agent_name})`
 
+    // Cost tracking
+    if (data.cost_usd != null) {
+        document.getElementById("total-cost").textContent = `Cost: $${data.cost_usd.toFixed(2)}`
+    }
+
     // Thinking/reasoning display — accumulate history
     const rawThinking = data.thinking || data.reasoning || ""
     if (rawThinking) {

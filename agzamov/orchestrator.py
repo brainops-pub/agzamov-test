@@ -268,6 +268,7 @@ class Orchestrator:
         # Cleanup
         if self.stockfish:
             self.stockfish.close()
+            self.stockfish = None
 
         return summary
 
@@ -564,6 +565,7 @@ class Orchestrator:
         elapsed = time.time() - start_time
         if self.stockfish:
             self.stockfish.close()
+            self.stockfish = None
 
         return {
             "model": m.name,
@@ -638,6 +640,7 @@ class Orchestrator:
         elapsed = time.time() - start_time
         if self.stockfish:
             self.stockfish.close()
+            self.stockfish = None
 
         return {
             "model_a": m.name,
@@ -849,6 +852,7 @@ class Orchestrator:
                         "tree_search": ts_event,
                         "thinking": thinking_text[:2000] if thinking_text else "",
                         "reasoning": reasoning_text[:1500] if reasoning_text else "",
+                        "cost_usd": round(cost_tracker.total_usd, 4),
                     })
 
                     # Save reasoning for LLM agents (not random)

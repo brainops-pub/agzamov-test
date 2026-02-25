@@ -319,19 +319,23 @@ class StockfishAnalyzer:
     def close(self):
         """Clean up Stockfish process."""
         try:
-            # Use the package's own quit first (graceful shutdown)
             self.engine.send_quit_command()
         except Exception:
             pass
+        # Replace the subprocess ref with a stub so __del__ → send_quit_command()
+        # sees poll() != None and skips all I/O.  This avoids OSError from
+        # dead pipes and AttributeError from None during interpreter shutdown.
         try:
-            # Then kill the subprocess to prevent __del__ from touching a dead pipe
-            if hasattr(self.engine, '_stockfish') and self.engine._stockfish:
-                self.engine._stockfish.kill()
-                self.engine._stockfish.wait()
-                self.engine._stockfish = None
-        except Exception:
-            pass
-        try:
-            del self.engine
+            proc = getattr(self.engine, '_stockfish', None)
+            if proc is not None:
+                self.engine._stockfish = type('_Dead', (), {'poll': lambda s: 0})()
+                try:
+                    proc.kill()
+                except Exception:
+                    pass
+                try:
+                    proc.wait(timeout=2)
+                except Exception:
+                    pass
         except Exception:
             pass

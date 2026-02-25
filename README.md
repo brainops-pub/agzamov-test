@@ -1,5 +1,7 @@
 # The Agzamov Test
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18771523.svg)](https://doi.org/10.5281/zenodo.18771523)
+
 A benchmark for measuring augmented AI capabilities under adversarial conditions.
 
 ## What it measures
@@ -43,7 +45,7 @@ Each sub-phase tested under 3 conditions: Naked, Placebo, Real.
 
 The full benchmark specification is in [`latex/agzamov-test.tex`](latex/agzamov-test.tex).
 
-> Agzamov, A. (2026). *The Agzamov Test: A Benchmark Proposal for Measuring Augmented AI Capabilities Under Adversarial Conditions.* BrainOps Limited.
+> Agzamov, A. (2026). *The Agzamov Test: A Benchmark Proposal for Measuring Augmented AI Capabilities Under Adversarial Conditions* (0.1.0). Zenodo. https://doi.org/10.5281/zenodo.18771523
 
 ## Status
 
