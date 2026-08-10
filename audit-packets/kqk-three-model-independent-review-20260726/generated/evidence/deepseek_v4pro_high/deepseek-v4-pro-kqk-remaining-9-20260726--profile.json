@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "deepseek-v4-pro",
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "transport": {
+    "kind": "deepseek_chat_completions",
+    "endpoint": "https://api.deepseek.com",
+    "credential_env": "DEEPSEEK_API_KEY",
+    "transport_retries": 0,
+    "request_timeout_seconds": 600
+  },
+  "inference": {
+    "calibration_max_tokens": 16384,
+    "game_max_tokens": 32768,
+    "temperature": null,
+    "thinking": {
+      "type": "enabled",
+      "display": "full"
+    },
+    "effort": "high"
+  },
+  "board_adapter": {
+    "adapter_id": "deepseek-v4-pro-board-v2",
+    "initial_format": "multi_view",
+    "rendered_views": [
+      "fen",
+      "ascii",
+      "piece_list",
+      "json_square_map"
+    ],
+    "allow_model_selected_format": true,
+    "calibration_requires_legal_moves": true
+  }
+}

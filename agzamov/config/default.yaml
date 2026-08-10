@@ -10,8 +10,8 @@ model:
   max_tokens: 300
 
 augmentation:
-  type: "brainops-mcp"
-  endpoint: "http://127.0.0.1:3200/api/v1"
+  type: "none"
+  endpoint: ""
   max_context_tokens: 500
   consolidation_trigger: "every_game"
 

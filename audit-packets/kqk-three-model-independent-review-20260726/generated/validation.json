@@ -1,0 +1,321 @@
+{
+  "schema_version": "agzamov.audit-packet-validation.v1",
+  "all_selected_games_passed": true,
+  "games_checked": 30,
+  "failed_games": [],
+  "system_prompt_sha256_by_cell": {
+    "claude_opus5": [
+      "0d074de1c7ead7598552b62728b34967d6122546bbe64da05b3d5b757e2659dc"
+    ],
+    "openai_gpt56sol": [
+      "0d074de1c7ead7598552b62728b34967d6122546bbe64da05b3d5b757e2659dc"
+    ],
+    "deepseek_v4pro_high": [
+      "0d074de1c7ead7598552b62728b34967d6122546bbe64da05b3d5b757e2659dc"
+    ],
+    "deepseek_v4pro_max65k": [
+      "0d074de1c7ead7598552b62728b34967d6122546bbe64da05b3d5b757e2659dc"
+    ]
+  },
+  "system_prompt_identical_across_cells": true,
+  "cell_summaries": {
+    "claude_opus5": {
+      "provider": "anthropic",
+      "model": "claude-opus-5",
+      "profile": "adaptive thinking, effort=max",
+      "supplemental": false,
+      "games_in_normalized_log": 10,
+      "primary_core_games": 5,
+      "outcomes_all_included_games": {
+        "checkmate": 10
+      },
+      "illegal_attempts_all_included_games": 1,
+      "paired_seed_group": "claude-separate-seeds"
+    },
+    "openai_gpt56sol": {
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "profile": "reasoning effort=max",
+      "supplemental": false,
+      "games_in_normalized_log": 5,
+      "primary_core_games": 5,
+      "outcomes_all_included_games": {
+        "checkmate": 5
+      },
+      "illegal_attempts_all_included_games": 0,
+      "paired_seed_group": "shared-core5"
+    },
+    "deepseek_v4pro_high": {
+      "provider": "deepseek",
+      "model": "deepseek-v4-pro",
+      "profile": "thinking enabled, effort=high",
+      "supplemental": false,
+      "games_in_normalized_log": 10,
+      "primary_core_games": 5,
+      "outcomes_all_included_games": {
+        "checkmate": 2,
+        "major_piece_lost": 7,
+        "stalemate": 1
+      },
+      "illegal_attempts_all_included_games": 5,
+      "paired_seed_group": "shared-core5"
+    },
+    "deepseek_v4pro_max65k": {
+      "provider": "deepseek",
+      "model": "deepseek-v4-pro",
+      "profile": "thinking enabled, effort=max, 65K cap",
+      "supplemental": true,
+      "games_in_normalized_log": 5,
+      "primary_core_games": 5,
+      "outcomes_all_included_games": {
+        "major_piece_lost": 2,
+        "stalemate": 1,
+        "checkmate": 2
+      },
+      "illegal_attempts_all_included_games": 3,
+      "paired_seed_group": "shared-core5"
+    }
+  },
+  "game_checks": [
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-003-r1",
+      "position_id": "kqk-003-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-010-r1",
+      "position_id": "kqk-010-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-001-r1",
+      "position_id": "kqk-001-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-006-r1",
+      "position_id": "kqk-006-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-002-r1",
+      "position_id": "kqk-002-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-005-r1",
+      "position_id": "kqk-005-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-003-r2",
+      "position_id": "kqk-003-r2",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-010-r2",
+      "position_id": "kqk-010-r2",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-001-r2",
+      "position_id": "kqk-001-r2",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "claude_opus5",
+      "source_run": "opus5-kqk-no-legal-10-20260725",
+      "game_id": "claude-opus-5:kqk-006-r2",
+      "position_id": "kqk-006-r2",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "source_run": "gpt56sol-kqk-qualification-5-20260725",
+      "game_id": "gpt-5.6-sol:kqk-003-qualification-r1",
+      "position_id": "kqk-003-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "source_run": "gpt56sol-kqk-qualification-5-20260725",
+      "game_id": "gpt-5.6-sol:kqk-010-qualification-r1",
+      "position_id": "kqk-010-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "source_run": "gpt56sol-kqk-qualification-5-20260725",
+      "game_id": "gpt-5.6-sol:kqk-001-qualification-r1",
+      "position_id": "kqk-001-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "source_run": "gpt56sol-kqk-qualification-5-20260725",
+      "game_id": "gpt-5.6-sol:kqk-006-qualification-r1",
+      "position_id": "kqk-006-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "source_run": "gpt56sol-kqk-qualification-5-20260725",
+      "game_id": "gpt-5.6-sol:kqk-002-qualification-r1",
+      "position_id": "kqk-002-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "game_id": "deepseek-v4-pro:kqk-003-qualification-r1",
+      "position_id": "kqk-003-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-010-qualification-r1",
+      "position_id": "kqk-010-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-001-qualification-r1",
+      "position_id": "kqk-001-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-006-qualification-r1",
+      "position_id": "kqk-006-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-002-qualification-r1",
+      "position_id": "kqk-002-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-005-qualification-r1",
+      "position_id": "kqk-005-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-004-qualification-r1",
+      "position_id": "kqk-004-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-007-qualification-r1",
+      "position_id": "kqk-007-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-008-qualification-r1",
+      "position_id": "kqk-008-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "source_run": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "game_id": "deepseek-v4-pro:kqk-009-qualification-r1",
+      "position_id": "kqk-009-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "source_run": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "game_id": "deepseek-v4-pro:kqk-003-qualification-r1",
+      "position_id": "kqk-003-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "source_run": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "game_id": "deepseek-v4-pro:kqk-010-qualification-r1",
+      "position_id": "kqk-010-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "source_run": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "game_id": "deepseek-v4-pro:kqk-001-qualification-r1",
+      "position_id": "kqk-001-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "source_run": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "game_id": "deepseek-v4-pro:kqk-006-qualification-r1",
+      "position_id": "kqk-006-qualification-r1",
+      "passed": true,
+      "errors": []
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "source_run": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "game_id": "deepseek-v4-pro:kqk-002-qualification-r1",
+      "position_id": "kqk-002-qualification-r1",
+      "passed": true,
+      "errors": []
+    }
+  ]
+}

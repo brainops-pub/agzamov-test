@@ -35,24 +35,37 @@ async function init() {
 
 function populateModelHints() {
     const dl = document.getElementById("model-hints")
+    const preset = document.getElementById("cfg-model-preset")
     if (!dl) return
 
-    // Build hints from providers API — available keys first
+    let hints
+    const availabilityLabels = new Map()
     if (providers.length > 0) {
         const available = providers.filter(p => p.available).flatMap(p => p.models || [])
         const unavailable = providers.filter(p => !p.available).flatMap(p => p.models || [])
-        const hints = [...available, ...unavailable]
-        dl.innerHTML = hints.map(h => `<option value="${h}">`).join("")
-        return
+        hints = [...available, ...unavailable]
+        for (const provider of providers) {
+            const label = provider.local
+                ? (provider.available ? "local server ready" : "local server offline")
+                : (provider.available ? "key available" : "key missing")
+            for (const model of provider.models || []) availabilityLabels.set(model, label)
+        }
+    } else {
+        hints = [
+            "claude-sonnet-4-6", "claude-opus-4-6",
+            "gemini-2.5-pro", "gpt-4o", "deepseek-v4-pro",
+            "ollama/qwen3-coder:latest", "glm-4-plus", "qwen-max",
+        ]
+        for (const model of hints) availabilityLabels.set(model, "status unknown")
     }
 
-    // Fallback if API not available
-    const fallback = [
-        "claude-sonnet-4-6", "claude-opus-4-6",
-        "gemini-2.5-pro", "gpt-4o", "deepseek-chat",
-        "glm-4-plus", "qwen-max",
-    ]
-    dl.innerHTML = fallback.map(h => `<option value="${h}">`).join("")
+    dl.innerHTML = hints.map(h => `<option value="${h}">`).join("")
+    if (preset) {
+        preset.innerHTML = [
+            '<option value="">Choose a configured model...</option>',
+            ...hints.map(h => `<option value="${h}">${h} — ${availabilityLabels.get(h)}</option>`),
+        ].join("")
+    }
 }
 
 function populateFormDefaults(d) {
@@ -147,7 +160,13 @@ function bindEvents() {
         document.getElementById("opp-thinking-budget-group").style.display = e.target.checked ? "" : "none"
     })
 
-    // Model name → key indicator
+    // Model preset/name → provider indicator
+    document.getElementById("cfg-model-preset")?.addEventListener("change", (event) => {
+        if (!event.target.value) return
+        const modelInput = document.getElementById("cfg-model-name")
+        modelInput.value = event.target.value
+        modelInput.dispatchEvent(new Event("input", { bubbles: true }))
+    })
     document.getElementById("cfg-model-name")?.addEventListener("input", () => updateKeyIndicator("cfg-model-name", "model-key-status"))
     document.getElementById("cfg-opp-model")?.addEventListener("input", () => updateKeyIndicator("cfg-opp-model", "opp-key-status"))
 
@@ -169,7 +188,9 @@ function updateKeyIndicator(inputId, statusId) {
     if (!el || !name) { if (el) el.textContent = ""; return }
     const prov = providers.find(p => name.startsWith(p.prefix))
     if (prov) {
-        el.textContent = prov.available ? "KEY OK" : "KEY MISSING"
+        el.textContent = prov.local
+            ? (prov.available ? "LOCAL READY" : "LOCAL OFFLINE")
+            : (prov.available ? "KEY OK" : "KEY MISSING")
         el.className = "key-indicator " + (prov.available ? "key-ok" : "key-missing")
     } else {
         el.textContent = ""

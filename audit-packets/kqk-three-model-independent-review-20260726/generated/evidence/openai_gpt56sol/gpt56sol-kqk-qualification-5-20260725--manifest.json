@@ -1,0 +1,109 @@
+{
+  "protocol": "named-profile-kqk-qualification-5-v1",
+  "created_at": "2026-07-25T12:30:42.211063+00:00",
+  "run_id": "gpt56sol-kqk-qualification-5-20260725",
+  "run_scope": "calibration_and_five_game_qualification",
+  "profile": {
+    "schema_version": "1.0",
+    "profile_id": "openai-gpt-5.6-sol",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "transport": {
+      "kind": "openai_responses",
+      "endpoint": "https://api.openai.com/v1/responses",
+      "credential_env": "OPENAI_API_KEY",
+      "transport_retries": 0
+    },
+    "inference": {
+      "calibration_max_tokens": 16384,
+      "game_max_tokens": 32768,
+      "temperature": null,
+      "reasoning": {
+        "effort": "max",
+        "summary": "detailed",
+        "context": "current_turn"
+      },
+      "store": false
+    },
+    "board_adapter": {
+      "adapter_id": "openai-gpt-5.6-sol-board-v1",
+      "initial_format": "multi_view",
+      "rendered_views": [
+        "fen",
+        "ascii",
+        "piece_list",
+        "json_square_map"
+      ],
+      "allow_model_selected_format": true,
+      "calibration_requires_legal_moves": true
+    }
+  },
+  "profile_snapshot_sha256": "b0b92aec57adc947b733fa0a94814ab90163146a0a64ac2d2963957b385260be",
+  "experiment_protocol": {
+    "protocol_id": "named-profile-kqk-qualification-5-v1",
+    "gameplay": true,
+    "planned_games": 5,
+    "position_ids": [
+      "kqk-003-qualification-r1",
+      "kqk-010-qualification-r1",
+      "kqk-001-qualification-r1",
+      "kqk-006-qualification-r1",
+      "kqk-002-qualification-r1"
+    ],
+    "position_seeds": {
+      "kqk-003-qualification-r1": 1901395081,
+      "kqk-010-qualification-r1": 1645517172,
+      "kqk-001-qualification-r1": 662730689,
+      "kqk-006-qualification-r1": 1777396876,
+      "kqk-002-qualification-r1": 1837672429
+    },
+    "material": "KQK",
+    "defender": "seeded-random-legal-v1",
+    "max_attacking_moves": 30,
+    "correction_attempts": 1,
+    "legal_move_list_in_game_prompt": false,
+    "correction_reveals_legal_moves": false,
+    "calibration_board_ids": [
+      "calibration-01",
+      "calibration-02",
+      "calibration-heldout-03"
+    ],
+    "calibration_requires_legal_moves": true,
+    "fresh_client_instance_each_game": true,
+    "provider_conversation_storage": false,
+    "format_policy": {
+      "initial_format": "multi_view",
+      "allow_model_selected_format": true
+    },
+    "harness_checks": [
+      "five_stockfish_positive_controls",
+      "fen_san_uci_full_replay",
+      "random_defender_selection_receipts",
+      "game_prompt_legal_oracle_absence",
+      "raw_provider_envelope_completeness",
+      "illegal_attempt_capture"
+    ]
+  },
+  "calibration": {
+    "passed": true,
+    "attempts": 3,
+    "preferred_format": "multi_view",
+    "effective_format": "multi_view"
+  },
+  "completed_games": 5,
+  "actual_models": [
+    "gpt-5.6-sol"
+  ],
+  "actual_providers": [
+    "openai"
+  ],
+  "artifact_sha256": {
+    "profile": "30d88d956a5bcb169d5bfb1baad7c72293d15cafbb8f76998e88d227ae7f832c",
+    "calibration": "673682e5a6e4ccf695ea6f4b775627c83f233202ba92e748a3a77e1294c2374d",
+    "positive_controls": "5d0950a3cfe32f3bddef03a3e1d9529202cb41262e5c65e5c6bdaad5d083e36f",
+    "games": "df610c44bb8922b3ac9a35b3a5fdbf5d1a09463695d55e8a2b9f0d2dab94532a",
+    "full_log": "c4067bb779724a5c233c5f1162f3eb4a76b432b0cb5064772ab2280f29903d65",
+    "audit": "4b4eb9702a4d8b10ff420ad80f000e82623013264e5acd1d6ca3a123ad3f7961",
+    "summary": "9d096aac73123658ee280268778e2203281d9a4d101113ad9d6086568a8499a3"
+  }
+}

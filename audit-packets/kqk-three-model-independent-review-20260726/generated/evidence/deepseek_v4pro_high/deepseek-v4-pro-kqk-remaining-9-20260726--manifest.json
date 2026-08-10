@@ -1,0 +1,124 @@
+{
+  "protocol": "named-profile-kqk-qualification-9-v1",
+  "created_at": "2026-07-25T16:27:51.878338+00:00",
+  "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+  "run_scope": "calibration_and_9_game_qualification",
+  "profile": {
+    "schema_version": "1.0",
+    "profile_id": "deepseek-v4-pro",
+    "provider": "deepseek",
+    "model": "deepseek-v4-pro",
+    "transport": {
+      "kind": "deepseek_chat_completions",
+      "endpoint": "https://api.deepseek.com",
+      "credential_env": "DEEPSEEK_API_KEY",
+      "transport_retries": 0,
+      "request_timeout_seconds": 600
+    },
+    "inference": {
+      "calibration_max_tokens": 16384,
+      "game_max_tokens": 32768,
+      "temperature": null,
+      "thinking": {
+        "type": "enabled",
+        "display": "full"
+      },
+      "effort": "high"
+    },
+    "board_adapter": {
+      "adapter_id": "deepseek-v4-pro-board-v2",
+      "initial_format": "multi_view",
+      "rendered_views": [
+        "fen",
+        "ascii",
+        "piece_list",
+        "json_square_map"
+      ],
+      "allow_model_selected_format": true,
+      "calibration_requires_legal_moves": true
+    }
+  },
+  "profile_snapshot_sha256": "9de9f63b971aa5ddc76e4f9988ae33946c13eeb58cc083099057a99d418e5e5c",
+  "experiment_protocol": {
+    "protocol_id": "named-profile-kqk-qualification-9-v1",
+    "gameplay": true,
+    "planned_games": 9,
+    "matrix_start_index": 1,
+    "position_ids": [
+      "kqk-010-qualification-r1",
+      "kqk-001-qualification-r1",
+      "kqk-006-qualification-r1",
+      "kqk-002-qualification-r1",
+      "kqk-005-qualification-r1",
+      "kqk-004-qualification-r1",
+      "kqk-007-qualification-r1",
+      "kqk-008-qualification-r1",
+      "kqk-009-qualification-r1"
+    ],
+    "position_seeds": {
+      "kqk-010-qualification-r1": 1645517172,
+      "kqk-001-qualification-r1": 662730689,
+      "kqk-006-qualification-r1": 1777396876,
+      "kqk-002-qualification-r1": 1837672429,
+      "kqk-005-qualification-r1": 837319731,
+      "kqk-004-qualification-r1": 337647999,
+      "kqk-007-qualification-r1": 1783721583,
+      "kqk-008-qualification-r1": 474026154,
+      "kqk-009-qualification-r1": 1987716788
+    },
+    "material": "KQK",
+    "defender": "seeded-random-legal-v1",
+    "max_attacking_moves": 30,
+    "correction_attempts": 1,
+    "legal_move_list_in_game_prompt": false,
+    "correction_reveals_legal_moves": false,
+    "calibration_board_ids": [
+      "calibration-01",
+      "calibration-02",
+      "calibration-heldout-03"
+    ],
+    "calibration_requires_legal_moves": true,
+    "fresh_client_instance_each_game": true,
+    "provider_conversation_storage": null,
+    "calibration_reuse": {
+      "source_run": "calibration-first-smoke-deepseek-v4-pro-board-v2-20260726",
+      "source_manifest_sha256": "18019f7b0ae2209e7e2434f8b38b2d3daab1beb72a0284db163085740e1ec35a",
+      "source_calibration_sha256": "015362454c52a5af29e6692b80ce7fde846a2b957bae5116cb2253018ce377b2",
+      "attempts": 13
+    },
+    "format_policy": {
+      "initial_format": "multi_view",
+      "allow_model_selected_format": true
+    },
+    "harness_checks": [
+      "9_stockfish_positive_controls",
+      "fen_san_uci_full_replay",
+      "random_defender_selection_receipts",
+      "game_prompt_legal_oracle_absence",
+      "raw_provider_envelope_completeness",
+      "illegal_attempt_capture"
+    ]
+  },
+  "calibration": {
+    "passed": true,
+    "attempts": 13,
+    "preferred_format": "json_square_map",
+    "effective_format": "json_square_map"
+  },
+  "completed_games": 9,
+  "actual_models": [
+    "deepseek-v4-pro"
+  ],
+  "actual_providers": [
+    "deepseek"
+  ],
+  "artifact_sha256": {
+    "profile": "e1d597e40aa2abcf32dbc8ec77ac2963de41e8d1515cc25063619ee2f049f556",
+    "calibration": "015362454c52a5af29e6692b80ce7fde846a2b957bae5116cb2253018ce377b2",
+    "positive_controls": "8c371c922d4ad949b95a5a065e85d462ef44e0c1af7a3545f96964d4f6379e8e",
+    "games": "20d7bf2f58c44b434e14f50d5615e728e5b62f4884d75de41f2f370684b2a72e",
+    "full_log": "93ee21f9212bf8ab86f82f2ce058b0026a0ed0d66936086ee145d5f0144ad26f",
+    "audit": "a52cbbe4e6cde28e851f1ccf91b3c6673891c6875f150ec47d34db55010fbb14",
+    "summary": "bd3e9a8e9c234de3796d9076d86b90ed4fe4b0a2f5f33b71d319242993d2deed"
+  }
+}

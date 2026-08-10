@@ -1,0 +1,39 @@
+{
+  "updated_at": "2026-07-25T14:56:30.852722+00:00",
+  "profile_id": "deepseek-v4-pro",
+  "requested_model": "deepseek-v4-pro",
+  "planned_games": 1,
+  "completed_games": 1,
+  "checkmates": 1,
+  "terminal_reasons": {
+    "checkmate": 1
+  },
+  "calibration_passed": true,
+  "positive_controls_verified": 1,
+  "legal_move_list_in_game_prompt": false,
+  "fresh_client_instance_each_game": true,
+  "usage": {
+    "input_tokens": 133834,
+    "output_tokens": 94004
+  },
+  "audit": {
+    "audited_at": "2026-07-25T14:56:30.852576+00:00",
+    "calibration_passed": true,
+    "calibration_board_ids": [
+      "calibration-01",
+      "calibration-02",
+      "calibration-heldout-03"
+    ],
+    "calibration_attempts": 13,
+    "positive_controls_verified": 1,
+    "games_completed": 1,
+    "all_replays_verified": true,
+    "all_game_prompts_oracle_free": true,
+    "all_raw_envelopes_complete": true,
+    "accepted_model_moves": 3,
+    "model_illegal_attempts": 0,
+    "first_attempt_illegal_moves": 0,
+    "rejected_attempts": 0,
+    "provider_visible_reasoning_attempts": 3
+  }
+}

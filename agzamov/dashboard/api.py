@@ -68,15 +68,40 @@ async def handle_get_defaults(request: web.Request) -> web.Response:
     return web.json_response(_defaults_dict())
 
 
+def _key_available(env_var: str) -> bool:
+    """Return whether the documented credential environment variable is set."""
+    return bool(env_var and os.environ.get(env_var))
+
+
+def _local_server_available(base_url: str) -> bool:
+    """Return whether the local Ollama-compatible server is reachable."""
+    try:
+        import urllib.request
+
+        base = base_url.replace("/v1/", "").replace("/v1", "").rstrip("/")
+        with urllib.request.urlopen(f"{base}/api/tags", timeout=1) as response:
+            return response.status == 200
+    except Exception:
+        return False
+
+
+def _provider_available(base_url: str, env_var: str) -> bool:
+    if "localhost:11434" in base_url or "127.0.0.1:11434" in base_url:
+        return _local_server_available(base_url)
+    return _key_available(env_var)
+
+
 async def handle_get_providers(request: web.Request) -> web.Response:
     seen: dict[str, dict] = {}
-    for prefix, provider, _base_url, env_var in PROVIDER_REGISTRY:
+    for prefix, provider, base_url, env_var in PROVIDER_REGISTRY:
         if prefix not in seen:
+            is_local = "localhost:11434" in base_url or "127.0.0.1:11434" in base_url
             seen[prefix] = {
                 "prefix": prefix,
                 "provider": provider,
                 "env_var": env_var,
-                "available": bool(os.environ.get(env_var)),
+                "available": _provider_available(base_url, env_var),
+                "local": is_local,
                 "models": MODEL_HINTS.get(prefix, []),
             }
     return web.json_response(list(seen.values()))

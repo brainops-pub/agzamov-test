@@ -1,0 +1,107 @@
+{
+  "protocol": "named-profile-kqk-qualification-1-v1",
+  "created_at": "2026-07-25T14:56:30.852837+00:00",
+  "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+  "run_scope": "calibration_and_1_game_qualification",
+  "profile": {
+    "schema_version": "1.0",
+    "profile_id": "deepseek-v4-pro",
+    "provider": "deepseek",
+    "model": "deepseek-v4-pro",
+    "transport": {
+      "kind": "deepseek_chat_completions",
+      "endpoint": "https://api.deepseek.com",
+      "credential_env": "DEEPSEEK_API_KEY",
+      "transport_retries": 0,
+      "request_timeout_seconds": 600
+    },
+    "inference": {
+      "calibration_max_tokens": 16384,
+      "game_max_tokens": 32768,
+      "temperature": null,
+      "thinking": {
+        "type": "enabled",
+        "display": "full"
+      },
+      "effort": "high"
+    },
+    "board_adapter": {
+      "adapter_id": "deepseek-v4-pro-board-v2",
+      "initial_format": "multi_view",
+      "rendered_views": [
+        "fen",
+        "ascii",
+        "piece_list",
+        "json_square_map"
+      ],
+      "allow_model_selected_format": true,
+      "calibration_requires_legal_moves": true
+    }
+  },
+  "profile_snapshot_sha256": "9de9f63b971aa5ddc76e4f9988ae33946c13eeb58cc083099057a99d418e5e5c",
+  "experiment_protocol": {
+    "protocol_id": "named-profile-kqk-qualification-1-v1",
+    "gameplay": true,
+    "planned_games": 1,
+    "position_ids": [
+      "kqk-003-qualification-r1"
+    ],
+    "position_seeds": {
+      "kqk-003-qualification-r1": 1901395081
+    },
+    "material": "KQK",
+    "defender": "seeded-random-legal-v1",
+    "max_attacking_moves": 30,
+    "correction_attempts": 1,
+    "legal_move_list_in_game_prompt": false,
+    "correction_reveals_legal_moves": false,
+    "calibration_board_ids": [
+      "calibration-01",
+      "calibration-02",
+      "calibration-heldout-03"
+    ],
+    "calibration_requires_legal_moves": true,
+    "fresh_client_instance_each_game": true,
+    "provider_conversation_storage": null,
+    "calibration_reuse": {
+      "source_run": "calibration-first-smoke-deepseek-v4-pro-board-v2-20260726",
+      "source_manifest_sha256": "18019f7b0ae2209e7e2434f8b38b2d3daab1beb72a0284db163085740e1ec35a",
+      "source_calibration_sha256": "015362454c52a5af29e6692b80ce7fde846a2b957bae5116cb2253018ce377b2",
+      "attempts": 13
+    },
+    "format_policy": {
+      "initial_format": "multi_view",
+      "allow_model_selected_format": true
+    },
+    "harness_checks": [
+      "1_stockfish_positive_controls",
+      "fen_san_uci_full_replay",
+      "random_defender_selection_receipts",
+      "game_prompt_legal_oracle_absence",
+      "raw_provider_envelope_completeness",
+      "illegal_attempt_capture"
+    ]
+  },
+  "calibration": {
+    "passed": true,
+    "attempts": 13,
+    "preferred_format": "json_square_map",
+    "effective_format": "json_square_map"
+  },
+  "completed_games": 1,
+  "actual_models": [
+    "deepseek-v4-pro"
+  ],
+  "actual_providers": [
+    "deepseek"
+  ],
+  "artifact_sha256": {
+    "profile": "e1d597e40aa2abcf32dbc8ec77ac2963de41e8d1515cc25063619ee2f049f556",
+    "calibration": "015362454c52a5af29e6692b80ce7fde846a2b957bae5116cb2253018ce377b2",
+    "positive_controls": "70ffcd1c774fa836c8870a650c8cefb3e7583bdd18bab7da303e8e1b87db3162",
+    "games": "ba2fe8635c6c4f0fc67ceae8f0e1b23acb89403f78c84858b9fbbabef161b6e1",
+    "full_log": "badd3a2decfa8bd4732b9c779d172ffecb4272a7cd644def0c9dd9fbcdf29715",
+    "audit": "abda2493b90531f979dfcc9cba1c514a7a9372833aca929a589cfc920413eab2",
+    "summary": "1c925e15578338bf0b1fa44ee1d98af61e0da8fc872c12b7275fa174dec183ba"
+  }
+}

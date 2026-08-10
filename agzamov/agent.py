@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import random
 import re
 import time
 from dataclasses import dataclass, field
@@ -484,8 +485,11 @@ class LLMAgent:
 class RandomAgent:
     """Agent that plays random legal moves. Used for sanity gate."""
 
-    def __init__(self, agent_id: str = "random"):
+    def __init__(self, agent_id: str = "random", seed: int | None = None):
         self.agent_id = agent_id
+        self.rng_seed = seed
+        self._rng = random.Random(seed)
+        self.last_selection: dict[str, object] | None = None
         self.stats = AgentStats()
         self.has_memory = False
         self.memory = NoMemory()
@@ -500,11 +504,19 @@ class RandomAgent:
         return False
 
     async def get_move(self, game: Chess960Game, opponent_id: str) -> tuple[str, float, str | None]:
-        import random
         start = time.perf_counter()
         self.stats.total_moves += 1
         legal = game.get_legal_moves()
-        move = random.choice(legal)
+        choice_index = self._rng.randrange(len(legal))
+        move = legal[choice_index]
+        self.last_selection = {
+            "agent_id": self.agent_id,
+            "rng_seed": self.rng_seed,
+            "choice_index": choice_index,
+            "fen_before": game.get_fen(),
+            "legal_moves": legal,
+            "move_uci": move,
+        }
         elapsed = (time.perf_counter() - start) * 1000
         return move, elapsed, None
 
@@ -710,32 +722,44 @@ def _build_system_prompt(has_memory: bool, constraints: list[str]) -> str:
 
 
 def _board_description(board: chess.Board) -> str:
-    """Human-readable board description: piece list + ASCII diagram.
+    """Compact, unambiguous two-line piece map."""
+    symbols = {
+        chess.KING: "K",
+        chess.QUEEN: "Q",
+        chess.ROOK: "R",
+        chess.BISHOP: "B",
+        chess.KNIGHT: "N",
+        chess.PAWN: "P",
+    }
+    order = [
+        chess.KING,
+        chess.QUEEN,
+        chess.ROOK,
+        chess.BISHOP,
+        chess.KNIGHT,
+        chess.PAWN,
+    ]
+    white: dict[int, list[str]] = {piece_type: [] for piece_type in order}
+    black: dict[int, list[str]] = {piece_type: [] for piece_type in order}
+    for square, piece in board.piece_map().items():
+        target = white if piece.color == chess.WHITE else black
+        target[piece.piece_type].append(chess.square_name(square))
 
-    LLMs can't reliably parse FEN. This gives them explicit piece
-    placement so they don't have to count characters.
-    """
-    piece_map = board.piece_map()
-    white_pieces = []
-    black_pieces = []
-    for sq, piece in sorted(piece_map.items()):
-        name = chess.piece_name(piece.piece_type).capitalize()
-        square = chess.square_name(sq)
-        entry = f"{name} on {square}"
-        if piece.color == chess.WHITE:
-            white_pieces.append(entry)
-        else:
-            black_pieces.append(entry)
+    def format_side(pieces: dict[int, list[str]]) -> str:
+        groups: list[str] = []
+        for piece_type in order:
+            squares = sorted(pieces[piece_type])
+            if not squares:
+                continue
+            symbol = symbols[piece_type]
+            groups.append(
+                f"K★{squares[0]}"
+                if piece_type == chess.KING
+                else f"{symbol}{','.join(squares)}"
+            )
+        return " | ".join(groups)
 
-    lines = []
-    lines.append("## Board")
-    lines.append("")
-    # ASCII diagram (python-chess provides this)
-    lines.append(str(board))
-    lines.append("")
-    lines.append(f"White pieces: {', '.join(white_pieces)}")
-    lines.append(f"Black pieces: {', '.join(black_pieces)}")
-    return "\n".join(lines)
+    return f"White: {format_side(white)}\nBlack: {format_side(black)}"
 
 
 def _build_move_prompt(

@@ -130,6 +130,7 @@ class RunStorage:
 def _game_result_to_dict(result: GameResult) -> dict:
     """Convert GameResult to a JSON-serializable dict."""
     d = asdict(result)
+    d["move_receipts"] = list(d["moves"])
     # MoveRecord list — keep compact
     d["moves"] = [
         {

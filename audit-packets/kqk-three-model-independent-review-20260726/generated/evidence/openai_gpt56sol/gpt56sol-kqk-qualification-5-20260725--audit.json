@@ -1,0 +1,127 @@
+{
+  "audited_at": "2026-07-25T12:30:42.210687+00:00",
+  "calibration_passed": true,
+  "calibration_board_ids": [
+    "calibration-01",
+    "calibration-02",
+    "calibration-heldout-03"
+  ],
+  "calibration_attempts": 3,
+  "positive_controls_verified": 5,
+  "games_completed": 5,
+  "all_replays_verified": true,
+  "all_game_prompts_oracle_free": true,
+  "all_raw_envelopes_complete": true,
+  "accepted_model_moves": 37,
+  "model_illegal_attempts": 0,
+  "first_attempt_illegal_moves": 0,
+  "rejected_attempts": 0,
+  "provider_visible_reasoning_attempts": 24,
+  "game_audits": [
+    {
+      "game_id": "gpt-5.6-sol:kqk-003-qualification-r1",
+      "position_id": "kqk-003-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 3,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 0,
+      "correction_attempts": 0,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 1,
+      "actual_models": [
+        "gpt-5.6-sol"
+      ],
+      "actual_providers": [
+        "openai"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    },
+    {
+      "game_id": "gpt-5.6-sol:kqk-010-qualification-r1",
+      "position_id": "kqk-010-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 11,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 0,
+      "correction_attempts": 0,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 9,
+      "actual_models": [
+        "gpt-5.6-sol"
+      ],
+      "actual_providers": [
+        "openai"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    },
+    {
+      "game_id": "gpt-5.6-sol:kqk-001-qualification-r1",
+      "position_id": "kqk-001-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 6,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 0,
+      "correction_attempts": 0,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 4,
+      "actual_models": [
+        "gpt-5.6-sol"
+      ],
+      "actual_providers": [
+        "openai"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    },
+    {
+      "game_id": "gpt-5.6-sol:kqk-006-qualification-r1",
+      "position_id": "kqk-006-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 9,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 0,
+      "correction_attempts": 0,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 5,
+      "actual_models": [
+        "gpt-5.6-sol"
+      ],
+      "actual_providers": [
+        "openai"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    },
+    {
+      "game_id": "gpt-5.6-sol:kqk-002-qualification-r1",
+      "position_id": "kqk-002-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 8,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 0,
+      "correction_attempts": 0,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 5,
+      "actual_models": [
+        "gpt-5.6-sol"
+      ],
+      "actual_providers": [
+        "openai"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    }
+  ]
+}

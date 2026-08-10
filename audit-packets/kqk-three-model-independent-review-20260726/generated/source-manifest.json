@@ -1,0 +1,343 @@
+{
+  "schema_version": "agzamov.audit-source-manifest.v1",
+  "project_root": ".",
+  "sources": [
+    {
+      "cell_id": "claude_opus5",
+      "run_id": "opus5-kqk-no-legal-10-20260725",
+      "source_path": "results/opus5-kqk-no-legal-10-20260725/calibration.json",
+      "packet_path": "generated/calibration/claude_opus5.normalized.json",
+      "bytes": 128746,
+      "sha256": "b8252af151b305a8a4b1abbd188098a7f1bf5eb10db39e58535a887a7f978f6b",
+      "normalization": "raw_envelope keys removed"
+    },
+    {
+      "cell_id": "claude_opus5",
+      "run_id": "opus5-kqk-no-legal-10-20260725",
+      "source_path": "results/opus5-kqk-no-legal-10-20260725/games.jsonl",
+      "packet_path": "generated/logs/claude_opus5.normalized.jsonl",
+      "bytes": 1860807,
+      "sha256": "0a3000c86a1610351df039813a719ec46c30de90afef93e379b66ea3ee1946c1",
+      "normalization": "raw_envelope and duplicate accepted-event text removed"
+    },
+    {
+      "cell_id": "claude_opus5",
+      "run_id": "opus5-kqk-no-legal-10-20260725",
+      "source_path": "results/opus5-kqk-no-legal-10-20260725/manifest.json",
+      "packet_path": "generated/evidence/claude_opus5/opus5-kqk-no-legal-10-20260725--manifest.json",
+      "bytes": 2770,
+      "sha256": "945f8cfa9b4df2eb9ae5240d70fa10209ffec7854967e8139b192d24bb6898ab"
+    },
+    {
+      "cell_id": "claude_opus5",
+      "run_id": "opus5-kqk-no-legal-10-20260725",
+      "source_path": "results/opus5-kqk-no-legal-10-20260725/positive-control.json",
+      "packet_path": "generated/evidence/claude_opus5/opus5-kqk-no-legal-10-20260725--positive-control.json",
+      "bytes": 57986,
+      "sha256": "59dfbd666799dffd22108fb96c589b095151a3a1e3d187135b0dbb362b7909d4"
+    },
+    {
+      "cell_id": "claude_opus5",
+      "run_id": "opus5-kqk-no-legal-10-20260725",
+      "source_path": "results/opus5-kqk-no-legal-10-20260725/summary.json",
+      "packet_path": "generated/evidence/claude_opus5/opus5-kqk-no-legal-10-20260725--summary.json",
+      "bytes": 782,
+      "sha256": "da718710124b892546d49ef7c566d24abd8e28dd34dd05dc8442c563935ed925"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/audit.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-remaining-9-20260726--audit.json",
+      "bytes": 6276,
+      "sha256": "a52cbbe4e6cde28e851f1ccf91b3c6673891c6875f150ec47d34db55010fbb14"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/calibration.json",
+      "packet_path": "generated/calibration/deepseek_v4pro_high.normalized.json",
+      "bytes": 44831170,
+      "sha256": "015362454c52a5af29e6692b80ce7fde846a2b957bae5116cb2253018ce377b2",
+      "normalization": "raw_envelope keys removed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/games.jsonl",
+      "packet_path": "generated/logs/deepseek_v4pro_high.normalized.jsonl",
+      "bytes": 163037569,
+      "sha256": "20d7bf2f58c44b434e14f50d5615e728e5b62f4884d75de41f2f370684b2a72e",
+      "normalization": "raw_envelope and duplicate accepted-event text removed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/manifest.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-remaining-9-20260726--manifest.json",
+      "bytes": 4242,
+      "sha256": "bb808ac127ed7f9e48004379e9626f6f01db36a4a7c5618d4ac1da299a902e53"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/positive-controls.jsonl",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-remaining-9-20260726--positive-controls.jsonl",
+      "bytes": 536998,
+      "sha256": "8c371c922d4ad949b95a5a065e85d462ef44e0c1af7a3545f96964d4f6379e8e"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/profile.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-remaining-9-20260726--profile.json",
+      "bytes": 839,
+      "sha256": "e1d597e40aa2abcf32dbc8ec77ac2963de41e8d1515cc25063619ee2f049f556"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-remaining-9-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-remaining-9-20260726/summary.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-remaining-9-20260726--summary.json",
+      "bytes": 1124,
+      "sha256": "bd3e9a8e9c234de3796d9076d86b90ed4fe4b0a2f5f33b71d319242993d2deed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/audit.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-smoke-1-20260726--audit.json",
+      "bytes": 1206,
+      "sha256": "abda2493b90531f979dfcc9cba1c514a7a9372833aca929a589cfc920413eab2"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/calibration.json",
+      "packet_path": "generated/calibration/deepseek_v4pro_high.normalized.json",
+      "bytes": 44831170,
+      "sha256": "015362454c52a5af29e6692b80ce7fde846a2b957bae5116cb2253018ce377b2",
+      "normalization": "raw_envelope keys removed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/games.jsonl",
+      "packet_path": "generated/logs/deepseek_v4pro_high.normalized.jsonl",
+      "bytes": 3627891,
+      "sha256": "ba2fe8635c6c4f0fc67ceae8f0e1b23acb89403f78c84858b9fbbabef161b6e1",
+      "normalization": "raw_envelope and duplicate accepted-event text removed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/manifest.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-smoke-1-20260726--manifest.json",
+      "bytes": 3573,
+      "sha256": "f94848f25ad5e5a704c2a2bd6e4d9ab371a5643cd5b9b2d1ff8e587db5db1d6e"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/positive-controls.jsonl",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-smoke-1-20260726--positive-controls.jsonl",
+      "bytes": 18900,
+      "sha256": "70ffcd1c774fa836c8870a650c8cefb3e7583bdd18bab7da303e8e1b87db3162"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/profile.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-smoke-1-20260726--profile.json",
+      "bytes": 839,
+      "sha256": "e1d597e40aa2abcf32dbc8ec77ac2963de41e8d1515cc25063619ee2f049f556"
+    },
+    {
+      "cell_id": "deepseek_v4pro_high",
+      "run_id": "deepseek-v4-pro-kqk-smoke-1-20260726",
+      "source_path": "results/deepseek-v4-pro-kqk-smoke-1-20260726/summary.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_high/deepseek-v4-pro-kqk-smoke-1-20260726--summary.json",
+      "bytes": 1074,
+      "sha256": "1c925e15578338bf0b1fa44ee1d98af61e0da8fc872c12b7275fa174dec183ba"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/audit.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_max65k/deepseek-v4-pro-max-65k-kqk-core5-20260726--audit.json",
+      "bytes": 3731,
+      "sha256": "91fa79e5a090a0f6890832a3cd9d72b37a2d7526def8511ee7bd550ad76cb090"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/calibration.json",
+      "packet_path": "generated/calibration/deepseek_v4pro_max65k.normalized.json",
+      "bytes": 65694472,
+      "sha256": "99aaa9bd2fb0404c3d3da2a0f3b2121035375a9c3ec21b1272a4201ff0ece270",
+      "normalization": "raw_envelope keys removed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/games.jsonl",
+      "packet_path": "generated/logs/deepseek_v4pro_max65k.normalized.jsonl",
+      "bytes": 464270622,
+      "sha256": "651dd979bfac529ffb74e0c683ca5dd4470429b4232072a078de49109faa2d07",
+      "normalization": "raw_envelope and duplicate accepted-event text removed"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/manifest.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_max65k/deepseek-v4-pro-max-65k-kqk-core5-20260726--manifest.json",
+      "bytes": 3616,
+      "sha256": "4fae4b80987ec1db1d1cdf2218e0f6f63b201f97601588de9c322664e71b462e"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/positive-controls.jsonl",
+      "packet_path": "generated/evidence/deepseek_v4pro_max65k/deepseek-v4-pro-max-65k-kqk-core5-20260726--positive-controls.jsonl",
+      "bytes": 202870,
+      "sha256": "36c9b5d1becaa4be0f8334ff9da806a05c239ceb1f8e0633b8fc06154431da89"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/profile.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_max65k/deepseek-v4-pro-max-65k-kqk-core5-20260726--profile.json",
+      "bytes": 847,
+      "sha256": "f54e2dfc4b675673b23f5265b5b1101dff2fe96c54e1103dd2990f18acf875ab"
+    },
+    {
+      "cell_id": "deepseek_v4pro_max65k",
+      "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+      "source_path": "results/deepseek-v4-pro-max-65k-kqk-core5-20260726/summary.json",
+      "packet_path": "generated/evidence/deepseek_v4pro_max65k/deepseek-v4-pro-max-65k-kqk-core5-20260726--summary.json",
+      "bytes": 1132,
+      "sha256": "d026a10675b1ace485a479b67d7c80b542edbd02578453962d8a4c1bc6011fbf"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/corpus-v1.json",
+      "packet_path": "generated/harness/agzamov/corpus-v1.json",
+      "bytes": 5827,
+      "sha256": "2a67103097ff525cd0884526fb9aa578520729b8ce08b9587bef2dece333ee6f"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/endgame_strategy.py",
+      "packet_path": "generated/harness/agzamov/endgame_strategy.py",
+      "bytes": 57417,
+      "sha256": "efeb961e505e8abfa01d6f4659492e480dacffa74ef1b38b94789ba3131efde9"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/model_profiles.py",
+      "packet_path": "generated/harness/agzamov/model_profiles.py",
+      "bytes": 8682,
+      "sha256": "e92d958cd2d246abb84e699ac1b7db43020a1b76b6aa1d1ca510efdfca243b94"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/strategy_calibration.py",
+      "packet_path": "generated/harness/agzamov/strategy_calibration.py",
+      "bytes": 16953,
+      "sha256": "bcb4673080c77883e34afdd98a0036b1d406d92c9b3cc97278894f567a5cb8d2"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/tests/test_chess_harness_validation.py",
+      "packet_path": "generated/harness/agzamov/tests/test_chess_harness_validation.py",
+      "bytes": 13591,
+      "sha256": "33601efc7b32b43ea118de6044de03fc64d3bc85dca12d16c80e589f33cf45c8"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/tests/test_deepseek_profile.py",
+      "packet_path": "generated/harness/agzamov/tests/test_deepseek_profile.py",
+      "bytes": 4919,
+      "sha256": "6a97d13402c0a2d1dc54f1a23b3aedcf1c4f54dd020ade06554c0aa66d6c9b3e"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "agzamov/tests/test_profile_game_batch_runner.py",
+      "packet_path": "generated/harness/agzamov/tests/test_profile_game_batch_runner.py",
+      "bytes": 5056,
+      "sha256": "abb066acff3669584d5b5a631f544a82ac8aab14513bb9c278b83d302c571e11"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "scripts/run_opus5_kqk_no_legal_10.py",
+      "packet_path": "generated/harness/scripts/run_opus5_kqk_no_legal_10.py",
+      "bytes": 15268,
+      "sha256": "94c1fd3faaa70765b7790cac451ac1254ecec7fa904fbd0cdc647b955924b0e8"
+    },
+    {
+      "cell_id": "harness",
+      "source_path": "scripts/run_profile_game_batch.py",
+      "packet_path": "generated/harness/scripts/run_profile_game_batch.py",
+      "bytes": 27057,
+      "sha256": "c80fb48d89b1a8067007ea4a67fffa4699cf366888227f1291100556e7a7fab4"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/audit.json",
+      "packet_path": "generated/evidence/openai_gpt56sol/gpt56sol-kqk-qualification-5-20260725--audit.json",
+      "bytes": 3662,
+      "sha256": "4b4eb9702a4d8b10ff420ad80f000e82623013264e5acd1d6ca3a123ad3f7961"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/calibration.json",
+      "packet_path": "generated/calibration/openai_gpt56sol.normalized.json",
+      "bytes": 205961,
+      "sha256": "673682e5a6e4ccf695ea6f4b775627c83f233202ba92e748a3a77e1294c2374d",
+      "normalization": "raw_envelope keys removed"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/games.jsonl",
+      "packet_path": "generated/logs/openai_gpt56sol.normalized.jsonl",
+      "bytes": 1162835,
+      "sha256": "df610c44bb8922b3ac9a35b3a5fdbf5d1a09463695d55e8a2b9f0d2dab94532a",
+      "normalization": "raw_envelope and duplicate accepted-event text removed"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/manifest.json",
+      "packet_path": "generated/evidence/openai_gpt56sol/gpt56sol-kqk-qualification-5-20260725--manifest.json",
+      "bytes": 3542,
+      "sha256": "3479066ff1b795b1e7bfddac3f897f5786849b4b4233615ee601405863b15d37"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/positive-controls.jsonl",
+      "packet_path": "generated/evidence/openai_gpt56sol/gpt56sol-kqk-qualification-5-20260725--positive-controls.jsonl",
+      "bytes": 202877,
+      "sha256": "5d0950a3cfe32f3bddef03a3e1d9529202cb41262e5c65e5c6bdaad5d083e36f"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/profile.json",
+      "packet_path": "generated/evidence/openai_gpt56sol/gpt56sol-kqk-qualification-5-20260725--profile.json",
+      "bytes": 837,
+      "sha256": "30d88d956a5bcb169d5bfb1baad7c72293d15cafbb8f76998e88d227ae7f832c"
+    },
+    {
+      "cell_id": "openai_gpt56sol",
+      "run_id": "gpt56sol-kqk-qualification-5-20260725",
+      "source_path": "results/gpt56sol-kqk-qualification-5-20260725/summary.json",
+      "packet_path": "generated/evidence/openai_gpt56sol/gpt56sol-kqk-qualification-5-20260725--summary.json",
+      "bytes": 1073,
+      "sha256": "9d096aac73123658ee280268778e2203281d9a4d101113ad9d6086568a8499a3"
+    }
+  ]
+}
