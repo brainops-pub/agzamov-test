@@ -17,6 +17,7 @@ from rich.console import Console
 from .config import load_config, validate_config, resolve_provider
 from .orchestrator import Orchestrator
 from .report import generate_report
+from .model_profiles import create_profile_client
 
 app = typer.Typer(
     name="agzamov",
@@ -471,6 +472,11 @@ def dashboard_cmd(
         asyncio.run(_serve())
     except KeyboardInterrupt:
         console.print("\n[dim]Dashboard stopped.[/dim]")
+
+
+from .chess_cli import chess_app
+
+app.add_typer(chess_app, name="chess")
 
 
 if __name__ == "__main__":

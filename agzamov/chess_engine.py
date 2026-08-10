@@ -17,6 +17,10 @@ class MoveRecord:
     move_number: int  # ply count (1-based, increments for each half-move)
     fen_before: str
     wall_time_ms: float
+    legal_moves_before: list[str] = field(default_factory=list)
+    move_san: str = ""
+    fen_after: str = ""
+    selection_trace: dict[str, object] = field(default_factory=dict)
     was_error: bool = False
     error_detail: str = ""
 
@@ -75,9 +79,15 @@ class Chess960Game:
         return [move.uci() for move in self.board.legal_moves]
 
     def make_move(
-        self, move_uci: str, wall_time_ms: float = 0.0, was_error: bool = False, error_detail: str = ""
+        self,
+        move_uci: str,
+        wall_time_ms: float = 0.0,
+        was_error: bool = False,
+        error_detail: str = "",
+        selection_trace: dict[str, object] | None = None,
     ) -> bool:
         """Apply a move. Returns False if illegal."""
+        legal_moves_before = self.get_legal_moves()
         try:
             move = chess.Move.from_uci(move_uci)
             if move not in self.board.legal_moves:
@@ -86,10 +96,12 @@ class Chess960Game:
             return False
 
         fen_before = self.board.fen()
+        move_san = self.board.san(move)
         side = self.turn_name
         self._ply_count += 1
 
         self.board.push(move)
+        fen_after = self.board.fen()
 
         self.move_records.append(
             MoveRecord(
@@ -98,6 +110,10 @@ class Chess960Game:
                 move_number=self._ply_count,
                 fen_before=fen_before,
                 wall_time_ms=wall_time_ms,
+                legal_moves_before=legal_moves_before,
+                move_san=move_san,
+                fen_after=fen_after,
+                selection_trace=dict(selection_trace or {}),
                 was_error=was_error,
                 error_detail=error_detail,
             )
@@ -179,7 +195,7 @@ class Chess960Game:
         """Export game as PGN string."""
         game = chess.pgn.Game()
         game.headers["Event"] = "Agzamov Test"
-        game.headers["Site"] = "BrainOps"
+        game.headers["Site"] = "Agzamov Test"
         game.headers["White"] = white_name
         game.headers["Black"] = black_name
         if game_id:

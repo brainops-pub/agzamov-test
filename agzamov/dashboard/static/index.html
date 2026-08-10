@@ -119,6 +119,12 @@
                     <fieldset>
                         <legend>Primary Model</legend>
                         <div class="form-group">
+                            <label for="cfg-model-preset">Available Model</label>
+                            <select id="cfg-model-preset">
+                                <option value="">Choose a configured model...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="cfg-model-name">Model Name</label>
                             <input type="text" id="cfg-model-name" value="claude-sonnet-4-6"
                                    list="model-hints" autocomplete="off">
@@ -227,13 +233,13 @@
                         <label for="cfg-memory-type">Memory Type</label>
                         <select id="cfg-memory-type">
                             <option value="none">None</option>
-                            <option value="brainops-mcp">BrainOps MCP</option>
+                            <option value="http-memory">Generic HTTP adapter</option>
                             <option value="sqlite-fallback">SQLite Fallback</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="cfg-memory-endpoint">Endpoint</label>
-                        <input type="text" id="cfg-memory-endpoint" value="http://127.0.0.1:3200/api/v1">
+                        <input type="text" id="cfg-memory-endpoint" value="" placeholder="https://memory.example/api/v1">
                     </div>
                     <div class="form-group">
                         <label for="cfg-memory-tokens">Max Context Tokens</label>

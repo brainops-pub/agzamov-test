@@ -1,0 +1,44 @@
+[build-system]
+requires = []
+build-backend = "hatchling.build"
+backend-path = ["_build_backend"]
+
+[project]
+name = "agzamov"
+version = "0.1.0"
+description = "Agzamov Test — a replayable game-theoretic strategy benchmark"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [
+  { name = "Ali Agzamov", email = "ali.agzamov@gmail.com" },
+]
+dependencies = [
+  "python-chess>=1.10",
+  "anthropic>=0.40",
+  "openai>=1.50",
+  "stockfish>=3.28",
+  "scipy>=1.14",
+  "numpy>=2.0",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+  "rich>=13.0",
+  "aiohttp>=3.9",
+  "python-dotenv>=1.0",
+  "treys>=0.1.8",
+  "pokerkit>=0.7",
+]
+
+[project.scripts]
+agzamov = "agzamov.cli:app"
+
+[project.urls]
+Repository = "https://github.com/brainops-pub/agzamov-test"
+Issues = "https://github.com/brainops-pub/agzamov-test/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agzamov"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

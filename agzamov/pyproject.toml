@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 name = "agzamov"
 version = "0.1.0"
 description = "Agzamov Test — game-theoretic benchmark for measuring real AI capabilities under adversarial conditions"
-readme = "../agzamov-test.md"
+readme = "../README.md"
 requires-python = ">=3.12"
-license = "Apache-2.0"
+license = "MIT"
 authors = [
     { name = "Ali Agzamov", email = "ali.agzamov@gmail.com" },
 ]
@@ -24,6 +24,8 @@ dependencies = [
     "rich>=13.0",
     "aiohttp>=3.9",
     "python-dotenv>=1.0",
+    "treys>=0.1.8",
+    "pokerkit>=0.7",
 ]
 
 [project.scripts]

@@ -141,7 +141,7 @@ class TestGenerateReport:
         assert "test-001" in report
         assert "claude-test" in report
         assert "none" in report
-        assert "BrainOps" in report
+        assert "Agzamov Test" in report
 
     def test_phase_0_section(self):
         report = generate_report(
@@ -240,7 +240,7 @@ class TestGenerateReport:
         report = generate_report(
             config_name="full-run",
             model_name="claude-sonnet",
-            augmentation_type="brainops-mcp",
+            augmentation_type="http-memory",
             phase_summaries={
                 0: {"passed": True, "cost_usd": 0.5},
                 1: {"n_games": 100, "agent_a_wins": 50, "agent_b_wins": 45,

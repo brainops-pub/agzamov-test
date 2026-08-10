@@ -212,12 +212,12 @@ class Orchestrator:
             "phases": self.config.phases,
         })
 
-        # Check memory availability — auto-fallback if MCP is unreachable
-        if self.config.augmentation.type == "brainops-mcp":
+        # Check optional HTTP memory availability and fail over explicitly.
+        if self.config.augmentation.type == "http-memory":
             if await self._check_memory_available():
-                console.print("[green]Memory MCP: connected[/green]")
+                console.print("[green]HTTP memory: connected[/green]")
             else:
-                console.print("[yellow]Memory MCP unreachable — falling back to sqlite-fallback[/yellow]")
+                console.print("[yellow]HTTP memory unreachable — falling back to sqlite-fallback[/yellow]")
                 self.config.augmentation.type = "sqlite-fallback"
 
         # Initialize Stockfish — required for tree search (Mode B/C), optional for live eval
@@ -1011,7 +1011,7 @@ class Orchestrator:
             return False
 
     async def _check_memory_available(self) -> bool:
-        """Ping the BrainOps Memory MCP to check if it's reachable."""
+        """Ping the configured HTTP memory adapter."""
         import aiohttp
         endpoint = self.config.augmentation.endpoint.rstrip("/")
         try:

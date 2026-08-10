@@ -22,6 +22,7 @@ PROVIDER_REGISTRY: list[tuple[str, str, str, str]] = [
     ("o1",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
     ("o3",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
     ("o4",      "openai",    "https://api.openai.com/v1/",              "OPENAI_API_KEY"),
+    ("ollama/", "openai",    "http://localhost:11434/v1/",              ""),
     ("qwen",    "openai",    "https://dashscope.aliyuncs.com/compatible-mode/v1/", "QWEN_API_KEY"),
     ("gemini",  "openai",    "https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY"),
 ]
@@ -34,7 +35,8 @@ MODEL_HINTS: dict[str, list[str]] = {
     "gpt":      ["gpt-4o", "gpt-4.1", "gpt-4.1-mini"],
     "o3":       ["o3", "o3-mini"],
     "o4":       ["o4-mini"],
-    "deepseek": ["deepseek-chat", "deepseek-reasoner"],
+    "deepseek": ["deepseek-v4-pro", "deepseek-chat", "deepseek-reasoner"],
+    "ollama/":  ["ollama/qwen3-coder:latest"],
     "glm":      ["glm-4-plus", "glm-4-flash", "glm-4-air", "glm-z1"],
     "qwen":     ["qwen-max", "qwen-plus", "qwen-turbo"],
 }
@@ -66,8 +68,8 @@ class ModelConfig:
 
 @dataclass
 class AugmentationConfig:
-    type: str = "none"  # "brainops-mcp" | "sqlite-fallback" | "none"
-    endpoint: str = "http://127.0.0.1:3200/api/v1"
+    type: str = "none"  # "http-memory" | "sqlite-fallback" | "none"
+    endpoint: str = ""
     api_key: str = ""
     max_context_tokens: int = 500
     consolidation_trigger: str = "every_game"
@@ -226,7 +228,12 @@ def resolve_model_config(m: ModelConfig) -> None:
     provider, base_url, env_var = resolve_provider(m.name)
     m.provider = provider
     m.base_url = base_url
-    m.api_key = os.environ.get(env_var, "")
+    m.api_key = os.environ.get(env_var, "") if env_var else ""
+    if "/" in m.name and any(
+        m.name.lower().startswith(prefix) and prefix.endswith("/")
+        for prefix, _provider, _base_url, _env_var in PROVIDER_REGISTRY
+    ):
+        m.name = m.name.split("/", 1)[1]
 
 
 def validate_config(cfg: RunConfig) -> list[str]:
@@ -239,12 +246,21 @@ def validate_config(cfg: RunConfig) -> list[str]:
         issues.append("WARNING: Phase 2 games < 50 — Δₐ may not be statistically significant")
     if cfg.model.temperature > 1.0:
         issues.append("WARNING: Temperature > 1.0 may produce erratic play")
-    if cfg.augmentation.type not in ("brainops-mcp", "sqlite-fallback", "none"):
+    if cfg.augmentation.type not in ("http-memory", "sqlite-fallback", "none"):
         issues.append(f"ERROR: Unknown augmentation type: {cfg.augmentation.type}")
+    if cfg.augmentation.type == "http-memory" and not cfg.augmentation.endpoint:
+        issues.append("ERROR: http-memory requires an explicit endpoint")
     if cfg.stockfish.path and not Path(cfg.stockfish.path).exists():
         issues.append(f"WARNING: Stockfish not found at {cfg.stockfish.path}")
 
-    if not cfg.model.api_key and cfg.tree_search.mode != "stockfish":
+    is_local_model = bool(
+        cfg.model.base_url
+        and (
+            "localhost:11434" in cfg.model.base_url
+            or "127.0.0.1:11434" in cfg.model.base_url
+        )
+    )
+    if not cfg.model.api_key and not is_local_model and cfg.tree_search.mode != "stockfish":
         _, _, env_var = resolve_provider(cfg.model.name)
         issues.append(f"ERROR: {env_var} not set — add to agzamov/.env")
 

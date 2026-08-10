@@ -1,4 +1,4 @@
-"""Memory interface — BrainOps MCP client with SQLite fallback."""
+"""Interchangeable memory interface with HTTP and SQLite implementations."""
 
 from __future__ import annotations
 
@@ -57,8 +57,8 @@ class NoMemory(MemoryBridge):
         return {"type": "none", "entries": []}
 
 
-class BrainOpsMCPMemory(MemoryBridge):
-    """BrainOps Memory MCP client via REST API."""
+class HTTPMemory(MemoryBridge):
+    """Generic REST memory adapter used as an optional benchmark treatment."""
 
     def __init__(self, endpoint: str, api_key: str, namespace: str = "agzamov"):
         self.endpoint = endpoint.rstrip("/")
@@ -204,11 +204,11 @@ class BrainOpsMCPMemory(MemoryBridge):
                 params={"query": self.namespace, "limit": 500},
             ) as resp:
                 if resp.status != 200:
-                    return {"type": "brainops-mcp", "error": str(resp.status), "entries": []}
+                    return {"type": "http-memory", "error": str(resp.status), "entries": []}
                 data = await resp.json()
-                return {"type": "brainops-mcp", "entries": data.get("memories", [])}
+                return {"type": "http-memory", "entries": data.get("memories", [])}
         except Exception as e:
-            return {"type": "brainops-mcp", "error": str(e), "entries": []}
+            return {"type": "http-memory", "error": str(e), "entries": []}
 
     async def close(self):
         if self._session and not self._session.closed:
@@ -433,9 +433,12 @@ def create_memory_bridge(memory_type: str, **kwargs) -> MemoryBridge:
     """Factory function for creating the appropriate memory bridge."""
     if memory_type == "none":
         return NoMemory()
-    if memory_type == "brainops-mcp":
-        return BrainOpsMCPMemory(
-            endpoint=kwargs.get("endpoint", "http://127.0.0.1:3200/api/v1"),
+    if memory_type == "http-memory":
+        endpoint = kwargs.get("endpoint", "")
+        if not endpoint:
+            raise ValueError("http-memory requires an explicit endpoint")
+        return HTTPMemory(
+            endpoint=endpoint,
             api_key=kwargs.get("api_key", ""),
             namespace=kwargs.get("namespace", "agzamov"),
         )

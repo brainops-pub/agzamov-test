@@ -292,10 +292,10 @@ class TestCreateMemoryBridge:
         m = create_memory_bridge("sqlite-fallback", db_path=":memory:")
         assert isinstance(m, SQLiteFallbackMemory)
 
-    def test_brainops_type(self):
-        from agzamov.memory_bridge import BrainOpsMCPMemory
-        m = create_memory_bridge("brainops-mcp", endpoint="http://localhost:9999", api_key="test")
-        assert isinstance(m, BrainOpsMCPMemory)
+    def test_http_type(self):
+        from agzamov.memory_bridge import HTTPMemory
+        m = create_memory_bridge("http-memory", endpoint="http://localhost:9999", api_key="test")
+        assert isinstance(m, HTTPMemory)
         assert m.endpoint == "http://localhost:9999"
         assert m.api_key == "test"
 
@@ -303,10 +303,13 @@ class TestCreateMemoryBridge:
         with pytest.raises(ValueError, match="Unknown memory type"):
             create_memory_bridge("nonexistent")
 
-    def test_brainops_strips_trailing_slash(self):
-        from agzamov.memory_bridge import BrainOpsMCPMemory
-        m = create_memory_bridge("brainops-mcp", endpoint="http://localhost:9999/api/v1/")
+    def test_http_adapter_strips_trailing_slash(self):
+        m = create_memory_bridge("http-memory", endpoint="http://localhost:9999/api/v1/")
         assert not m.endpoint.endswith("/")
+
+    def test_http_adapter_requires_endpoint(self):
+        with pytest.raises(ValueError, match="explicit endpoint"):
+            create_memory_bridge("http-memory")
 
     def test_sqlite_default_path(self):
         m = create_memory_bridge("sqlite-fallback")

@@ -1,0 +1,12 @@
+{
+  "protocol_version": "endgame-strategy-0.2-direct-canonical",
+  "sha256": "dcd8ba187ee9dbae9f3875bb69cfda46e5a28963505ba1b924d234def74c7ea7",
+  "positions": [
+    {
+      "position_id": "kqk-canonical-001",
+      "material": "KQK",
+      "fen": "5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1",
+      "seed": 24022026
+    }
+  ]
+}
