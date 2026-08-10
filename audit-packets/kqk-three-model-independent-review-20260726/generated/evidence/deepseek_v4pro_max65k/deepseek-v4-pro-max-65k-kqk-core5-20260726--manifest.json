@@ -1,0 +1,111 @@
+{
+  "protocol": "named-profile-kqk-qualification-5-v1",
+  "created_at": "2026-07-26T08:29:12.480656+00:00",
+  "run_id": "deepseek-v4-pro-max-65k-kqk-core5-20260726",
+  "run_scope": "calibration_and_5_game_qualification",
+  "profile": {
+    "schema_version": "1.0",
+    "profile_id": "deepseek-v4-pro-max-65k",
+    "provider": "deepseek",
+    "model": "deepseek-v4-pro",
+    "transport": {
+      "kind": "deepseek_chat_completions",
+      "endpoint": "https://api.deepseek.com",
+      "credential_env": "DEEPSEEK_API_KEY",
+      "transport_retries": 0,
+      "request_timeout_seconds": 3600
+    },
+    "inference": {
+      "calibration_max_tokens": 65536,
+      "game_max_tokens": 65536,
+      "temperature": null,
+      "thinking": {
+        "type": "enabled",
+        "display": "full"
+      },
+      "effort": "max"
+    },
+    "board_adapter": {
+      "adapter_id": "deepseek-v4-pro-board-v2",
+      "initial_format": "multi_view",
+      "rendered_views": [
+        "fen",
+        "ascii",
+        "piece_list",
+        "json_square_map"
+      ],
+      "allow_model_selected_format": true,
+      "calibration_requires_legal_moves": true
+    }
+  },
+  "profile_snapshot_sha256": "411d8ff9ce5e4fa56112cbb25adf763474900c76e8bf1fbfdacd983c35800654",
+  "experiment_protocol": {
+    "protocol_id": "named-profile-kqk-qualification-5-v1",
+    "gameplay": true,
+    "planned_games": 5,
+    "matrix_start_index": 0,
+    "position_ids": [
+      "kqk-003-qualification-r1",
+      "kqk-010-qualification-r1",
+      "kqk-001-qualification-r1",
+      "kqk-006-qualification-r1",
+      "kqk-002-qualification-r1"
+    ],
+    "position_seeds": {
+      "kqk-003-qualification-r1": 1901395081,
+      "kqk-010-qualification-r1": 1645517172,
+      "kqk-001-qualification-r1": 662730689,
+      "kqk-006-qualification-r1": 1777396876,
+      "kqk-002-qualification-r1": 1837672429
+    },
+    "material": "KQK",
+    "defender": "seeded-random-legal-v1",
+    "max_attacking_moves": 30,
+    "correction_attempts": 1,
+    "legal_move_list_in_game_prompt": false,
+    "correction_reveals_legal_moves": false,
+    "calibration_board_ids": [
+      "calibration-01",
+      "calibration-02",
+      "calibration-heldout-03"
+    ],
+    "calibration_requires_legal_moves": true,
+    "fresh_client_instance_each_game": true,
+    "provider_conversation_storage": null,
+    "calibration_reuse": null,
+    "format_policy": {
+      "initial_format": "multi_view",
+      "allow_model_selected_format": true
+    },
+    "harness_checks": [
+      "5_stockfish_positive_controls",
+      "fen_san_uci_full_replay",
+      "random_defender_selection_receipts",
+      "game_prompt_legal_oracle_absence",
+      "raw_provider_envelope_completeness",
+      "illegal_attempt_capture"
+    ]
+  },
+  "calibration": {
+    "passed": true,
+    "attempts": 7,
+    "preferred_format": "multi_view",
+    "effective_format": "multi_view"
+  },
+  "completed_games": 5,
+  "actual_models": [
+    "deepseek-v4-pro"
+  ],
+  "actual_providers": [
+    "deepseek"
+  ],
+  "artifact_sha256": {
+    "profile": "f54e2dfc4b675673b23f5265b5b1101dff2fe96c54e1103dd2990f18acf875ab",
+    "calibration": "99aaa9bd2fb0404c3d3da2a0f3b2121035375a9c3ec21b1272a4201ff0ece270",
+    "positive_controls": "36c9b5d1becaa4be0f8334ff9da806a05c239ceb1f8e0633b8fc06154431da89",
+    "games": "651dd979bfac529ffb74e0c683ca5dd4470429b4232072a078de49109faa2d07",
+    "full_log": "83ad03bff63613ea1037a59642aee8ad3b248bee45c10250eae0e41dc40b08c6",
+    "audit": "91fa79e5a090a0f6890832a3cd9d72b37a2d7526def8511ee7bd550ad76cb090",
+    "summary": "d026a10675b1ace485a479b67d7c80b542edbd02578453962d8a4c1bc6011fbf"
+  }
+}

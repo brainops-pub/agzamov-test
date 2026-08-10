@@ -1,0 +1,632 @@
+[
+  {
+    "source_run": "opus5-kqk-no-legal-10-20260725",
+    "source_sha256": "b8252af151b305a8a4b1abbd188098a7f1bf5eb10db39e58535a887a7f978f6b",
+    "calibration": {
+      "passed": true,
+      "preferred_format": "multi_view",
+      "effective_format": "multi_view",
+      "attempts": [
+        {
+          "sequence": 1,
+          "board_id": "calibration-01",
+          "attempt": 1,
+          "fen": "r3k2r/ppp2ppp/2npbn2/3qp3/3P4/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1",
+          "requested_format": "multi_view",
+          "effective_format": "multi_view",
+          "system_prompt": "This is a chess-board grounding calibration, not a game.\nDo not choose or recommend a move. Your goal is to tell us which board format\nyou understand reliably.\n\nReturn exactly one JSON object with:\nboard_id, side_to_move, white_pieces, black_pieces, counts, movement_rules,\nlegal_moves, preferred_format, feedback. legal_moves must be the complete array of legal UCI moves for side_to_move. Enumerate and verify the legal set, but do not recommend or select a best move.\n\nwhite_pieces and black_pieces are arrays of objects with piece and square.\nUse lowercase generic English piece names: king, queen, rook, bishop, knight,\npawn. counts must contain white and black objects with counts for all six piece\ntypes. movement_rules must explain the basic legal movement of all six piece\ntypes. preferred_format is the representation you want on later boards. You\nmay name your own format; these native formats are available: multi_view, fen,\nascii, piece_list, json_square_map. feedback should explain what made the board\neasy or difficult to parse.\n\nDo not reveal hidden chain of thought. Give concise, auditable answers only.",
+          "prompt": "BOARD ID: calibration-01\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: r3k2r/ppp2ppp/2npbn2/3qp3/3P4/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nr . . . k . . r\np p p . . p p p\n. . n p b n . .\n. . . q p . . .\n. . . P . . . .\n. . N . P N . .\nP P P . . P P P\nR . . Q K B . R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"e6\"}, {\"piece\": \"king\", \"square\": \"e8\"}, {\"piece\": \"knight\", \"square\": \"c6\"}, {\"piece\": \"knight\", \"square\": \"f6\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d6\"}, {\"piece\": \"pawn\", \"square\": \"e5\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"d5\"}, {\"piece\": \"rook\", \"square\": \"a8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"f1\"}, {\"piece\": \"king\", \"square\": \"e1\"}, {\"piece\": \"knight\", \"square\": \"c3\"}, {\"piece\": \"knight\", \"square\": \"f3\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d4\"}, {\"piece\": \"pawn\", \"square\": \"e3\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"d1\"}, {\"piece\": \"rook\", \"square\": \"a1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"R\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"r\", \"b2\": \"P\", \"b7\": \"p\", \"c2\": \"P\", \"c3\": \"N\", \"c6\": \"n\", \"c7\": \"p\", \"d1\": \"Q\", \"d4\": \"P\", \"d5\": \"q\", \"d6\": \"p\", \"e1\": \"K\", \"e3\": \"P\", \"e5\": \"p\", \"e6\": \"b\", \"e8\": \"k\", \"f1\": \"B\", \"f2\": \"P\", \"f3\": \"N\", \"f6\": \"n\", \"f7\": \"p\", \"g2\": \"P\", \"g7\": \"p\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move.",
+          "request_messages": [
+            {
+              "role": "user",
+              "content": "BOARD ID: calibration-01\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: r3k2r/ppp2ppp/2npbn2/3qp3/3P4/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nr . . . k . . r\np p p . . p p p\n. . n p b n . .\n. . . q p . . .\n. . . P . . . .\n. . N . P N . .\nP P P . . P P P\nR . . Q K B . R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"e6\"}, {\"piece\": \"king\", \"square\": \"e8\"}, {\"piece\": \"knight\", \"square\": \"c6\"}, {\"piece\": \"knight\", \"square\": \"f6\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d6\"}, {\"piece\": \"pawn\", \"square\": \"e5\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"d5\"}, {\"piece\": \"rook\", \"square\": \"a8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"f1\"}, {\"piece\": \"king\", \"square\": \"e1\"}, {\"piece\": \"knight\", \"square\": \"c3\"}, {\"piece\": \"knight\", \"square\": \"f3\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d4\"}, {\"piece\": \"pawn\", \"square\": \"e3\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"d1\"}, {\"piece\": \"rook\", \"square\": \"a1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"R\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"r\", \"b2\": \"P\", \"b7\": \"p\", \"c2\": \"P\", \"c3\": \"N\", \"c6\": \"n\", \"c7\": \"p\", \"d1\": \"Q\", \"d4\": \"P\", \"d5\": \"q\", \"d6\": \"p\", \"e1\": \"K\", \"e3\": \"P\", \"e5\": \"p\", \"e6\": \"b\", \"e8\": \"k\", \"f1\": \"B\", \"f2\": \"P\", \"f3\": \"N\", \"f6\": \"n\", \"f7\": \"p\", \"g2\": \"P\", \"g7\": \"p\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move."
+            }
+          ],
+          "request_parameters": {
+            "model": "claude-opus-5",
+            "system": "This is a chess-board grounding calibration, not a game.\nDo not choose or recommend a move. Your goal is to tell us which board format\nyou understand reliably.\n\nReturn exactly one JSON object with:\nboard_id, side_to_move, white_pieces, black_pieces, counts, movement_rules,\nlegal_moves, preferred_format, feedback. legal_moves must be the complete array of legal UCI moves for side_to_move. Enumerate and verify the legal set, but do not recommend or select a best move.\n\nwhite_pieces and black_pieces are arrays of objects with piece and square.\nUse lowercase generic English piece names: king, queen, rook, bishop, knight,\npawn. counts must contain white and black objects with counts for all six piece\ntypes. movement_rules must explain the basic legal movement of all six piece\ntypes. preferred_format is the representation you want on later boards. You\nmay name your own format; these native formats are available: multi_view, fen,\nascii, piece_list, json_square_map. feedback should explain what made the board\neasy or difficult to parse.\n\nDo not reveal hidden chain of thought. Give concise, auditable answers only.",
+            "max_tokens": 32768,
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "output_config": {
+              "effort": "max"
+            }
+          },
+          "raw_response": "```json\n{\n  \"board_id\": \"calibration-01\",\n  \"side_to_move\": \"white\",\n  \"white_pieces\": [\n    { \"piece\": \"king\", \"square\": \"e1\" },\n    { \"piece\": \"queen\", \"square\": \"d1\" },\n    { \"piece\": \"rook\", \"square\": \"a1\" },\n    { \"piece\": \"rook\", \"square\": \"h1\" },\n    { \"piece\": \"bishop\", \"square\": \"f1\" },\n    { \"piece\": \"knight\", \"square\": \"c3\" },\n    { \"piece\": \"knight\", \"square\": \"f3\" },\n    { \"piece\": \"pawn\", \"square\": \"a2\" },\n    { \"piece\": \"pawn\", \"square\": \"b2\" },\n    { \"piece\": \"pawn\", \"square\": \"c2\" },\n    { \"piece\": \"pawn\", \"square\": \"d4\" },\n    { \"piece\": \"pawn\", \"square\": \"e3\" },\n    { \"piece\": \"pawn\", \"square\": \"f2\" },\n    { \"piece\": \"pawn\", \"square\": \"g2\" },\n    { \"piece\": \"pawn\", \"square\": \"h2\" }\n  ],\n  \"black_pieces\": [\n    { \"piece\": \"king\", \"square\": \"e8\" },\n    { \"piece\": \"queen\", \"square\": \"d5\" },\n    { \"piece\": \"rook\", \"square\": \"a8\" },\n    { \"piece\": \"rook\", \"square\": \"h8\" },\n    { \"piece\": \"bishop\", \"square\": \"e6\" },\n    { \"piece\": \"knight\", \"square\": \"c6\" },\n    { \"piece\": \"knight\", \"square\": \"f6\" },\n    { \"piece\": \"pawn\", \"square\": \"a7\" },\n    { \"piece\": \"pawn\", \"square\": \"b7\" },\n    { \"piece\": \"pawn\", \"square\": \"c7\" },\n    { \"piece\": \"pawn\", \"square\": \"d6\" },\n    { \"piece\": \"pawn\", \"square\": \"e5\" },\n    { \"piece\": \"pawn\", \"square\": \"f7\" },\n    { \"piece\": \"pawn\", \"square\": \"g7\" },\n    { \"piece\": \"pawn\", \"square\": \"h7\" }\n  ],\n  \"counts\": {\n    \"white\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 1, \"knight\": 2, \"pawn\": 8 },\n    \"black\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 1, \"knight\": 2, \"pawn\": 8 }\n  },\n  \"movement_rules\": {\n    \"king\": \"Moves one square in any direction (orthogonal or diagonal); may never move into or stay in check. Castles once per game by moving two squares toward an unmoved rook on the same rank, provided castling rights remain, the squares between are empty, and the king is not in check nor passes through or lands on an attacked square.\",\n    \"queen\": \"Moves any number of empty squares in a straight line along ranks, files, or diagonals; captures the first enemy piece encountered and cannot jump over pieces.\",\n    \"rook\": \"Moves any number of empty squares along ranks or files; captures the first enemy piece on that line and cannot jump over pieces. Participates in castling with the king.\",\n    \"bishop\": \"Moves any number of empty squares diagonally; captures the first enemy piece on that diagonal and cannot jump over pieces. Stays on its starting square color forever.\",\n    \"knight\": \"Moves in an L-shape: two squares along a rank or file then one square perpendicular (eight possible targets). Jumps over intervening pieces; captures only what stands on its destination square.\",\n    \"pawn\": \"Moves one square straight forward to an empty square (white toward rank 8, black toward rank 1); may move two squares forward from its starting rank if both squares are empty. Captures one square diagonally forward. Captures en passant a pawn that has just made a two-square advance past the capturing pawn's attacked square. On reaching the last rank it must promote to queen, rook, bishop, or knight.\"\n  },\n  \"legal_moves\": [\n    \"a2a3\", \"a2a4\",\n    \"b2b3\", \"b2b4\",\n    \"d4e5\",\n    \"e3e4\",\n    \"g2g3\", \"g2g4\",\n    \"h2h3\", \"h2h4\",\n    \"c3b1\", \"c3e2\", \"c3a4\", \"c3b5\", \"c3d5\", \"c3e4\",\n    \"f3d2\", \"f3g1\", \"f3e5\", \"f3g5\", \"f3h4\",\n    \"f1e2\", \"f1d3\", \"f1c4\", \"f1b5\", \"f1a6\",\n    \"d1c1\", \"d1b1\", \"d1d2\", \"d1d3\", \"d1e2\",\n    \"a1b1\", \"a1c1\",\n    \"h1g1\",\n    \"e1d2\", \"e1e2\"\n  ],\n  \"preferred_format\": \"multi_view\",\n  \"feedback\": \"Easy to parse. The FEN gave side to move, castling rights and the en passant state directly; the ASCII grid (rank 8 down to rank 1, files a-h labeled) let me verify occupancy visually; the piece list gave an independent inventory for counting; and the JSON square map allowed O(1) square lookups during move generation. All four views agreed, so cross-checking caught no conflicts. Minor difficulties: the ASCII grid has no rank/file numbers printed on the rows/columns, so column counting is the only alignment cue, and castling rights KQkq are legally moot for White here (f1 bishop and d1 queen block both paths) which is only detectable by combining views. Suggestions for future boards: keep all four views, add rank/file labels to the ASCII edges, and optionally state 'white in check: no' plus the halfmove/fullmove numbers explicitly.\"\n}\n```",
+          "thinking": "I'm working through the legal moves available to White in this chess position, starting with identifying all the pieces on the board from the FEN notation.\n\nNow I'm checking whether the White king is in check from the Black queen on d5, and determining that it's not under attack. I'm then systematically going through each White pawn to see what moves are available—a2 and b2 can advance, c2 is blocked by the knight on c3, d4 can capture the pawn on e5, and e3 can move forward to e4, though I need to verify whether that move exposes the king to any attacks. The g2 pawn isn't pinned since the queen on d5 is blocked by the knight on f3. Now checking the knight on c3: it can move to b1, a4, b5, or capture the queen on d5, with e4 also available.  The c3 knight isn't pinned along the e1-a5 diagonal since there's nothing beyond it. For the f3 knight, it has moves to d2, g1, h4, g5, and can capture the pawn on e5, and I'm verifying whether it's pinned along its diagonal. I'm checking what pieces attack e1 after the knight moves: the black knights on c6 and f6 don't reach it, and the bishop on e6 doesn't either. The bishop on f1 can move along the long diagonal but isn't pinned to the king.\n\nNow I'm analyzing the queen on d1: it can move along the d-file to d2 or d3, along the rank to c1 or b1, and diagonally to e2. The queen isn't pinned since the king sits adjacent on the rank with only friendly pieces behind it toward a1, and no black rook threatens along that line.\n\nFor the rooks, a1 can move to b1 or c1 along the rank, while h1 can only reach g1 before hitting the bishop on f1. Both are blocked by pawns on their files.\n\nThe king on e1 has limited options—most adjacent squares are occupied by friendly pieces or pawns, though d2 is potentially available if it's not under attack from black's pieces like the queen on d5 or the knight on c6.\n\nNow checking whether d2 and e2 are actually safe: d2 isn't attacked by any black piece (the queen's d-file is blocked, the bishop on e6 can't reach it, and the knights don't cover it), so e1-d2 is legal. Similarly, e2 is safe from the queen and knights, making e1-e2 legal as well.\n\nFor castling, kingside is impossible since the bishop occupies f1, and queenside is blocked by the queen on d1.\n\nThe king can't move to f1, d1, or f2 since those squares have white's own pieces. I should also verify whether the d4 pawn can capture on e5, whether anything can take the bishop on e6, and whether the knight on c3 can legally move to d5 to capture — all of which appear possible.\n\nFor the queen on d1, the diagonal toward c2 is blocked, and moving along d1-e2-f3 is blocked at f3 by white's own knight, leaving only e2 as an option.\n\nTallying up all legal moves: pawns have 10 options, the c3 knight has 6, the f3 knight has 5, the f1 bishop has 5, and the queen on d1 can move to e2.\n\nThe rooks contribute 2 moves from a1 and 1 from h1, while the king on e1 has 2 available squares, bringing the total to 36 legal moves. Both sides have 15 pieces with matching material—each missing one bishop—so I'm ready to format this as JSON. Checking the remaining moves for legality—g2g4 is fine, knight f3 to e5 is valid, and there's no b2 pawn capture available. That confirms all 36 moves.",
+          "parsed_response": {
+            "board_id": "calibration-01",
+            "side_to_move": "white",
+            "white_pieces": [
+              {
+                "piece": "king",
+                "square": "e1"
+              },
+              {
+                "piece": "queen",
+                "square": "d1"
+              },
+              {
+                "piece": "rook",
+                "square": "a1"
+              },
+              {
+                "piece": "rook",
+                "square": "h1"
+              },
+              {
+                "piece": "bishop",
+                "square": "f1"
+              },
+              {
+                "piece": "knight",
+                "square": "c3"
+              },
+              {
+                "piece": "knight",
+                "square": "f3"
+              },
+              {
+                "piece": "pawn",
+                "square": "a2"
+              },
+              {
+                "piece": "pawn",
+                "square": "b2"
+              },
+              {
+                "piece": "pawn",
+                "square": "c2"
+              },
+              {
+                "piece": "pawn",
+                "square": "d4"
+              },
+              {
+                "piece": "pawn",
+                "square": "e3"
+              },
+              {
+                "piece": "pawn",
+                "square": "f2"
+              },
+              {
+                "piece": "pawn",
+                "square": "g2"
+              },
+              {
+                "piece": "pawn",
+                "square": "h2"
+              }
+            ],
+            "black_pieces": [
+              {
+                "piece": "king",
+                "square": "e8"
+              },
+              {
+                "piece": "queen",
+                "square": "d5"
+              },
+              {
+                "piece": "rook",
+                "square": "a8"
+              },
+              {
+                "piece": "rook",
+                "square": "h8"
+              },
+              {
+                "piece": "bishop",
+                "square": "e6"
+              },
+              {
+                "piece": "knight",
+                "square": "c6"
+              },
+              {
+                "piece": "knight",
+                "square": "f6"
+              },
+              {
+                "piece": "pawn",
+                "square": "a7"
+              },
+              {
+                "piece": "pawn",
+                "square": "b7"
+              },
+              {
+                "piece": "pawn",
+                "square": "c7"
+              },
+              {
+                "piece": "pawn",
+                "square": "d6"
+              },
+              {
+                "piece": "pawn",
+                "square": "e5"
+              },
+              {
+                "piece": "pawn",
+                "square": "f7"
+              },
+              {
+                "piece": "pawn",
+                "square": "g7"
+              },
+              {
+                "piece": "pawn",
+                "square": "h7"
+              }
+            ],
+            "counts": {
+              "white": {
+                "king": 1,
+                "queen": 1,
+                "rook": 2,
+                "bishop": 1,
+                "knight": 2,
+                "pawn": 8
+              },
+              "black": {
+                "king": 1,
+                "queen": 1,
+                "rook": 2,
+                "bishop": 1,
+                "knight": 2,
+                "pawn": 8
+              }
+            },
+            "movement_rules": {
+              "king": "Moves one square in any direction (orthogonal or diagonal); may never move into or stay in check. Castles once per game by moving two squares toward an unmoved rook on the same rank, provided castling rights remain, the squares between are empty, and the king is not in check nor passes through or lands on an attacked square.",
+              "queen": "Moves any number of empty squares in a straight line along ranks, files, or diagonals; captures the first enemy piece encountered and cannot jump over pieces.",
+              "rook": "Moves any number of empty squares along ranks or files; captures the first enemy piece on that line and cannot jump over pieces. Participates in castling with the king.",
+              "bishop": "Moves any number of empty squares diagonally; captures the first enemy piece on that diagonal and cannot jump over pieces. Stays on its starting square color forever.",
+              "knight": "Moves in an L-shape: two squares along a rank or file then one square perpendicular (eight possible targets). Jumps over intervening pieces; captures only what stands on its destination square.",
+              "pawn": "Moves one square straight forward to an empty square (white toward rank 8, black toward rank 1); may move two squares forward from its starting rank if both squares are empty. Captures one square diagonally forward. Captures en passant a pawn that has just made a two-square advance past the capturing pawn's attacked square. On reaching the last rank it must promote to queen, rook, bishop, or knight."
+            },
+            "legal_moves": [
+              "a2a3",
+              "a2a4",
+              "b2b3",
+              "b2b4",
+              "d4e5",
+              "e3e4",
+              "g2g3",
+              "g2g4",
+              "h2h3",
+              "h2h4",
+              "c3b1",
+              "c3e2",
+              "c3a4",
+              "c3b5",
+              "c3d5",
+              "c3e4",
+              "f3d2",
+              "f3g1",
+              "f3e5",
+              "f3g5",
+              "f3h4",
+              "f1e2",
+              "f1d3",
+              "f1c4",
+              "f1b5",
+              "f1a6",
+              "d1c1",
+              "d1b1",
+              "d1d2",
+              "d1d3",
+              "d1e2",
+              "a1b1",
+              "a1c1",
+              "h1g1",
+              "e1d2",
+              "e1e2"
+            ],
+            "preferred_format": "multi_view",
+            "feedback": "Easy to parse. The FEN gave side to move, castling rights and the en passant state directly; the ASCII grid (rank 8 down to rank 1, files a-h labeled) let me verify occupancy visually; the piece list gave an independent inventory for counting; and the JSON square map allowed O(1) square lookups during move generation. All four views agreed, so cross-checking caught no conflicts. Minor difficulties: the ASCII grid has no rank/file numbers printed on the rows/columns, so column counting is the only alignment cue, and castling rights KQkq are legally moot for White here (f1 bishop and d1 queen block both paths) which is only detectable by combining views. Suggestions for future boards: keep all four views, add rank/file labels to the ASCII edges, and optionally state 'white in check: no' plus the halfmove/fullmove numbers explicitly."
+          },
+          "validation_errors": [],
+          "passed": true,
+          "response_id": "msg_011CdNHYbLE9FtHjqfWz3shh",
+          "actual_model": "claude-opus-5",
+          "actual_provider": "anthropic",
+          "endpoint": "https://api.anthropic.com",
+          "input_tokens": 1529,
+          "output_tokens": 5645,
+          "latency_ms": 64506.37542399636
+        },
+        {
+          "sequence": 2,
+          "board_id": "calibration-02",
+          "attempt": 1,
+          "fen": "nrqbbnkr/pppppppp/8/8/8/8/PPPPPPPP/NRQBBNKR w KQkq - 0 1",
+          "requested_format": "multi_view",
+          "effective_format": "multi_view",
+          "system_prompt": "This is a chess-board grounding calibration, not a game.\nDo not choose or recommend a move. Your goal is to tell us which board format\nyou understand reliably.\n\nReturn exactly one JSON object with:\nboard_id, side_to_move, white_pieces, black_pieces, counts, movement_rules,\nlegal_moves, preferred_format, feedback. legal_moves must be the complete array of legal UCI moves for side_to_move. Enumerate and verify the legal set, but do not recommend or select a best move.\n\nwhite_pieces and black_pieces are arrays of objects with piece and square.\nUse lowercase generic English piece names: king, queen, rook, bishop, knight,\npawn. counts must contain white and black objects with counts for all six piece\ntypes. movement_rules must explain the basic legal movement of all six piece\ntypes. preferred_format is the representation you want on later boards. You\nmay name your own format; these native formats are available: multi_view, fen,\nascii, piece_list, json_square_map. feedback should explain what made the board\neasy or difficult to parse.\n\nDo not reveal hidden chain of thought. Give concise, auditable answers only.",
+          "prompt": "BOARD ID: calibration-02\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: nrqbbnkr/pppppppp/8/8/8/8/PPPPPPPP/NRQBBNKR w - - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nn r q b b n k r\np p p p p p p p\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\nP P P P P P P P\nN R Q B B N K R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"d8\"}, {\"piece\": \"bishop\", \"square\": \"e8\"}, {\"piece\": \"king\", \"square\": \"g8\"}, {\"piece\": \"knight\", \"square\": \"a8\"}, {\"piece\": \"knight\", \"square\": \"f8\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d7\"}, {\"piece\": \"pawn\", \"square\": \"e7\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"c8\"}, {\"piece\": \"rook\", \"square\": \"b8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"d1\"}, {\"piece\": \"bishop\", \"square\": \"e1\"}, {\"piece\": \"king\", \"square\": \"g1\"}, {\"piece\": \"knight\", \"square\": \"a1\"}, {\"piece\": \"knight\", \"square\": \"f1\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d2\"}, {\"piece\": \"pawn\", \"square\": \"e2\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"c1\"}, {\"piece\": \"rook\", \"square\": \"b1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"N\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"n\", \"b1\": \"R\", \"b2\": \"P\", \"b7\": \"p\", \"b8\": \"r\", \"c1\": \"Q\", \"c2\": \"P\", \"c7\": \"p\", \"c8\": \"q\", \"d1\": \"B\", \"d2\": \"P\", \"d7\": \"p\", \"d8\": \"b\", \"e1\": \"B\", \"e2\": \"P\", \"e7\": \"p\", \"e8\": \"b\", \"f1\": \"N\", \"f2\": \"P\", \"f7\": \"p\", \"f8\": \"n\", \"g1\": \"K\", \"g2\": \"P\", \"g7\": \"p\", \"g8\": \"k\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move.",
+          "request_messages": [
+            {
+              "role": "user",
+              "content": "BOARD ID: calibration-01\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: r3k2r/ppp2ppp/2npbn2/3qp3/3P4/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nr . . . k . . r\np p p . . p p p\n. . n p b n . .\n. . . q p . . .\n. . . P . . . .\n. . N . P N . .\nP P P . . P P P\nR . . Q K B . R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"e6\"}, {\"piece\": \"king\", \"square\": \"e8\"}, {\"piece\": \"knight\", \"square\": \"c6\"}, {\"piece\": \"knight\", \"square\": \"f6\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d6\"}, {\"piece\": \"pawn\", \"square\": \"e5\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"d5\"}, {\"piece\": \"rook\", \"square\": \"a8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"f1\"}, {\"piece\": \"king\", \"square\": \"e1\"}, {\"piece\": \"knight\", \"square\": \"c3\"}, {\"piece\": \"knight\", \"square\": \"f3\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d4\"}, {\"piece\": \"pawn\", \"square\": \"e3\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"d1\"}, {\"piece\": \"rook\", \"square\": \"a1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"R\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"r\", \"b2\": \"P\", \"b7\": \"p\", \"c2\": \"P\", \"c3\": \"N\", \"c6\": \"n\", \"c7\": \"p\", \"d1\": \"Q\", \"d4\": \"P\", \"d5\": \"q\", \"d6\": \"p\", \"e1\": \"K\", \"e3\": \"P\", \"e5\": \"p\", \"e6\": \"b\", \"e8\": \"k\", \"f1\": \"B\", \"f2\": \"P\", \"f3\": \"N\", \"f6\": \"n\", \"f7\": \"p\", \"g2\": \"P\", \"g7\": \"p\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move."
+            },
+            {
+              "role": "assistant",
+              "content": "```json\n{\n  \"board_id\": \"calibration-01\",\n  \"side_to_move\": \"white\",\n  \"white_pieces\": [\n    { \"piece\": \"king\", \"square\": \"e1\" },\n    { \"piece\": \"queen\", \"square\": \"d1\" },\n    { \"piece\": \"rook\", \"square\": \"a1\" },\n    { \"piece\": \"rook\", \"square\": \"h1\" },\n    { \"piece\": \"bishop\", \"square\": \"f1\" },\n    { \"piece\": \"knight\", \"square\": \"c3\" },\n    { \"piece\": \"knight\", \"square\": \"f3\" },\n    { \"piece\": \"pawn\", \"square\": \"a2\" },\n    { \"piece\": \"pawn\", \"square\": \"b2\" },\n    { \"piece\": \"pawn\", \"square\": \"c2\" },\n    { \"piece\": \"pawn\", \"square\": \"d4\" },\n    { \"piece\": \"pawn\", \"square\": \"e3\" },\n    { \"piece\": \"pawn\", \"square\": \"f2\" },\n    { \"piece\": \"pawn\", \"square\": \"g2\" },\n    { \"piece\": \"pawn\", \"square\": \"h2\" }\n  ],\n  \"black_pieces\": [\n    { \"piece\": \"king\", \"square\": \"e8\" },\n    { \"piece\": \"queen\", \"square\": \"d5\" },\n    { \"piece\": \"rook\", \"square\": \"a8\" },\n    { \"piece\": \"rook\", \"square\": \"h8\" },\n    { \"piece\": \"bishop\", \"square\": \"e6\" },\n    { \"piece\": \"knight\", \"square\": \"c6\" },\n    { \"piece\": \"knight\", \"square\": \"f6\" },\n    { \"piece\": \"pawn\", \"square\": \"a7\" },\n    { \"piece\": \"pawn\", \"square\": \"b7\" },\n    { \"piece\": \"pawn\", \"square\": \"c7\" },\n    { \"piece\": \"pawn\", \"square\": \"d6\" },\n    { \"piece\": \"pawn\", \"square\": \"e5\" },\n    { \"piece\": \"pawn\", \"square\": \"f7\" },\n    { \"piece\": \"pawn\", \"square\": \"g7\" },\n    { \"piece\": \"pawn\", \"square\": \"h7\" }\n  ],\n  \"counts\": {\n    \"white\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 1, \"knight\": 2, \"pawn\": 8 },\n    \"black\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 1, \"knight\": 2, \"pawn\": 8 }\n  },\n  \"movement_rules\": {\n    \"king\": \"Moves one square in any direction (orthogonal or diagonal); may never move into or stay in check. Castles once per game by moving two squares toward an unmoved rook on the same rank, provided castling rights remain, the squares between are empty, and the king is not in check nor passes through or lands on an attacked square.\",\n    \"queen\": \"Moves any number of empty squares in a straight line along ranks, files, or diagonals; captures the first enemy piece encountered and cannot jump over pieces.\",\n    \"rook\": \"Moves any number of empty squares along ranks or files; captures the first enemy piece on that line and cannot jump over pieces. Participates in castling with the king.\",\n    \"bishop\": \"Moves any number of empty squares diagonally; captures the first enemy piece on that diagonal and cannot jump over pieces. Stays on its starting square color forever.\",\n    \"knight\": \"Moves in an L-shape: two squares along a rank or file then one square perpendicular (eight possible targets). Jumps over intervening pieces; captures only what stands on its destination square.\",\n    \"pawn\": \"Moves one square straight forward to an empty square (white toward rank 8, black toward rank 1); may move two squares forward from its starting rank if both squares are empty. Captures one square diagonally forward. Captures en passant a pawn that has just made a two-square advance past the capturing pawn's attacked square. On reaching the last rank it must promote to queen, rook, bishop, or knight.\"\n  },\n  \"legal_moves\": [\n    \"a2a3\", \"a2a4\",\n    \"b2b3\", \"b2b4\",\n    \"d4e5\",\n    \"e3e4\",\n    \"g2g3\", \"g2g4\",\n    \"h2h3\", \"h2h4\",\n    \"c3b1\", \"c3e2\", \"c3a4\", \"c3b5\", \"c3d5\", \"c3e4\",\n    \"f3d2\", \"f3g1\", \"f3e5\", \"f3g5\", \"f3h4\",\n    \"f1e2\", \"f1d3\", \"f1c4\", \"f1b5\", \"f1a6\",\n    \"d1c1\", \"d1b1\", \"d1d2\", \"d1d3\", \"d1e2\",\n    \"a1b1\", \"a1c1\",\n    \"h1g1\",\n    \"e1d2\", \"e1e2\"\n  ],\n  \"preferred_format\": \"multi_view\",\n  \"feedback\": \"Easy to parse. The FEN gave side to move, castling rights and the en passant state directly; the ASCII grid (rank 8 down to rank 1, files a-h labeled) let me verify occupancy visually; the piece list gave an independent inventory for counting; and the JSON square map allowed O(1) square lookups during move generation. All four views agreed, so cross-checking caught no conflicts. Minor difficulties: the ASCII grid has no rank/file numbers printed on the rows/columns, so column counting is the only alignment cue, and castling rights KQkq are legally moot for White here (f1 bishop and d1 queen block both paths) which is only detectable by combining views. Suggestions for future boards: keep all four views, add rank/file labels to the ASCII edges, and optionally state 'white in check: no' plus the halfmove/fullmove numbers explicitly.\"\n}\n```"
+            },
+            {
+              "role": "user",
+              "content": "BOARD ID: calibration-02\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: nrqbbnkr/pppppppp/8/8/8/8/PPPPPPPP/NRQBBNKR w - - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nn r q b b n k r\np p p p p p p p\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\nP P P P P P P P\nN R Q B B N K R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"d8\"}, {\"piece\": \"bishop\", \"square\": \"e8\"}, {\"piece\": \"king\", \"square\": \"g8\"}, {\"piece\": \"knight\", \"square\": \"a8\"}, {\"piece\": \"knight\", \"square\": \"f8\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d7\"}, {\"piece\": \"pawn\", \"square\": \"e7\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"c8\"}, {\"piece\": \"rook\", \"square\": \"b8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"d1\"}, {\"piece\": \"bishop\", \"square\": \"e1\"}, {\"piece\": \"king\", \"square\": \"g1\"}, {\"piece\": \"knight\", \"square\": \"a1\"}, {\"piece\": \"knight\", \"square\": \"f1\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d2\"}, {\"piece\": \"pawn\", \"square\": \"e2\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"c1\"}, {\"piece\": \"rook\", \"square\": \"b1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"N\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"n\", \"b1\": \"R\", \"b2\": \"P\", \"b7\": \"p\", \"b8\": \"r\", \"c1\": \"Q\", \"c2\": \"P\", \"c7\": \"p\", \"c8\": \"q\", \"d1\": \"B\", \"d2\": \"P\", \"d7\": \"p\", \"d8\": \"b\", \"e1\": \"B\", \"e2\": \"P\", \"e7\": \"p\", \"e8\": \"b\", \"f1\": \"N\", \"f2\": \"P\", \"f7\": \"p\", \"f8\": \"n\", \"g1\": \"K\", \"g2\": \"P\", \"g7\": \"p\", \"g8\": \"k\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move."
+            }
+          ],
+          "request_parameters": {
+            "model": "claude-opus-5",
+            "system": "This is a chess-board grounding calibration, not a game.\nDo not choose or recommend a move. Your goal is to tell us which board format\nyou understand reliably.\n\nReturn exactly one JSON object with:\nboard_id, side_to_move, white_pieces, black_pieces, counts, movement_rules,\nlegal_moves, preferred_format, feedback. legal_moves must be the complete array of legal UCI moves for side_to_move. Enumerate and verify the legal set, but do not recommend or select a best move.\n\nwhite_pieces and black_pieces are arrays of objects with piece and square.\nUse lowercase generic English piece names: king, queen, rook, bishop, knight,\npawn. counts must contain white and black objects with counts for all six piece\ntypes. movement_rules must explain the basic legal movement of all six piece\ntypes. preferred_format is the representation you want on later boards. You\nmay name your own format; these native formats are available: multi_view, fen,\nascii, piece_list, json_square_map. feedback should explain what made the board\neasy or difficult to parse.\n\nDo not reveal hidden chain of thought. Give concise, auditable answers only.",
+            "max_tokens": 32768,
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "output_config": {
+              "effort": "max"
+            }
+          },
+          "raw_response": "```json\n{\n  \"board_id\": \"calibration-02\",\n  \"side_to_move\": \"white\",\n  \"white_pieces\": [\n    { \"piece\": \"knight\", \"square\": \"a1\" },\n    { \"piece\": \"rook\", \"square\": \"b1\" },\n    { \"piece\": \"queen\", \"square\": \"c1\" },\n    { \"piece\": \"bishop\", \"square\": \"d1\" },\n    { \"piece\": \"bishop\", \"square\": \"e1\" },\n    { \"piece\": \"knight\", \"square\": \"f1\" },\n    { \"piece\": \"king\", \"square\": \"g1\" },\n    { \"piece\": \"rook\", \"square\": \"h1\" },\n    { \"piece\": \"pawn\", \"square\": \"a2\" },\n    { \"piece\": \"pawn\", \"square\": \"b2\" },\n    { \"piece\": \"pawn\", \"square\": \"c2\" },\n    { \"piece\": \"pawn\", \"square\": \"d2\" },\n    { \"piece\": \"pawn\", \"square\": \"e2\" },\n    { \"piece\": \"pawn\", \"square\": \"f2\" },\n    { \"piece\": \"pawn\", \"square\": \"g2\" },\n    { \"piece\": \"pawn\", \"square\": \"h2\" }\n  ],\n  \"black_pieces\": [\n    { \"piece\": \"knight\", \"square\": \"a8\" },\n    { \"piece\": \"rook\", \"square\": \"b8\" },\n    { \"piece\": \"queen\", \"square\": \"c8\" },\n    { \"piece\": \"bishop\", \"square\": \"d8\" },\n    { \"piece\": \"bishop\", \"square\": \"e8\" },\n    { \"piece\": \"knight\", \"square\": \"f8\" },\n    { \"piece\": \"king\", \"square\": \"g8\" },\n    { \"piece\": \"rook\", \"square\": \"h8\" },\n    { \"piece\": \"pawn\", \"square\": \"a7\" },\n    { \"piece\": \"pawn\", \"square\": \"b7\" },\n    { \"piece\": \"pawn\", \"square\": \"c7\" },\n    { \"piece\": \"pawn\", \"square\": \"d7\" },\n    { \"piece\": \"pawn\", \"square\": \"e7\" },\n    { \"piece\": \"pawn\", \"square\": \"f7\" },\n    { \"piece\": \"pawn\", \"square\": \"g7\" },\n    { \"piece\": \"pawn\", \"square\": \"h7\" }\n  ],\n  \"counts\": {\n    \"white\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 2, \"knight\": 2, \"pawn\": 8 },\n    \"black\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 2, \"knight\": 2, \"pawn\": 8 }\n  },\n  \"movement_rules\": {\n    \"king\": \"Moves one square in any direction (orthogonal or diagonal); it may never move into or remain in check. Castling is a special king move of two squares toward an unmoved rook (Chess960 variants use the same rights notation), allowed only with intact castling rights, empty intervening squares, and no check on the origin, transit, or destination squares. Here castling rights are '-', so no castling is available to either side.\",\n    \"queen\": \"Moves any number of unobstructed squares along ranks, files, or diagonals; it captures the first enemy piece on a line and cannot jump over pieces.\",\n    \"rook\": \"Moves any number of unobstructed squares along ranks or files; it captures the first enemy piece on a line and cannot jump over pieces. It is the partner piece in castling.\",\n    \"bishop\": \"Moves any number of unobstructed squares diagonally; it captures the first enemy piece on the diagonal and cannot jump over pieces, remaining permanently on squares of its starting color.\",\n    \"knight\": \"Moves in an L-shape — two squares along a rank or file, then one square perpendicular — for up to eight destinations. It jumps over any intervening pieces and captures only on its landing square.\",\n    \"pawn\": \"Advances one square straight forward to an empty square (White toward rank 8, Black toward rank 1), or two squares from its own starting rank if both squares are empty. It captures one square diagonally forward, may capture en passant immediately after an enemy pawn's two-square advance passes its attacked square, and must promote to queen, rook, bishop, or knight upon reaching the far rank.\"\n  },\n  \"legal_moves\": [\n    \"a2a3\", \"a2a4\",\n    \"b2b3\", \"b2b4\",\n    \"c2c3\", \"c2c4\",\n    \"d2d3\", \"d2d4\",\n    \"e2e3\", \"e2e4\",\n    \"f2f3\", \"f2f4\",\n    \"g2g3\", \"g2g4\",\n    \"h2h3\", \"h2h4\",\n    \"a1b3\",\n    \"f1e3\", \"f1g3\"\n  ],\n  \"feedback\": \"Very easy to parse and cross-check: all four views agreed exactly, and the FEN header supplied side to move (w), castling rights (-) and en passant (-) unambiguously. The position is a shuffled (Chess960-style) back rank with both full pawn walls, so verification was mostly mechanical — every non-pawn piece except the two knights is fully blocked by its own first- and second-rank neighbours. Points worth noting: (1) two bishops per side on adjacent squares d1/e1 and d8/e8 means both are same-file-adjacent but opposite-colored, easy to misread if only ASCII were given; (2) the king on g1 is boxed in by f1 knight, h1 rook and the g2/f2/h2 pawns, so it has zero moves, and with castling rights '-' there is no O-O to consider — an explicit 'castling: none' line in the header helped avoid inventing b1/h1 castling moves. Suggestions: keep multi_view, add rank/file labels along the ASCII borders, and optionally state 'in check: no' plus halfmove/fullmove counters.\",\n  \"preferred_format\": \"multi_view\"\n}\n```",
+          "thinking": "I'm analyzing a Chess960 starting position with the piece arrangement NRQBBNKR and no castling rights available. White has all eight pawns on the second rank ready to move, and I'm working through the legal pawn moves—each can advance either one or two squares forward.\n\nFor the knights, the a1 knight can only reach b3 since c2 is blocked by its own pawn, while the f1 knight has two available squares at e3 and g3. The bishops on d1 and e1 are completely hemmed in by pawns on the second rank, the queen on c1 has no legal moves due to blocked diagonals and files, and both rooks are similarly blocked by their own pieces. The king on g1 is also immobilized. This gives me a total of 19 legal moves: 16 pawn moves, 1 knight move from a1, and 2 from f1.",
+          "parsed_response": {
+            "board_id": "calibration-02",
+            "side_to_move": "white",
+            "white_pieces": [
+              {
+                "piece": "knight",
+                "square": "a1"
+              },
+              {
+                "piece": "rook",
+                "square": "b1"
+              },
+              {
+                "piece": "queen",
+                "square": "c1"
+              },
+              {
+                "piece": "bishop",
+                "square": "d1"
+              },
+              {
+                "piece": "bishop",
+                "square": "e1"
+              },
+              {
+                "piece": "knight",
+                "square": "f1"
+              },
+              {
+                "piece": "king",
+                "square": "g1"
+              },
+              {
+                "piece": "rook",
+                "square": "h1"
+              },
+              {
+                "piece": "pawn",
+                "square": "a2"
+              },
+              {
+                "piece": "pawn",
+                "square": "b2"
+              },
+              {
+                "piece": "pawn",
+                "square": "c2"
+              },
+              {
+                "piece": "pawn",
+                "square": "d2"
+              },
+              {
+                "piece": "pawn",
+                "square": "e2"
+              },
+              {
+                "piece": "pawn",
+                "square": "f2"
+              },
+              {
+                "piece": "pawn",
+                "square": "g2"
+              },
+              {
+                "piece": "pawn",
+                "square": "h2"
+              }
+            ],
+            "black_pieces": [
+              {
+                "piece": "knight",
+                "square": "a8"
+              },
+              {
+                "piece": "rook",
+                "square": "b8"
+              },
+              {
+                "piece": "queen",
+                "square": "c8"
+              },
+              {
+                "piece": "bishop",
+                "square": "d8"
+              },
+              {
+                "piece": "bishop",
+                "square": "e8"
+              },
+              {
+                "piece": "knight",
+                "square": "f8"
+              },
+              {
+                "piece": "king",
+                "square": "g8"
+              },
+              {
+                "piece": "rook",
+                "square": "h8"
+              },
+              {
+                "piece": "pawn",
+                "square": "a7"
+              },
+              {
+                "piece": "pawn",
+                "square": "b7"
+              },
+              {
+                "piece": "pawn",
+                "square": "c7"
+              },
+              {
+                "piece": "pawn",
+                "square": "d7"
+              },
+              {
+                "piece": "pawn",
+                "square": "e7"
+              },
+              {
+                "piece": "pawn",
+                "square": "f7"
+              },
+              {
+                "piece": "pawn",
+                "square": "g7"
+              },
+              {
+                "piece": "pawn",
+                "square": "h7"
+              }
+            ],
+            "counts": {
+              "white": {
+                "king": 1,
+                "queen": 1,
+                "rook": 2,
+                "bishop": 2,
+                "knight": 2,
+                "pawn": 8
+              },
+              "black": {
+                "king": 1,
+                "queen": 1,
+                "rook": 2,
+                "bishop": 2,
+                "knight": 2,
+                "pawn": 8
+              }
+            },
+            "movement_rules": {
+              "king": "Moves one square in any direction (orthogonal or diagonal); it may never move into or remain in check. Castling is a special king move of two squares toward an unmoved rook (Chess960 variants use the same rights notation), allowed only with intact castling rights, empty intervening squares, and no check on the origin, transit, or destination squares. Here castling rights are '-', so no castling is available to either side.",
+              "queen": "Moves any number of unobstructed squares along ranks, files, or diagonals; it captures the first enemy piece on a line and cannot jump over pieces.",
+              "rook": "Moves any number of unobstructed squares along ranks or files; it captures the first enemy piece on a line and cannot jump over pieces. It is the partner piece in castling.",
+              "bishop": "Moves any number of unobstructed squares diagonally; it captures the first enemy piece on the diagonal and cannot jump over pieces, remaining permanently on squares of its starting color.",
+              "knight": "Moves in an L-shape — two squares along a rank or file, then one square perpendicular — for up to eight destinations. It jumps over any intervening pieces and captures only on its landing square.",
+              "pawn": "Advances one square straight forward to an empty square (White toward rank 8, Black toward rank 1), or two squares from its own starting rank if both squares are empty. It captures one square diagonally forward, may capture en passant immediately after an enemy pawn's two-square advance passes its attacked square, and must promote to queen, rook, bishop, or knight upon reaching the far rank."
+            },
+            "legal_moves": [
+              "a2a3",
+              "a2a4",
+              "b2b3",
+              "b2b4",
+              "c2c3",
+              "c2c4",
+              "d2d3",
+              "d2d4",
+              "e2e3",
+              "e2e4",
+              "f2f3",
+              "f2f4",
+              "g2g3",
+              "g2g4",
+              "h2h3",
+              "h2h4",
+              "a1b3",
+              "f1e3",
+              "f1g3"
+            ],
+            "feedback": "Very easy to parse and cross-check: all four views agreed exactly, and the FEN header supplied side to move (w), castling rights (-) and en passant (-) unambiguously. The position is a shuffled (Chess960-style) back rank with both full pawn walls, so verification was mostly mechanical — every non-pawn piece except the two knights is fully blocked by its own first- and second-rank neighbours. Points worth noting: (1) two bishops per side on adjacent squares d1/e1 and d8/e8 means both are same-file-adjacent but opposite-colored, easy to misread if only ASCII were given; (2) the king on g1 is boxed in by f1 knight, h1 rook and the g2/f2/h2 pawns, so it has zero moves, and with castling rights '-' there is no O-O to consider — an explicit 'castling: none' line in the header helped avoid inventing b1/h1 castling moves. Suggestions: keep multi_view, add rank/file labels along the ASCII borders, and optionally state 'in check: no' plus halfmove/fullmove counters.",
+            "preferred_format": "multi_view"
+          },
+          "validation_errors": [],
+          "passed": true,
+          "response_id": "msg_011CdNHdLDXajpu9ixvLUy4u",
+          "actual_model": "claude-opus-5",
+          "actual_provider": "anthropic",
+          "endpoint": "https://api.anthropic.com",
+          "input_tokens": 4542,
+          "output_tokens": 2605,
+          "latency_ms": 27714.9641290016
+        },
+        {
+          "sequence": 3,
+          "board_id": "calibration-heldout-03",
+          "attempt": 1,
+          "fen": "8/2k5/1p3n2/3b4/4R3/2N2P2/5K2/6Q1 b - - 0 1",
+          "requested_format": "multi_view",
+          "effective_format": "multi_view",
+          "system_prompt": "This is a chess-board grounding calibration, not a game.\nDo not choose or recommend a move. Your goal is to tell us which board format\nyou understand reliably.\n\nReturn exactly one JSON object with:\nboard_id, side_to_move, white_pieces, black_pieces, counts, movement_rules,\nlegal_moves, preferred_format, feedback. legal_moves must be the complete array of legal UCI moves for side_to_move. Enumerate and verify the legal set, but do not recommend or select a best move.\n\nwhite_pieces and black_pieces are arrays of objects with piece and square.\nUse lowercase generic English piece names: king, queen, rook, bishop, knight,\npawn. counts must contain white and black objects with counts for all six piece\ntypes. movement_rules must explain the basic legal movement of all six piece\ntypes. preferred_format is the representation you want on later boards. You\nmay name your own format; these native formats are available: multi_view, fen,\nascii, piece_list, json_square_map. feedback should explain what made the board\neasy or difficult to parse.\n\nDo not reveal hidden chain of thought. Give concise, auditable answers only.",
+          "prompt": "BOARD ID: calibration-heldout-03\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: 8/2k5/1p3n2/3b4/4R3/2N2P2/5K2/6Q1 b - - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\n. . . . . . . .\n. . k . . . . .\n. p . . . n . .\n. . . b . . . .\n. . . . R . . .\n. . N . . P . .\n. . . . . K . .\n. . . . . . Q .\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"d5\"}, {\"piece\": \"king\", \"square\": \"c7\"}, {\"piece\": \"knight\", \"square\": \"f6\"}, {\"piece\": \"pawn\", \"square\": \"b6\"}], \"white\": [{\"piece\": \"king\", \"square\": \"f2\"}, {\"piece\": \"knight\", \"square\": \"c3\"}, {\"piece\": \"pawn\", \"square\": \"f3\"}, {\"piece\": \"queen\", \"square\": \"g1\"}, {\"piece\": \"rook\", \"square\": \"e4\"}]}\n\nJSON square map:\n{\"b6\": \"p\", \"c3\": \"N\", \"c7\": \"k\", \"d5\": \"b\", \"e4\": \"R\", \"f2\": \"K\", \"f3\": \"P\", \"f6\": \"n\", \"g1\": \"Q\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move.",
+          "request_messages": [
+            {
+              "role": "user",
+              "content": "BOARD ID: calibration-01\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: r3k2r/ppp2ppp/2npbn2/3qp3/3P4/2N1PN2/PPP2PPP/R2QKB1R w KQkq - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nr . . . k . . r\np p p . . p p p\n. . n p b n . .\n. . . q p . . .\n. . . P . . . .\n. . N . P N . .\nP P P . . P P P\nR . . Q K B . R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"e6\"}, {\"piece\": \"king\", \"square\": \"e8\"}, {\"piece\": \"knight\", \"square\": \"c6\"}, {\"piece\": \"knight\", \"square\": \"f6\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d6\"}, {\"piece\": \"pawn\", \"square\": \"e5\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"d5\"}, {\"piece\": \"rook\", \"square\": \"a8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"f1\"}, {\"piece\": \"king\", \"square\": \"e1\"}, {\"piece\": \"knight\", \"square\": \"c3\"}, {\"piece\": \"knight\", \"square\": \"f3\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d4\"}, {\"piece\": \"pawn\", \"square\": \"e3\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"d1\"}, {\"piece\": \"rook\", \"square\": \"a1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"R\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"r\", \"b2\": \"P\", \"b7\": \"p\", \"c2\": \"P\", \"c3\": \"N\", \"c6\": \"n\", \"c7\": \"p\", \"d1\": \"Q\", \"d4\": \"P\", \"d5\": \"q\", \"d6\": \"p\", \"e1\": \"K\", \"e3\": \"P\", \"e5\": \"p\", \"e6\": \"b\", \"e8\": \"k\", \"f1\": \"B\", \"f2\": \"P\", \"f3\": \"N\", \"f6\": \"n\", \"f7\": \"p\", \"g2\": \"P\", \"g7\": \"p\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move."
+            },
+            {
+              "role": "assistant",
+              "content": "```json\n{\n  \"board_id\": \"calibration-01\",\n  \"side_to_move\": \"white\",\n  \"white_pieces\": [\n    { \"piece\": \"king\", \"square\": \"e1\" },\n    { \"piece\": \"queen\", \"square\": \"d1\" },\n    { \"piece\": \"rook\", \"square\": \"a1\" },\n    { \"piece\": \"rook\", \"square\": \"h1\" },\n    { \"piece\": \"bishop\", \"square\": \"f1\" },\n    { \"piece\": \"knight\", \"square\": \"c3\" },\n    { \"piece\": \"knight\", \"square\": \"f3\" },\n    { \"piece\": \"pawn\", \"square\": \"a2\" },\n    { \"piece\": \"pawn\", \"square\": \"b2\" },\n    { \"piece\": \"pawn\", \"square\": \"c2\" },\n    { \"piece\": \"pawn\", \"square\": \"d4\" },\n    { \"piece\": \"pawn\", \"square\": \"e3\" },\n    { \"piece\": \"pawn\", \"square\": \"f2\" },\n    { \"piece\": \"pawn\", \"square\": \"g2\" },\n    { \"piece\": \"pawn\", \"square\": \"h2\" }\n  ],\n  \"black_pieces\": [\n    { \"piece\": \"king\", \"square\": \"e8\" },\n    { \"piece\": \"queen\", \"square\": \"d5\" },\n    { \"piece\": \"rook\", \"square\": \"a8\" },\n    { \"piece\": \"rook\", \"square\": \"h8\" },\n    { \"piece\": \"bishop\", \"square\": \"e6\" },\n    { \"piece\": \"knight\", \"square\": \"c6\" },\n    { \"piece\": \"knight\", \"square\": \"f6\" },\n    { \"piece\": \"pawn\", \"square\": \"a7\" },\n    { \"piece\": \"pawn\", \"square\": \"b7\" },\n    { \"piece\": \"pawn\", \"square\": \"c7\" },\n    { \"piece\": \"pawn\", \"square\": \"d6\" },\n    { \"piece\": \"pawn\", \"square\": \"e5\" },\n    { \"piece\": \"pawn\", \"square\": \"f7\" },\n    { \"piece\": \"pawn\", \"square\": \"g7\" },\n    { \"piece\": \"pawn\", \"square\": \"h7\" }\n  ],\n  \"counts\": {\n    \"white\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 1, \"knight\": 2, \"pawn\": 8 },\n    \"black\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 1, \"knight\": 2, \"pawn\": 8 }\n  },\n  \"movement_rules\": {\n    \"king\": \"Moves one square in any direction (orthogonal or diagonal); may never move into or stay in check. Castles once per game by moving two squares toward an unmoved rook on the same rank, provided castling rights remain, the squares between are empty, and the king is not in check nor passes through or lands on an attacked square.\",\n    \"queen\": \"Moves any number of empty squares in a straight line along ranks, files, or diagonals; captures the first enemy piece encountered and cannot jump over pieces.\",\n    \"rook\": \"Moves any number of empty squares along ranks or files; captures the first enemy piece on that line and cannot jump over pieces. Participates in castling with the king.\",\n    \"bishop\": \"Moves any number of empty squares diagonally; captures the first enemy piece on that diagonal and cannot jump over pieces. Stays on its starting square color forever.\",\n    \"knight\": \"Moves in an L-shape: two squares along a rank or file then one square perpendicular (eight possible targets). Jumps over intervening pieces; captures only what stands on its destination square.\",\n    \"pawn\": \"Moves one square straight forward to an empty square (white toward rank 8, black toward rank 1); may move two squares forward from its starting rank if both squares are empty. Captures one square diagonally forward. Captures en passant a pawn that has just made a two-square advance past the capturing pawn's attacked square. On reaching the last rank it must promote to queen, rook, bishop, or knight.\"\n  },\n  \"legal_moves\": [\n    \"a2a3\", \"a2a4\",\n    \"b2b3\", \"b2b4\",\n    \"d4e5\",\n    \"e3e4\",\n    \"g2g3\", \"g2g4\",\n    \"h2h3\", \"h2h4\",\n    \"c3b1\", \"c3e2\", \"c3a4\", \"c3b5\", \"c3d5\", \"c3e4\",\n    \"f3d2\", \"f3g1\", \"f3e5\", \"f3g5\", \"f3h4\",\n    \"f1e2\", \"f1d3\", \"f1c4\", \"f1b5\", \"f1a6\",\n    \"d1c1\", \"d1b1\", \"d1d2\", \"d1d3\", \"d1e2\",\n    \"a1b1\", \"a1c1\",\n    \"h1g1\",\n    \"e1d2\", \"e1e2\"\n  ],\n  \"preferred_format\": \"multi_view\",\n  \"feedback\": \"Easy to parse. The FEN gave side to move, castling rights and the en passant state directly; the ASCII grid (rank 8 down to rank 1, files a-h labeled) let me verify occupancy visually; the piece list gave an independent inventory for counting; and the JSON square map allowed O(1) square lookups during move generation. All four views agreed, so cross-checking caught no conflicts. Minor difficulties: the ASCII grid has no rank/file numbers printed on the rows/columns, so column counting is the only alignment cue, and castling rights KQkq are legally moot for White here (f1 bishop and d1 queen block both paths) which is only detectable by combining views. Suggestions for future boards: keep all four views, add rank/file labels to the ASCII edges, and optionally state 'white in check: no' plus the halfmove/fullmove numbers explicitly.\"\n}\n```"
+            },
+            {
+              "role": "user",
+              "content": "BOARD ID: calibration-02\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: nrqbbnkr/pppppppp/8/8/8/8/PPPPPPPP/NRQBBNKR w - - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\nn r q b b n k r\np p p p p p p p\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\nP P P P P P P P\nN R Q B B N K R\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"d8\"}, {\"piece\": \"bishop\", \"square\": \"e8\"}, {\"piece\": \"king\", \"square\": \"g8\"}, {\"piece\": \"knight\", \"square\": \"a8\"}, {\"piece\": \"knight\", \"square\": \"f8\"}, {\"piece\": \"pawn\", \"square\": \"a7\"}, {\"piece\": \"pawn\", \"square\": \"b7\"}, {\"piece\": \"pawn\", \"square\": \"c7\"}, {\"piece\": \"pawn\", \"square\": \"d7\"}, {\"piece\": \"pawn\", \"square\": \"e7\"}, {\"piece\": \"pawn\", \"square\": \"f7\"}, {\"piece\": \"pawn\", \"square\": \"g7\"}, {\"piece\": \"pawn\", \"square\": \"h7\"}, {\"piece\": \"queen\", \"square\": \"c8\"}, {\"piece\": \"rook\", \"square\": \"b8\"}, {\"piece\": \"rook\", \"square\": \"h8\"}], \"white\": [{\"piece\": \"bishop\", \"square\": \"d1\"}, {\"piece\": \"bishop\", \"square\": \"e1\"}, {\"piece\": \"king\", \"square\": \"g1\"}, {\"piece\": \"knight\", \"square\": \"a1\"}, {\"piece\": \"knight\", \"square\": \"f1\"}, {\"piece\": \"pawn\", \"square\": \"a2\"}, {\"piece\": \"pawn\", \"square\": \"b2\"}, {\"piece\": \"pawn\", \"square\": \"c2\"}, {\"piece\": \"pawn\", \"square\": \"d2\"}, {\"piece\": \"pawn\", \"square\": \"e2\"}, {\"piece\": \"pawn\", \"square\": \"f2\"}, {\"piece\": \"pawn\", \"square\": \"g2\"}, {\"piece\": \"pawn\", \"square\": \"h2\"}, {\"piece\": \"queen\", \"square\": \"c1\"}, {\"piece\": \"rook\", \"square\": \"b1\"}, {\"piece\": \"rook\", \"square\": \"h1\"}]}\n\nJSON square map:\n{\"a1\": \"N\", \"a2\": \"P\", \"a7\": \"p\", \"a8\": \"n\", \"b1\": \"R\", \"b2\": \"P\", \"b7\": \"p\", \"b8\": \"r\", \"c1\": \"Q\", \"c2\": \"P\", \"c7\": \"p\", \"c8\": \"q\", \"d1\": \"B\", \"d2\": \"P\", \"d7\": \"p\", \"d8\": \"b\", \"e1\": \"B\", \"e2\": \"P\", \"e7\": \"p\", \"e8\": \"b\", \"f1\": \"N\", \"f2\": \"P\", \"f7\": \"p\", \"f8\": \"n\", \"g1\": \"K\", \"g2\": \"P\", \"g7\": \"p\", \"g8\": \"k\", \"h1\": \"R\", \"h2\": \"P\", \"h7\": \"p\", \"h8\": \"r\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move."
+            },
+            {
+              "role": "assistant",
+              "content": "```json\n{\n  \"board_id\": \"calibration-02\",\n  \"side_to_move\": \"white\",\n  \"white_pieces\": [\n    { \"piece\": \"knight\", \"square\": \"a1\" },\n    { \"piece\": \"rook\", \"square\": \"b1\" },\n    { \"piece\": \"queen\", \"square\": \"c1\" },\n    { \"piece\": \"bishop\", \"square\": \"d1\" },\n    { \"piece\": \"bishop\", \"square\": \"e1\" },\n    { \"piece\": \"knight\", \"square\": \"f1\" },\n    { \"piece\": \"king\", \"square\": \"g1\" },\n    { \"piece\": \"rook\", \"square\": \"h1\" },\n    { \"piece\": \"pawn\", \"square\": \"a2\" },\n    { \"piece\": \"pawn\", \"square\": \"b2\" },\n    { \"piece\": \"pawn\", \"square\": \"c2\" },\n    { \"piece\": \"pawn\", \"square\": \"d2\" },\n    { \"piece\": \"pawn\", \"square\": \"e2\" },\n    { \"piece\": \"pawn\", \"square\": \"f2\" },\n    { \"piece\": \"pawn\", \"square\": \"g2\" },\n    { \"piece\": \"pawn\", \"square\": \"h2\" }\n  ],\n  \"black_pieces\": [\n    { \"piece\": \"knight\", \"square\": \"a8\" },\n    { \"piece\": \"rook\", \"square\": \"b8\" },\n    { \"piece\": \"queen\", \"square\": \"c8\" },\n    { \"piece\": \"bishop\", \"square\": \"d8\" },\n    { \"piece\": \"bishop\", \"square\": \"e8\" },\n    { \"piece\": \"knight\", \"square\": \"f8\" },\n    { \"piece\": \"king\", \"square\": \"g8\" },\n    { \"piece\": \"rook\", \"square\": \"h8\" },\n    { \"piece\": \"pawn\", \"square\": \"a7\" },\n    { \"piece\": \"pawn\", \"square\": \"b7\" },\n    { \"piece\": \"pawn\", \"square\": \"c7\" },\n    { \"piece\": \"pawn\", \"square\": \"d7\" },\n    { \"piece\": \"pawn\", \"square\": \"e7\" },\n    { \"piece\": \"pawn\", \"square\": \"f7\" },\n    { \"piece\": \"pawn\", \"square\": \"g7\" },\n    { \"piece\": \"pawn\", \"square\": \"h7\" }\n  ],\n  \"counts\": {\n    \"white\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 2, \"knight\": 2, \"pawn\": 8 },\n    \"black\": { \"king\": 1, \"queen\": 1, \"rook\": 2, \"bishop\": 2, \"knight\": 2, \"pawn\": 8 }\n  },\n  \"movement_rules\": {\n    \"king\": \"Moves one square in any direction (orthogonal or diagonal); it may never move into or remain in check. Castling is a special king move of two squares toward an unmoved rook (Chess960 variants use the same rights notation), allowed only with intact castling rights, empty intervening squares, and no check on the origin, transit, or destination squares. Here castling rights are '-', so no castling is available to either side.\",\n    \"queen\": \"Moves any number of unobstructed squares along ranks, files, or diagonals; it captures the first enemy piece on a line and cannot jump over pieces.\",\n    \"rook\": \"Moves any number of unobstructed squares along ranks or files; it captures the first enemy piece on a line and cannot jump over pieces. It is the partner piece in castling.\",\n    \"bishop\": \"Moves any number of unobstructed squares diagonally; it captures the first enemy piece on the diagonal and cannot jump over pieces, remaining permanently on squares of its starting color.\",\n    \"knight\": \"Moves in an L-shape — two squares along a rank or file, then one square perpendicular — for up to eight destinations. It jumps over any intervening pieces and captures only on its landing square.\",\n    \"pawn\": \"Advances one square straight forward to an empty square (White toward rank 8, Black toward rank 1), or two squares from its own starting rank if both squares are empty. It captures one square diagonally forward, may capture en passant immediately after an enemy pawn's two-square advance passes its attacked square, and must promote to queen, rook, bishop, or knight upon reaching the far rank.\"\n  },\n  \"legal_moves\": [\n    \"a2a3\", \"a2a4\",\n    \"b2b3\", \"b2b4\",\n    \"c2c3\", \"c2c4\",\n    \"d2d3\", \"d2d4\",\n    \"e2e3\", \"e2e4\",\n    \"f2f3\", \"f2f4\",\n    \"g2g3\", \"g2g4\",\n    \"h2h3\", \"h2h4\",\n    \"a1b3\",\n    \"f1e3\", \"f1g3\"\n  ],\n  \"feedback\": \"Very easy to parse and cross-check: all four views agreed exactly, and the FEN header supplied side to move (w), castling rights (-) and en passant (-) unambiguously. The position is a shuffled (Chess960-style) back rank with both full pawn walls, so verification was mostly mechanical — every non-pawn piece except the two knights is fully blocked by its own first- and second-rank neighbours. Points worth noting: (1) two bishops per side on adjacent squares d1/e1 and d8/e8 means both are same-file-adjacent but opposite-colored, easy to misread if only ASCII were given; (2) the king on g1 is boxed in by f1 knight, h1 rook and the g2/f2/h2 pawns, so it has zero moves, and with castling rights '-' there is no O-O to consider — an explicit 'castling: none' line in the header helped avoid inventing b1/h1 castling moves. Suggestions: keep multi_view, add rank/file labels along the ASCII borders, and optionally state 'in check: no' plus halfmove/fullmove counters.\",\n  \"preferred_format\": \"multi_view\"\n}\n```"
+            },
+            {
+              "role": "user",
+              "content": "BOARD ID: calibration-heldout-03\nThis board is calibration-only and will never be used for gameplay.\nRepresentation requested by you: multi_view\nRepresentation supplied: multi_view\nGround-truth side to move is encoded in the representation; identify it.\n\nFEN: 8/2k5/1p3n2/3b4/4R3/2N2P2/5K2/6Q1 b - - 0 1\n\nASCII board, rank 8 to rank 1, file a to h:\n. . . . . . . .\n. . k . . . . .\n. p . . . n . .\n. . . b . . . .\n. . . . R . . .\n. . N . . P . .\n. . . . . K . .\n. . . . . . Q .\n\nPiece list:\n{\"black\": [{\"piece\": \"bishop\", \"square\": \"d5\"}, {\"piece\": \"king\", \"square\": \"c7\"}, {\"piece\": \"knight\", \"square\": \"f6\"}, {\"piece\": \"pawn\", \"square\": \"b6\"}], \"white\": [{\"piece\": \"king\", \"square\": \"f2\"}, {\"piece\": \"knight\", \"square\": \"c3\"}, {\"piece\": \"pawn\", \"square\": \"f3\"}, {\"piece\": \"queen\", \"square\": \"g1\"}, {\"piece\": \"rook\", \"square\": \"e4\"}]}\n\nJSON square map:\n{\"b6\": \"p\", \"c3\": \"N\", \"c7\": \"k\", \"d5\": \"b\", \"e4\": \"R\", \"f2\": \"K\", \"f3\": \"P\", \"f6\": \"n\", \"g1\": \"Q\"}\n\nInventory every piece, report exact counts for both colors, explain how king,\nqueen, rook, bishop, knight, and pawn move, name your preferred future board\nformat, and give format feedback. Do not select a move.\nAlso return legal_moves as the complete UCI move array for the side to move. Verify the complete legal set, but do not choose or recommend a best move."
+            }
+          ],
+          "request_parameters": {
+            "model": "claude-opus-5",
+            "system": "This is a chess-board grounding calibration, not a game.\nDo not choose or recommend a move. Your goal is to tell us which board format\nyou understand reliably.\n\nReturn exactly one JSON object with:\nboard_id, side_to_move, white_pieces, black_pieces, counts, movement_rules,\nlegal_moves, preferred_format, feedback. legal_moves must be the complete array of legal UCI moves for side_to_move. Enumerate and verify the legal set, but do not recommend or select a best move.\n\nwhite_pieces and black_pieces are arrays of objects with piece and square.\nUse lowercase generic English piece names: king, queen, rook, bishop, knight,\npawn. counts must contain white and black objects with counts for all six piece\ntypes. movement_rules must explain the basic legal movement of all six piece\ntypes. preferred_format is the representation you want on later boards. You\nmay name your own format; these native formats are available: multi_view, fen,\nascii, piece_list, json_square_map. feedback should explain what made the board\neasy or difficult to parse.\n\nDo not reveal hidden chain of thought. Give concise, auditable answers only.",
+            "max_tokens": 32768,
+            "thinking": {
+              "type": "adaptive",
+              "display": "summarized"
+            },
+            "output_config": {
+              "effort": "max"
+            }
+          },
+          "raw_response": "```json\n{\n  \"board_id\": \"calibration-heldout-03\",\n  \"side_to_move\": \"black\",\n  \"white_pieces\": [\n    { \"piece\": \"king\", \"square\": \"f2\" },\n    { \"piece\": \"queen\", \"square\": \"g1\" },\n    { \"piece\": \"rook\", \"square\": \"e4\" },\n    { \"piece\": \"knight\", \"square\": \"c3\" },\n    { \"piece\": \"pawn\", \"square\": \"f3\" }\n  ],\n  \"black_pieces\": [\n    { \"piece\": \"king\", \"square\": \"c7\" },\n    { \"piece\": \"bishop\", \"square\": \"d5\" },\n    { \"piece\": \"knight\", \"square\": \"f6\" },\n    { \"piece\": \"pawn\", \"square\": \"b6\" }\n  ],\n  \"counts\": {\n    \"white\": { \"king\": 1, \"queen\": 1, \"rook\": 1, \"bishop\": 0, \"knight\": 1, \"pawn\": 1 },\n    \"black\": { \"king\": 1, \"queen\": 0, \"rook\": 0, \"bishop\": 1, \"knight\": 1, \"pawn\": 1 }\n  },\n  \"movement_rules\": {\n    \"king\": \"Moves one square in any direction (orthogonal or diagonal). It may never move to a square attacked by an enemy piece, nor remain in check. Castling (two squares toward an unmoved rook, with rook jumping to the king's other side) requires intact rights, empty intervening squares, and no check on the origin, transit, or destination square; here castling rights are '-', so castling is unavailable.\",\n    \"queen\": \"Moves any number of unobstructed squares along ranks, files, or diagonals; captures the first enemy piece on a line and cannot jump over pieces.\",\n    \"rook\": \"Moves any number of unobstructed squares along ranks or files; captures the first enemy piece on a line and cannot jump over pieces.\",\n    \"bishop\": \"Moves any number of unobstructed squares diagonally; captures the first enemy piece on the diagonal and cannot jump over pieces, permanently remaining on its starting square color.\",\n    \"knight\": \"Moves in an L-shape — two squares along a rank or file then one square perpendicular — with up to eight destinations. It jumps over intervening pieces and captures only the piece on its landing square.\",\n    \"pawn\": \"Advances one square straight forward to an empty square (White toward rank 8, Black toward rank 1), or two squares from its own starting rank if both squares are empty. It captures one square diagonally forward, may capture en passant immediately after an enemy pawn's two-square advance crosses its attacked square, and must promote to queen, rook, bishop, or knight on reaching the last rank.\"\n  },\n  \"legal_moves\": [\n    \"b6b5\",\n    \"d5a2\", \"d5b3\", \"d5c4\", \"d5e4\", \"d5c6\", \"d5e6\", \"d5b7\", \"d5f7\", \"d5a8\", \"d5g8\",\n    \"f6e4\", \"f6g4\", \"f6h5\", \"f6d7\", \"f6h7\", \"f6e8\", \"f6g8\",\n    \"c7c6\", \"c7d6\", \"c7b7\", \"c7d7\", \"c7b8\", \"c7c8\", \"c7d8\"\n  ],\n  \"preferred_format\": \"multi_view\",\n  \"feedback\": \"Easy to parse: a sparse 9-piece endgame where all four views agreed, and the FEN header fixed side to move (b), castling rights (-) and en passant (-) explicitly. The sparse ASCII grid made line-tracing quick, and the JSON square map let me confirm empty squares along each ray in one lookup. Verification notes that took the most care: (1) confirming Black is not in check — White's rook covers rank 4 and file e, the knight covers d5/b5, the queen covers rank 1, file g and h2 (its f2 diagonal is blocked by its own king), so none of them touch c7; (2) confirming no Black piece is pinned — nothing on file c is a line piece (only the c3 knight), and neither the rook nor queen is aligned with c7, so the d5 bishop and f6 knight move freely; (3) noting f6-d5 is blocked by Black's own bishop, and the b6 pawn has no double-step because it is not on rank 7. Suggestions: keep multi_view; adding rank/file labels on the ASCII edges, an explicit 'in check: no' flag, and halfmove/fullmove counters would remove the last bits of manual cross-checking.\"\n}\n```",
+          "thinking": "Looking at this chess position, I need to analyze whether Black is in check and what pieces are attacking where. The White rook on e4 controls its rank and file but doesn't reach c7, while the knight on c3 can attack d5 where Black's bishop sits.\n\nNow I'm mapping out all of White's controlled squares to determine which moves are legal for Black. The rook controls the entire fourth rank and e-file, the knight has its standard eight squares from c3, the pawn on f3 attacks the diagonals e4 and g4, and the king on f2 controls the eight surrounding squares. I need to check if any Black pieces are pinned and what legal moves remain available. b7, b8, c6, c8, d6, and d7 are all safe from white's attacks. I need to verify d6 specifically since the rook on e4 could potentially threaten it, but checking the rook's position and the knight on c3, neither can reach d6. Moving the king away doesn't expose any critical lines either.\n\nNow I'm checking whether any of black's pieces are pinned to the king, starting with the bishop on d5. I'm checking each diagonal direction the bishop can move along: up-right to g8, up-left to a8, down-right where it can capture the rook on e4, and down-left to a2. Since there are no pins on the bishop, all these moves are legal as long as they don't leave the king in check—which they don't. Now I need to verify whether moving the bishop to c6 or b7 would inadvertently block any attack on the king.\n\nFor the knight on f6, I'm working through all eight possible knight moves: it can go to d7, e8, g8, h7, h5, g4, or capture the rook on e4, but it cannot move to d5 since that square is occupied by my own bishop. Even though some of these squares like g4 are attacked by white pieces, knights can legally move to attacked squares.\n\nNow checking the pawn on b6 — it can advance one square to b5 since that square is empty, and there are no captures available on a5 or c5. That gives me a total of 25 legal moves across all pieces. I should verify that none of my king moves land on squares adjacent to the white king or on attacked squares.\n\nThe bishop on d5 can move to a2 along the diagonal through c4 and b3, both empty. Even though a2 is attacked by the white knight on c3, the move is still legal. Looking at the piece count: white has king, queen, rook, knight, and pawn; black has king, bishop, knight, and pawn. Now I'll compile the complete list of legal moves in UCI notation.",
+          "parsed_response": {
+            "board_id": "calibration-heldout-03",
+            "side_to_move": "black",
+            "white_pieces": [
+              {
+                "piece": "king",
+                "square": "f2"
+              },
+              {
+                "piece": "queen",
+                "square": "g1"
+              },
+              {
+                "piece": "rook",
+                "square": "e4"
+              },
+              {
+                "piece": "knight",
+                "square": "c3"
+              },
+              {
+                "piece": "pawn",
+                "square": "f3"
+              }
+            ],
+            "black_pieces": [
+              {
+                "piece": "king",
+                "square": "c7"
+              },
+              {
+                "piece": "bishop",
+                "square": "d5"
+              },
+              {
+                "piece": "knight",
+                "square": "f6"
+              },
+              {
+                "piece": "pawn",
+                "square": "b6"
+              }
+            ],
+            "counts": {
+              "white": {
+                "king": 1,
+                "queen": 1,
+                "rook": 1,
+                "bishop": 0,
+                "knight": 1,
+                "pawn": 1
+              },
+              "black": {
+                "king": 1,
+                "queen": 0,
+                "rook": 0,
+                "bishop": 1,
+                "knight": 1,
+                "pawn": 1
+              }
+            },
+            "movement_rules": {
+              "king": "Moves one square in any direction (orthogonal or diagonal). It may never move to a square attacked by an enemy piece, nor remain in check. Castling (two squares toward an unmoved rook, with rook jumping to the king's other side) requires intact rights, empty intervening squares, and no check on the origin, transit, or destination square; here castling rights are '-', so castling is unavailable.",
+              "queen": "Moves any number of unobstructed squares along ranks, files, or diagonals; captures the first enemy piece on a line and cannot jump over pieces.",
+              "rook": "Moves any number of unobstructed squares along ranks or files; captures the first enemy piece on a line and cannot jump over pieces.",
+              "bishop": "Moves any number of unobstructed squares diagonally; captures the first enemy piece on the diagonal and cannot jump over pieces, permanently remaining on its starting square color.",
+              "knight": "Moves in an L-shape — two squares along a rank or file then one square perpendicular — with up to eight destinations. It jumps over intervening pieces and captures only the piece on its landing square.",
+              "pawn": "Advances one square straight forward to an empty square (White toward rank 8, Black toward rank 1), or two squares from its own starting rank if both squares are empty. It captures one square diagonally forward, may capture en passant immediately after an enemy pawn's two-square advance crosses its attacked square, and must promote to queen, rook, bishop, or knight on reaching the last rank."
+            },
+            "legal_moves": [
+              "b6b5",
+              "d5a2",
+              "d5b3",
+              "d5c4",
+              "d5e4",
+              "d5c6",
+              "d5e6",
+              "d5b7",
+              "d5f7",
+              "d5a8",
+              "d5g8",
+              "f6e4",
+              "f6g4",
+              "f6h5",
+              "f6d7",
+              "f6h7",
+              "f6e8",
+              "f6g8",
+              "c7c6",
+              "c7d6",
+              "c7b7",
+              "c7d7",
+              "c7b8",
+              "c7c8",
+              "c7d8"
+            ],
+            "preferred_format": "multi_view",
+            "feedback": "Easy to parse: a sparse 9-piece endgame where all four views agreed, and the FEN header fixed side to move (b), castling rights (-) and en passant (-) explicitly. The sparse ASCII grid made line-tracing quick, and the JSON square map let me confirm empty squares along each ray in one lookup. Verification notes that took the most care: (1) confirming Black is not in check — White's rook covers rank 4 and file e, the knight covers d5/b5, the queen covers rank 1, file g and h2 (its f2 diagonal is blocked by its own king), so none of them touch c7; (2) confirming no Black piece is pinned — nothing on file c is a line piece (only the c3 knight), and neither the rook nor queen is aligned with c7, so the d5 bishop and f6 knight move freely; (3) noting f6-d5 is blocked by Black's own bishop, and the b6 pawn has no double-step because it is not on rank 7. Suggestions: keep multi_view; adding rank/file labels on the ASCII edges, an explicit 'in check: no' flag, and halfmove/fullmove counters would remove the last bits of manual cross-checking."
+          },
+          "validation_errors": [],
+          "passed": true,
+          "response_id": "msg_011CdNHfNUWY6cXB4XCGiYQP",
+          "actual_model": "claude-opus-5",
+          "actual_provider": "anthropic",
+          "endpoint": "https://api.anthropic.com",
+          "input_tokens": 7005,
+          "output_tokens": 4068,
+          "latency_ms": 46053.88786899857
+        }
+      ]
+    }
+  }
+]

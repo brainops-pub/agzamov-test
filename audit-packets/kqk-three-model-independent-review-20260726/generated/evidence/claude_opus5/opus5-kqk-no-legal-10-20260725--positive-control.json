@@ -1,0 +1,882 @@
+{
+  "game_id": "Stockfish 17.1-depth-16:calibrated-kqk-heldout-001",
+  "position_id": "calibrated-kqk-heldout-001",
+  "material": "KQK",
+  "starting_fen": "5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1",
+  "model": "Stockfish 17.1-depth-16",
+  "provider": "uci-control",
+  "defender": "seeded-random-legal-v1",
+  "success": true,
+  "terminal_reason": "checkmate",
+  "attacking_moves": 6,
+  "total_plies": 11,
+  "initial_assessment": "win",
+  "initial_confidence": 100,
+  "initial_plan": "engine control",
+  "protocol_corrections": 0,
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "duration_seconds": 0.03190087300026789,
+  "final_fen": "2Q1k3/8/4K3/8/8/8/8/8 b - - 11 6",
+  "events": [
+    {
+      "ply": 1,
+      "actor": "model",
+      "fen_before": "5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1",
+      "legal_moves": [
+        "f8h8",
+        "f8g8",
+        "f8e8",
+        "f8d8",
+        "f8c8",
+        "f8b8",
+        "f8a8",
+        "f8g7",
+        "f8f7",
+        "f8e7",
+        "f8h6",
+        "f8d6",
+        "f8c5",
+        "f8b4",
+        "f8a3",
+        "f6g7",
+        "f6f7",
+        "f6e7",
+        "f6g6",
+        "f6e6",
+        "f6g5",
+        "f6f5",
+        "f6e5"
+      ],
+      "move_uci": "f8b4",
+      "san": "Qb4",
+      "fen_after": "8/8/2k2K2/8/1Q6/8/8/8 b - - 1 1",
+      "turn_prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move.",
+      "raw_response": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "selection_trace": {},
+      "parsed_assessment": "win",
+      "parsed_confidence": 100,
+      "parsed_plan": "engine control",
+      "parsed_phase": "engine control",
+      "parsed_progress": "engine-selected move",
+      "parsed_rationale": "positive harness control",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 21.457756010931917,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish"
+    },
+    {
+      "ply": 2,
+      "actor": "seeded-random-legal-v1",
+      "fen_before": "8/8/2k2K2/8/1Q6/8/8/8 b - - 1 1",
+      "legal_moves": [
+        "c6d7",
+        "c6c7",
+        "c6d5"
+      ],
+      "move_uci": "c6c7",
+      "san": "Kc7",
+      "fen_after": "8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2",
+      "turn_prompt": "",
+      "raw_response": "",
+      "thinking": "",
+      "selection_trace": {
+        "scenario_seed": 20260725,
+        "derived_seed": 9651225050446378865,
+        "choice_index": 1,
+        "fen_before": "8/8/2k2K2/8/1Q6/8/8/8 b - - 1 1",
+        "legal_moves": [
+          "c6d7",
+          "c6c7",
+          "c6d5"
+        ],
+        "move_uci": "c6c7"
+      },
+      "parsed_assessment": "",
+      "parsed_confidence": null,
+      "parsed_plan": "",
+      "parsed_phase": "",
+      "parsed_progress": "",
+      "parsed_rationale": "",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.0,
+      "response_id": "",
+      "actual_model": "",
+      "actual_provider": "",
+      "finish_reason": "",
+      "endpoint": ""
+    },
+    {
+      "ply": 3,
+      "actor": "model",
+      "fen_before": "8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2",
+      "legal_moves": [
+        "f6g7",
+        "f6f7",
+        "f6e7",
+        "f6g6",
+        "f6e6",
+        "f6g5",
+        "f6f5",
+        "f6e5",
+        "b4f8",
+        "b4b8",
+        "b4e7",
+        "b4b7",
+        "b4d6",
+        "b4b6",
+        "b4c5",
+        "b4b5",
+        "b4a5",
+        "b4h4",
+        "b4g4",
+        "b4f4",
+        "b4e4",
+        "b4d4",
+        "b4c4",
+        "b4a4",
+        "b4c3",
+        "b4b3",
+        "b4a3",
+        "b4d2",
+        "b4b2",
+        "b4e1",
+        "b4b1"
+      ],
+      "move_uci": "f6e6",
+      "san": "Ke6",
+      "fen_after": "8/2k5/4K3/8/1Q6/8/8/8 b - - 3 2",
+      "turn_prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move.",
+      "raw_response": "{\"move\": \"f6e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "selection_trace": {},
+      "parsed_assessment": "win",
+      "parsed_confidence": 100,
+      "parsed_plan": "engine control",
+      "parsed_phase": "engine control",
+      "parsed_progress": "engine-selected move",
+      "parsed_rationale": "positive harness control",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 2.6492160104680806,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish"
+    },
+    {
+      "ply": 4,
+      "actor": "seeded-random-legal-v1",
+      "fen_before": "8/2k5/4K3/8/1Q6/8/8/8 b - - 3 2",
+      "legal_moves": [
+        "c7d8",
+        "c7c8",
+        "c7c6"
+      ],
+      "move_uci": "c7c6",
+      "san": "Kc6",
+      "fen_after": "8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3",
+      "turn_prompt": "",
+      "raw_response": "",
+      "thinking": "",
+      "selection_trace": {
+        "scenario_seed": 20260725,
+        "derived_seed": 17741517558437488182,
+        "choice_index": 2,
+        "fen_before": "8/2k5/4K3/8/1Q6/8/8/8 b - - 3 2",
+        "legal_moves": [
+          "c7d8",
+          "c7c8",
+          "c7c6"
+        ],
+        "move_uci": "c7c6"
+      },
+      "parsed_assessment": "",
+      "parsed_confidence": null,
+      "parsed_plan": "",
+      "parsed_phase": "",
+      "parsed_progress": "",
+      "parsed_rationale": "",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.0,
+      "response_id": "",
+      "actual_model": "",
+      "actual_provider": "",
+      "finish_reason": "",
+      "endpoint": ""
+    },
+    {
+      "ply": 5,
+      "actor": "model",
+      "fen_before": "8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3",
+      "legal_moves": [
+        "e6f7",
+        "e6e7",
+        "e6f6",
+        "e6f5",
+        "e6e5",
+        "b4f8",
+        "b4b8",
+        "b4e7",
+        "b4b7",
+        "b4d6",
+        "b4b6",
+        "b4c5",
+        "b4b5",
+        "b4a5",
+        "b4h4",
+        "b4g4",
+        "b4f4",
+        "b4e4",
+        "b4d4",
+        "b4c4",
+        "b4a4",
+        "b4c3",
+        "b4b3",
+        "b4a3",
+        "b4d2",
+        "b4b2",
+        "b4e1",
+        "b4b1"
+      ],
+      "move_uci": "e6e5",
+      "san": "Ke5",
+      "fen_after": "8/8/2k5/4K3/1Q6/8/8/8 b - - 5 3",
+      "turn_prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on b4\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 3/30\nMoves remaining: 28\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3\n\nBoard:\n. . . . . . . .\n. . . . . . . .\n. . k . K . . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; Black king on c6; White king on e6\nMove log (UCI): f8b4 c6c7 f6e6 c7c6\nLegal moves: e6f7, e6e7, e6f6, e6f5, e6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move.",
+      "raw_response": "{\"move\": \"e6e5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "selection_trace": {},
+      "parsed_assessment": "win",
+      "parsed_confidence": 100,
+      "parsed_plan": "engine control",
+      "parsed_phase": "engine control",
+      "parsed_progress": "engine-selected move",
+      "parsed_rationale": "positive harness control",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 1.6428700037067756,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish"
+    },
+    {
+      "ply": 6,
+      "actor": "seeded-random-legal-v1",
+      "fen_before": "8/8/2k5/4K3/1Q6/8/8/8 b - - 5 3",
+      "legal_moves": [
+        "c6d7",
+        "c6c7"
+      ],
+      "move_uci": "c6d7",
+      "san": "Kd7",
+      "fen_after": "8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4",
+      "turn_prompt": "",
+      "raw_response": "",
+      "thinking": "",
+      "selection_trace": {
+        "scenario_seed": 20260725,
+        "derived_seed": 1424562438707681594,
+        "choice_index": 0,
+        "fen_before": "8/8/2k5/4K3/1Q6/8/8/8 b - - 5 3",
+        "legal_moves": [
+          "c6d7",
+          "c6c7"
+        ],
+        "move_uci": "c6d7"
+      },
+      "parsed_assessment": "",
+      "parsed_confidence": null,
+      "parsed_plan": "",
+      "parsed_phase": "",
+      "parsed_progress": "",
+      "parsed_rationale": "",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.0,
+      "response_id": "",
+      "actual_model": "",
+      "actual_provider": "",
+      "finish_reason": "",
+      "endpoint": ""
+    },
+    {
+      "ply": 7,
+      "actor": "model",
+      "fen_before": "8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4",
+      "legal_moves": [
+        "e5f6",
+        "e5f5",
+        "e5d5",
+        "e5f4",
+        "e5e4",
+        "e5d4",
+        "b4f8",
+        "b4b8",
+        "b4e7",
+        "b4b7",
+        "b4d6",
+        "b4b6",
+        "b4c5",
+        "b4b5",
+        "b4a5",
+        "b4h4",
+        "b4g4",
+        "b4f4",
+        "b4e4",
+        "b4d4",
+        "b4c4",
+        "b4a4",
+        "b4c3",
+        "b4b3",
+        "b4a3",
+        "b4d2",
+        "b4b2",
+        "b4e1",
+        "b4b1"
+      ],
+      "move_uci": "b4c5",
+      "san": "Qc5",
+      "fen_after": "8/3k4/8/2Q1K3/8/8/8/8 b - - 7 4",
+      "turn_prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on b4\nOPPONENT PIECES: Black king on d7\nSIDE TO MOVE: White\n\nAttacking move: 4/30\nMoves remaining: 27\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4\n\nBoard:\n. . . . . . . .\n. . . k . . . .\n. . . . . . . .\n. . . . K . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on e5; Black king on d7\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7\nLegal moves: e5f6, e5f5, e5d5, e5f4, e5e4, e5d4, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move.",
+      "raw_response": "{\"move\": \"b4c5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "selection_trace": {},
+      "parsed_assessment": "win",
+      "parsed_confidence": 100,
+      "parsed_plan": "engine control",
+      "parsed_phase": "engine control",
+      "parsed_progress": "engine-selected move",
+      "parsed_rationale": "positive harness control",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 1.508407003711909,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish"
+    },
+    {
+      "ply": 8,
+      "actor": "seeded-random-legal-v1",
+      "fen_before": "8/3k4/8/2Q1K3/8/8/8/8 b - - 7 4",
+      "legal_moves": [
+        "d7e8",
+        "d7d8"
+      ],
+      "move_uci": "d7d8",
+      "san": "Kd8",
+      "fen_after": "3k4/8/8/2Q1K3/8/8/8/8 w - - 8 5",
+      "turn_prompt": "",
+      "raw_response": "",
+      "thinking": "",
+      "selection_trace": {
+        "scenario_seed": 20260725,
+        "derived_seed": 7671804485225742067,
+        "choice_index": 1,
+        "fen_before": "8/3k4/8/2Q1K3/8/8/8/8 b - - 7 4",
+        "legal_moves": [
+          "d7e8",
+          "d7d8"
+        ],
+        "move_uci": "d7d8"
+      },
+      "parsed_assessment": "",
+      "parsed_confidence": null,
+      "parsed_plan": "",
+      "parsed_phase": "",
+      "parsed_progress": "",
+      "parsed_rationale": "",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.0,
+      "response_id": "",
+      "actual_model": "",
+      "actual_provider": "",
+      "finish_reason": "",
+      "endpoint": ""
+    },
+    {
+      "ply": 9,
+      "actor": "model",
+      "fen_before": "3k4/8/8/2Q1K3/8/8/8/8 w - - 8 5",
+      "legal_moves": [
+        "e5f6",
+        "e5e6",
+        "e5d6",
+        "e5f5",
+        "e5d5",
+        "e5f4",
+        "e5e4",
+        "e5d4",
+        "c5f8",
+        "c5c8",
+        "c5e7",
+        "c5c7",
+        "c5a7",
+        "c5d6",
+        "c5c6",
+        "c5b6",
+        "c5d5",
+        "c5b5",
+        "c5a5",
+        "c5d4",
+        "c5c4",
+        "c5b4",
+        "c5e3",
+        "c5c3",
+        "c5a3",
+        "c5f2",
+        "c5c2",
+        "c5g1",
+        "c5c1"
+      ],
+      "move_uci": "e5e6",
+      "san": "Ke6",
+      "fen_after": "3k4/8/4K3/2Q5/8/8/8/8 b - - 9 5",
+      "turn_prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on c5\nOPPONENT PIECES: Black king on d8\nSIDE TO MOVE: White\n\nAttacking move: 5/30\nMoves remaining: 26\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 3k4/8/8/2Q1K3/8/8/8/8 w - - 8 5\n\nBoard:\n. . . k . . . .\n. . . . . . . .\n. . . . . . . .\n. . Q . K . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e5; Black king on d8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8\nLegal moves: e5f6, e5e6, e5d6, e5f5, e5d5, e5f4, e5e4, e5d4, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move.",
+      "raw_response": "{\"move\": \"e5e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "selection_trace": {},
+      "parsed_assessment": "win",
+      "parsed_confidence": 100,
+      "parsed_plan": "engine control",
+      "parsed_phase": "engine control",
+      "parsed_progress": "engine-selected move",
+      "parsed_rationale": "positive harness control",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.6609160045627505,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish"
+    },
+    {
+      "ply": 10,
+      "actor": "seeded-random-legal-v1",
+      "fen_before": "3k4/8/4K3/2Q5/8/8/8/8 b - - 9 5",
+      "legal_moves": [
+        "d8e8"
+      ],
+      "move_uci": "d8e8",
+      "san": "Ke8",
+      "fen_after": "4k3/8/4K3/2Q5/8/8/8/8 w - - 10 6",
+      "turn_prompt": "",
+      "raw_response": "",
+      "thinking": "",
+      "selection_trace": {
+        "scenario_seed": 20260725,
+        "derived_seed": 16553456527654934588,
+        "choice_index": 0,
+        "fen_before": "3k4/8/4K3/2Q5/8/8/8/8 b - - 9 5",
+        "legal_moves": [
+          "d8e8"
+        ],
+        "move_uci": "d8e8"
+      },
+      "parsed_assessment": "",
+      "parsed_confidence": null,
+      "parsed_plan": "",
+      "parsed_phase": "",
+      "parsed_progress": "",
+      "parsed_rationale": "",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.0,
+      "response_id": "",
+      "actual_model": "",
+      "actual_provider": "",
+      "finish_reason": "",
+      "endpoint": ""
+    },
+    {
+      "ply": 11,
+      "actor": "model",
+      "fen_before": "4k3/8/4K3/2Q5/8/8/8/8 w - - 10 6",
+      "legal_moves": [
+        "e6f6",
+        "e6d6",
+        "e6f5",
+        "e6e5",
+        "e6d5",
+        "c5f8",
+        "c5c8",
+        "c5e7",
+        "c5c7",
+        "c5a7",
+        "c5d6",
+        "c5c6",
+        "c5b6",
+        "c5h5",
+        "c5g5",
+        "c5f5",
+        "c5e5",
+        "c5d5",
+        "c5b5",
+        "c5a5",
+        "c5d4",
+        "c5c4",
+        "c5b4",
+        "c5e3",
+        "c5c3",
+        "c5a3",
+        "c5f2",
+        "c5c2",
+        "c5g1",
+        "c5c1"
+      ],
+      "move_uci": "c5c8",
+      "san": "Qc8#",
+      "fen_after": "2Q1k3/8/4K3/8/8/8/8/8 b - - 11 6",
+      "turn_prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on c5\nOPPONENT PIECES: Black king on e8\nSIDE TO MOVE: White\n\nAttacking move: 6/30\nMoves remaining: 25\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 4k3/8/4K3/2Q5/8/8/8/8 w - - 10 6\n\nBoard:\n. . . . k . . .\n. . . . . . . .\n. . . . K . . .\n. . Q . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e6; Black king on e8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8 e5e6 d8e8\nLegal moves: e6f6, e6d6, e6f5, e6e5, e6d5, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5h5, c5g5, c5f5, c5e5, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move.",
+      "raw_response": "{\"move\": \"c5c8\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "selection_trace": {},
+      "parsed_assessment": "win",
+      "parsed_confidence": 100,
+      "parsed_plan": "engine control",
+      "parsed_phase": "engine control",
+      "parsed_progress": "engine-selected move",
+      "parsed_rationale": "positive harness control",
+      "corrected": false,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.53546299750451,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish"
+    }
+  ],
+  "api_attempts": [
+    {
+      "attacking_move": 1,
+      "attempt_index": 1,
+      "prompt_type": "turn",
+      "prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move.",
+      "system_prompt": "You are taking part in a controlled chess endgame execution test.\n\nYou are White with king and queen. Black has only a king.\nYour result is accepted only if you deliver checkmate. A winning evaluation,\nmaterial advantage, or repeated checks are not success.\n\nYou receive the exact FEN, board, piece list, move history, and legal moves on every turn.\nKeep the major piece safe, preserve a strategy across turns, and finish within\nthe move budget.\n\nReturn one compact JSON object and no prose outside it.\nOn your first turn:\n{\"move\":\"<uci>\",\"assessment\":\"win|draw|loss\",\"confidence\":<0-100>,\"plan\":\"<endgame plan>\",\"phase\":\"<current phase>\",\"progress\":\"<what this move must achieve>\",\"rationale\":\"<brief public reason>\"}\n\nOn later turns the same schema is used. Keep \"plan\" unchanged unless the\nstrategy itself must change. Do not reveal hidden chain of thought.",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move."
+        }
+      ],
+      "request_parameters": {
+        "model": "Stockfish 17.1-depth-16",
+        "max_tokens": 400,
+        "temperature": 0.0
+      },
+      "raw_response": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "raw_envelope": "",
+      "parse_error": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 21.457756010931917,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish",
+      "transport_errors": []
+    },
+    {
+      "attacking_move": 2,
+      "attempt_index": 1,
+      "prompt_type": "turn",
+      "prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move.",
+      "system_prompt": "You are taking part in a controlled chess endgame execution test.\n\nYou are White with king and queen. Black has only a king.\nYour result is accepted only if you deliver checkmate. A winning evaluation,\nmaterial advantage, or repeated checks are not success.\n\nYou receive the exact FEN, board, piece list, move history, and legal moves on every turn.\nKeep the major piece safe, preserve a strategy across turns, and finish within\nthe move budget.\n\nReturn one compact JSON object and no prose outside it.\nOn your first turn:\n{\"move\":\"<uci>\",\"assessment\":\"win|draw|loss\",\"confidence\":<0-100>,\"plan\":\"<endgame plan>\",\"phase\":\"<current phase>\",\"progress\":\"<what this move must achieve>\",\"rationale\":\"<brief public reason>\"}\n\nOn later turns the same schema is used. Keep \"plan\" unchanged unless the\nstrategy itself must change. Do not reveal hidden chain of thought.",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        }
+      ],
+      "request_parameters": {
+        "model": "Stockfish 17.1-depth-16",
+        "max_tokens": 400,
+        "temperature": 0.0
+      },
+      "raw_response": "{\"move\": \"f6e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "raw_envelope": "",
+      "parse_error": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 2.6492160104680806,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish",
+      "transport_errors": []
+    },
+    {
+      "attacking_move": 3,
+      "attempt_index": 1,
+      "prompt_type": "turn",
+      "prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on b4\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 3/30\nMoves remaining: 28\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3\n\nBoard:\n. . . . . . . .\n. . . . . . . .\n. . k . K . . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; Black king on c6; White king on e6\nMove log (UCI): f8b4 c6c7 f6e6 c7c6\nLegal moves: e6f7, e6e7, e6f6, e6f5, e6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move.",
+      "system_prompt": "You are taking part in a controlled chess endgame execution test.\n\nYou are White with king and queen. Black has only a king.\nYour result is accepted only if you deliver checkmate. A winning evaluation,\nmaterial advantage, or repeated checks are not success.\n\nYou receive the exact FEN, board, piece list, move history, and legal moves on every turn.\nKeep the major piece safe, preserve a strategy across turns, and finish within\nthe move budget.\n\nReturn one compact JSON object and no prose outside it.\nOn your first turn:\n{\"move\":\"<uci>\",\"assessment\":\"win|draw|loss\",\"confidence\":<0-100>,\"plan\":\"<endgame plan>\",\"phase\":\"<current phase>\",\"progress\":\"<what this move must achieve>\",\"rationale\":\"<brief public reason>\"}\n\nOn later turns the same schema is used. Keep \"plan\" unchanged unless the\nstrategy itself must change. Do not reveal hidden chain of thought.",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f6e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on b4\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 3/30\nMoves remaining: 28\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3\n\nBoard:\n. . . . . . . .\n. . . . . . . .\n. . k . K . . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; Black king on c6; White king on e6\nMove log (UCI): f8b4 c6c7 f6e6 c7c6\nLegal moves: e6f7, e6e7, e6f6, e6f5, e6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        }
+      ],
+      "request_parameters": {
+        "model": "Stockfish 17.1-depth-16",
+        "max_tokens": 400,
+        "temperature": 0.0
+      },
+      "raw_response": "{\"move\": \"e6e5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "raw_envelope": "",
+      "parse_error": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 1.6428700037067756,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish",
+      "transport_errors": []
+    },
+    {
+      "attacking_move": 4,
+      "attempt_index": 1,
+      "prompt_type": "turn",
+      "prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on b4\nOPPONENT PIECES: Black king on d7\nSIDE TO MOVE: White\n\nAttacking move: 4/30\nMoves remaining: 27\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4\n\nBoard:\n. . . . . . . .\n. . . k . . . .\n. . . . . . . .\n. . . . K . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on e5; Black king on d7\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7\nLegal moves: e5f6, e5f5, e5d5, e5f4, e5e4, e5d4, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move.",
+      "system_prompt": "You are taking part in a controlled chess endgame execution test.\n\nYou are White with king and queen. Black has only a king.\nYour result is accepted only if you deliver checkmate. A winning evaluation,\nmaterial advantage, or repeated checks are not success.\n\nYou receive the exact FEN, board, piece list, move history, and legal moves on every turn.\nKeep the major piece safe, preserve a strategy across turns, and finish within\nthe move budget.\n\nReturn one compact JSON object and no prose outside it.\nOn your first turn:\n{\"move\":\"<uci>\",\"assessment\":\"win|draw|loss\",\"confidence\":<0-100>,\"plan\":\"<endgame plan>\",\"phase\":\"<current phase>\",\"progress\":\"<what this move must achieve>\",\"rationale\":\"<brief public reason>\"}\n\nOn later turns the same schema is used. Keep \"plan\" unchanged unless the\nstrategy itself must change. Do not reveal hidden chain of thought.",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f6e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on b4\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 3/30\nMoves remaining: 28\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3\n\nBoard:\n. . . . . . . .\n. . . . . . . .\n. . k . K . . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; Black king on c6; White king on e6\nMove log (UCI): f8b4 c6c7 f6e6 c7c6\nLegal moves: e6f7, e6e7, e6f6, e6f5, e6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"e6e5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on b4\nOPPONENT PIECES: Black king on d7\nSIDE TO MOVE: White\n\nAttacking move: 4/30\nMoves remaining: 27\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4\n\nBoard:\n. . . . . . . .\n. . . k . . . .\n. . . . . . . .\n. . . . K . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on e5; Black king on d7\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7\nLegal moves: e5f6, e5f5, e5d5, e5f4, e5e4, e5d4, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        }
+      ],
+      "request_parameters": {
+        "model": "Stockfish 17.1-depth-16",
+        "max_tokens": 400,
+        "temperature": 0.0
+      },
+      "raw_response": "{\"move\": \"b4c5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "raw_envelope": "",
+      "parse_error": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 1.508407003711909,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish",
+      "transport_errors": []
+    },
+    {
+      "attacking_move": 5,
+      "attempt_index": 1,
+      "prompt_type": "turn",
+      "prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on c5\nOPPONENT PIECES: Black king on d8\nSIDE TO MOVE: White\n\nAttacking move: 5/30\nMoves remaining: 26\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 3k4/8/8/2Q1K3/8/8/8/8 w - - 8 5\n\nBoard:\n. . . k . . . .\n. . . . . . . .\n. . . . . . . .\n. . Q . K . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e5; Black king on d8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8\nLegal moves: e5f6, e5e6, e5d6, e5f5, e5d5, e5f4, e5e4, e5d4, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move.",
+      "system_prompt": "You are taking part in a controlled chess endgame execution test.\n\nYou are White with king and queen. Black has only a king.\nYour result is accepted only if you deliver checkmate. A winning evaluation,\nmaterial advantage, or repeated checks are not success.\n\nYou receive the exact FEN, board, piece list, move history, and legal moves on every turn.\nKeep the major piece safe, preserve a strategy across turns, and finish within\nthe move budget.\n\nReturn one compact JSON object and no prose outside it.\nOn your first turn:\n{\"move\":\"<uci>\",\"assessment\":\"win|draw|loss\",\"confidence\":<0-100>,\"plan\":\"<endgame plan>\",\"phase\":\"<current phase>\",\"progress\":\"<what this move must achieve>\",\"rationale\":\"<brief public reason>\"}\n\nOn later turns the same schema is used. Keep \"plan\" unchanged unless the\nstrategy itself must change. Do not reveal hidden chain of thought.",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f6e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on b4\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 3/30\nMoves remaining: 28\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3\n\nBoard:\n. . . . . . . .\n. . . . . . . .\n. . k . K . . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; Black king on c6; White king on e6\nMove log (UCI): f8b4 c6c7 f6e6 c7c6\nLegal moves: e6f7, e6e7, e6f6, e6f5, e6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"e6e5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on b4\nOPPONENT PIECES: Black king on d7\nSIDE TO MOVE: White\n\nAttacking move: 4/30\nMoves remaining: 27\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4\n\nBoard:\n. . . . . . . .\n. . . k . . . .\n. . . . . . . .\n. . . . K . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on e5; Black king on d7\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7\nLegal moves: e5f6, e5f5, e5d5, e5f4, e5e4, e5d4, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"b4c5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on c5\nOPPONENT PIECES: Black king on d8\nSIDE TO MOVE: White\n\nAttacking move: 5/30\nMoves remaining: 26\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 3k4/8/8/2Q1K3/8/8/8/8 w - - 8 5\n\nBoard:\n. . . k . . . .\n. . . . . . . .\n. . . . . . . .\n. . Q . K . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e5; Black king on d8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8\nLegal moves: e5f6, e5e6, e5d6, e5f5, e5d5, e5f4, e5e4, e5d4, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move."
+        }
+      ],
+      "request_parameters": {
+        "model": "Stockfish 17.1-depth-16",
+        "max_tokens": 400,
+        "temperature": 0.0
+      },
+      "raw_response": "{\"move\": \"e5e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "raw_envelope": "",
+      "parse_error": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.6609160045627505,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish",
+      "transport_errors": []
+    },
+    {
+      "attacking_move": 6,
+      "attempt_index": 1,
+      "prompt_type": "turn",
+      "prompt": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on c5\nOPPONENT PIECES: Black king on e8\nSIDE TO MOVE: White\n\nAttacking move: 6/30\nMoves remaining: 25\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 4k3/8/4K3/2Q5/8/8/8/8 w - - 10 6\n\nBoard:\n. . . . k . . .\n. . . . . . . .\n. . . . K . . .\n. . Q . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e6; Black king on e8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8 e5e6 d8e8\nLegal moves: e6f6, e6d6, e6f5, e6e5, e6d5, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5h5, c5g5, c5f5, c5e5, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move.",
+      "system_prompt": "You are taking part in a controlled chess endgame execution test.\n\nYou are White with king and queen. Black has only a king.\nYour result is accepted only if you deliver checkmate. A winning evaluation,\nmaterial advantage, or repeated checks are not success.\n\nYou receive the exact FEN, board, piece list, move history, and legal moves on every turn.\nKeep the major piece safe, preserve a strategy across turns, and finish within\nthe move budget.\n\nReturn one compact JSON object and no prose outside it.\nOn your first turn:\n{\"move\":\"<uci>\",\"assessment\":\"win|draw|loss\",\"confidence\":<0-100>,\"plan\":\"<endgame plan>\",\"phase\":\"<current phase>\",\"progress\":\"<what this move must achieve>\",\"rationale\":\"<brief public reason>\"}\n\nOn later turns the same schema is used. Keep \"plan\" unchanged unless the\nstrategy itself must change. Do not reveal hidden chain of thought.",
+      "request_messages": [
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on f8\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 1/30\nMoves remaining: 30\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 5Q2/8/2k2K2/8/8/8/8/8 w - - 0 1\n\nBoard:\n. . . . . Q . .\n. . . . . . . .\n. . k . . K . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: Black king on c6; White king on f6; White queen on f8\nMove log (UCI): (start)\nLegal moves: f8h8, f8g8, f8e8, f8d8, f8c8, f8b8, f8a8, f8g7, f8f7, f8e7, f8h6, f8d6, f8c5, f8b4, f8a3, f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f8b4\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on f6; White queen on b4\nOPPONENT PIECES: Black king on c7\nSIDE TO MOVE: White\n\nAttacking move: 2/30\nMoves remaining: 29\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/2k5/5K2/8/1Q6/8/8/8 w - - 2 2\n\nBoard:\n. . . . . . . .\n. . k . . . . .\n. . . . . K . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on f6; Black king on c7\nMove log (UCI): f8b4 c6c7\nLegal moves: f6g7, f6f7, f6e7, f6g6, f6e6, f6g5, f6f5, f6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"f6e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on b4\nOPPONENT PIECES: Black king on c6\nSIDE TO MOVE: White\n\nAttacking move: 3/30\nMoves remaining: 28\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/8/2k1K3/8/1Q6/8/8/8 w - - 4 3\n\nBoard:\n. . . . . . . .\n. . . . . . . .\n. . k . K . . .\n. . . . . . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; Black king on c6; White king on e6\nMove log (UCI): f8b4 c6c7 f6e6 c7c6\nLegal moves: e6f7, e6e7, e6f6, e6f5, e6e5, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"e6e5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on b4\nOPPONENT PIECES: Black king on d7\nSIDE TO MOVE: White\n\nAttacking move: 4/30\nMoves remaining: 27\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 8/3k4/8/4K3/1Q6/8/8/8 w - - 6 4\n\nBoard:\n. . . . . . . .\n. . . k . . . .\n. . . . . . . .\n. . . . K . . .\n. Q . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on b4; White king on e5; Black king on d7\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7\nLegal moves: e5f6, e5f5, e5d5, e5f4, e5e4, e5d4, b4f8, b4b8, b4e7, b4b7, b4d6, b4b6, b4c5, b4b5, b4a5, b4h4, b4g4, b4f4, b4e4, b4d4, b4c4, b4a4, b4c3, b4b3, b4a3, b4d2, b4b2, b4e1, b4b1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"b4c5\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e5; White queen on c5\nOPPONENT PIECES: Black king on d8\nSIDE TO MOVE: White\n\nAttacking move: 5/30\nMoves remaining: 26\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 3k4/8/8/2Q1K3/8/8/8/8 w - - 8 5\n\nBoard:\n. . . k . . . .\n. . . . . . . .\n. . . . . . . .\n. . Q . K . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e5; Black king on d8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8\nLegal moves: e5f6, e5e6, e5d6, e5f5, e5d5, e5f4, e5e4, e5d4, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move."
+        },
+        {
+          "role": "assistant",
+          "content": "{\"move\": \"e5e6\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}"
+        },
+        {
+          "role": "user",
+          "content": "ROLE (ground truth): You control White. Move White pieces only.\nYOUR PIECES: White king on e6; White queen on c5\nOPPONENT PIECES: Black king on e8\nSIDE TO MOVE: White\n\nAttacking move: 6/30\nMoves remaining: 25\nMaterial: KQK\nBoard format selected during calibration: multi_view\nFEN: 4k3/8/4K3/2Q5/8/8/8/8 w - - 10 6\n\nBoard:\n. . . . k . . .\n. . . . . . . .\n. . . . K . . .\n. . Q . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n\nPieces: White queen on c5; White king on e6; Black king on e8\nMove log (UCI): f8b4 c6c7 f6e6 c7c6 e6e5 c6d7 b4c5 d7d8 e5e6 d8e8\nLegal moves: e6f6, e6d6, e6f5, e6e5, e6d5, c5f8, c5c8, c5e7, c5c7, c5a7, c5d6, c5c6, c5b6, c5h5, c5g5, c5f5, c5e5, c5d5, c5b5, c5a5, c5d4, c5c4, c5b4, c5e3, c5c3, c5a3, c5f2, c5c2, c5g1, c5c1\n\nChoose the next move."
+        }
+      ],
+      "request_parameters": {
+        "model": "Stockfish 17.1-depth-16",
+        "max_tokens": 400,
+        "temperature": 0.0
+      },
+      "raw_response": "{\"move\": \"c5c8\", \"assessment\": \"win\", \"confidence\": 100, \"plan\": \"engine control\", \"phase\": \"engine control\", \"progress\": \"engine-selected move\", \"rationale\": \"positive harness control\"}",
+      "thinking": "",
+      "raw_envelope": "",
+      "parse_error": "",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "latency_ms": 0.53546299750451,
+      "response_id": "",
+      "actual_model": "Stockfish 17.1-depth-16",
+      "actual_provider": "uci-control",
+      "finish_reason": "engine_move",
+      "endpoint": "uci:///usr/games/stockfish",
+      "transport_errors": []
+    }
+  ]
+}

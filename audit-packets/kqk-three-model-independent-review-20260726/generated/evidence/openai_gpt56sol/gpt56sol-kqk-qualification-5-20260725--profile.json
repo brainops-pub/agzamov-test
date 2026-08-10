@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "profile_id": "openai-gpt-5.6-sol",
+  "provider": "openai",
+  "model": "gpt-5.6-sol",
+  "transport": {
+    "kind": "openai_responses",
+    "endpoint": "https://api.openai.com/v1/responses",
+    "credential_env": "OPENAI_API_KEY",
+    "transport_retries": 0
+  },
+  "inference": {
+    "calibration_max_tokens": 16384,
+    "game_max_tokens": 32768,
+    "temperature": null,
+    "reasoning": {
+      "effort": "max",
+      "summary": "detailed",
+      "context": "current_turn"
+    },
+    "store": false
+  },
+  "board_adapter": {
+    "adapter_id": "openai-gpt-5.6-sol-board-v1",
+    "initial_format": "multi_view",
+    "rendered_views": [
+      "fen",
+      "ascii",
+      "piece_list",
+      "json_square_map"
+    ],
+    "allow_model_selected_format": true,
+    "calibration_requires_legal_moves": true
+  }
+}

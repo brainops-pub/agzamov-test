@@ -1,0 +1,29 @@
+{
+  "updated_at": "2026-07-25T07:07:11.510215+00:00",
+  "model": "claude-opus-5",
+  "protocol": "opus5-kqk-no-legal-list-ablation-v1",
+  "planned_games": 10,
+  "completed_games": 10,
+  "successes": 10,
+  "failures": 0,
+  "terminal_reasons": {
+    "checkmate": 10
+  },
+  "calibration_passed": true,
+  "calibration_attempts": 3,
+  "legal_move_list_in_game_prompt": false,
+  "max_tokens_per_response": 32768,
+  "usage": {
+    "input_tokens": 139133,
+    "output_tokens": 228254,
+    "recorded_cost_usd": 6.402015
+  },
+  "ablation_metrics": {
+    "first_attempt_decisions": 58,
+    "first_attempt_illegal_moves": 1,
+    "first_attempt_illegal_rate": 0.017241,
+    "first_attempt_any_protocol_errors": 1,
+    "recovered_model_moves": 1,
+    "unrecovered_protocol_failure_games": 0
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "runs": [
+    {
+      "run": "local-qwen36-collaborative-game-20260808",
+      "ok": true,
+      "manifest_ok": true,
+      "identity_ok": true,
+      "raw_ok": true,
+      "taxonomy_ok": true,
+      "replay_applicable": true,
+      "replay_ok": true,
+      "raw_calls": 5,
+      "issue_counts": {}
+    },
+    {
+      "run": "local-qwen36-collaborative-three-games-20260808",
+      "ok": false,
+      "manifest_ok": true,
+      "identity_ok": true,
+      "raw_ok": true,
+      "taxonomy_ok": false,
+      "replay_applicable": true,
+      "replay_ok": true,
+      "raw_calls": 23,
+      "issue_counts": {
+        "stored_parser_mode_drift": 5
+      }
+    },
+    {
+      "run": "local-qwen36-mate-claim-simulation-20260808",
+      "ok": true,
+      "manifest_ok": true,
+      "identity_ok": true,
+      "raw_ok": true,
+      "taxonomy_ok": true,
+      "replay_applicable": false,
+      "replay_ok": true,
+      "raw_calls": 5,
+      "issue_counts": {}
+    },
+    {
+      "run": "local-qwen36-tactical-gated-game-20260808",
+      "ok": false,
+      "manifest_ok": true,
+      "identity_ok": true,
+      "raw_ok": true,
+      "taxonomy_ok": false,
+      "replay_applicable": true,
+      "replay_ok": true,
+      "raw_calls": 24,
+      "issue_counts": {
+        "stored_syntax_legality_conflation": 14
+      }
+    }
+  ]
+}

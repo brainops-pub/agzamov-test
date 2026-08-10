@@ -1,0 +1,127 @@
+{
+  "audited_at": "2026-07-26T08:29:12.480318+00:00",
+  "calibration_passed": true,
+  "calibration_board_ids": [
+    "calibration-01",
+    "calibration-02",
+    "calibration-heldout-03"
+  ],
+  "calibration_attempts": 7,
+  "positive_controls_verified": 5,
+  "games_completed": 5,
+  "all_replays_verified": true,
+  "all_game_prompts_oracle_free": true,
+  "all_raw_envelopes_complete": true,
+  "accepted_model_moves": 35,
+  "model_illegal_attempts": 3,
+  "first_attempt_illegal_moves": 3,
+  "rejected_attempts": 6,
+  "provider_visible_reasoning_attempts": 41,
+  "game_audits": [
+    {
+      "game_id": "deepseek-v4-pro:kqk-003-qualification-r1",
+      "position_id": "kqk-003-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 3,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 0,
+      "correction_attempts": 0,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 3,
+      "actual_models": [
+        "deepseek-v4-pro"
+      ],
+      "actual_providers": [
+        "deepseek"
+      ],
+      "success": false,
+      "terminal_reason": "major_piece_lost"
+    },
+    {
+      "game_id": "deepseek-v4-pro:kqk-010-qualification-r1",
+      "position_id": "kqk-010-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 7,
+      "model_illegal_attempts": 0,
+      "first_attempt_illegal_moves": 0,
+      "rejected_attempts": 1,
+      "correction_attempts": 1,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 8,
+      "actual_models": [
+        "deepseek-v4-pro"
+      ],
+      "actual_providers": [
+        "deepseek"
+      ],
+      "success": false,
+      "terminal_reason": "stalemate"
+    },
+    {
+      "game_id": "deepseek-v4-pro:kqk-001-qualification-r1",
+      "position_id": "kqk-001-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 12,
+      "model_illegal_attempts": 1,
+      "first_attempt_illegal_moves": 1,
+      "rejected_attempts": 3,
+      "correction_attempts": 3,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 15,
+      "actual_models": [
+        "deepseek-v4-pro"
+      ],
+      "actual_providers": [
+        "deepseek"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    },
+    {
+      "game_id": "deepseek-v4-pro:kqk-006-qualification-r1",
+      "position_id": "kqk-006-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 4,
+      "model_illegal_attempts": 1,
+      "first_attempt_illegal_moves": 1,
+      "rejected_attempts": 1,
+      "correction_attempts": 1,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 5,
+      "actual_models": [
+        "deepseek-v4-pro"
+      ],
+      "actual_providers": [
+        "deepseek"
+      ],
+      "success": false,
+      "terminal_reason": "major_piece_lost"
+    },
+    {
+      "game_id": "deepseek-v4-pro:kqk-002-qualification-r1",
+      "position_id": "kqk-002-qualification-r1",
+      "replay_verified": true,
+      "game_prompt_oracle_leak": false,
+      "accepted_model_moves": 9,
+      "model_illegal_attempts": 1,
+      "first_attempt_illegal_moves": 1,
+      "rejected_attempts": 1,
+      "correction_attempts": 1,
+      "raw_envelopes_complete": true,
+      "provider_visible_reasoning_attempts": 10,
+      "actual_models": [
+        "deepseek-v4-pro"
+      ],
+      "actual_providers": [
+        "deepseek"
+      ],
+      "success": true,
+      "terminal_reason": "checkmate"
+    }
+  ]
+}
